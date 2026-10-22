@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Descargar Cotizador de Delivery</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: #0d1117;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      background-color: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 20px;
+      padding: 30px 24px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .app-icon {
+      width: 96px;
+      height: 96px;
+      border-radius: 22px;
+      object-fit: cover;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: #8b949e;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .btn-download {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background-color: #2563eb;
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      padding: 14px 20px;
+      border-radius: 12px;
+      transition: background-color 0.2s;
+    }
+
+    .btn-download:active {
+      background-color: #1d4ed8;
+    }
+
+    .info-badge {
+      display: inline-block;
+      margin-top: 20px;
+      background-color: #21262d;
+      color: #8b949e;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <img src="icon-192.png" alt="Logo de Cotizador" class="app-icon">
+    <h1>Cotiza tu viaje</h1>
+    <p>Calculadora instantánea de tarifas de delivery. Descarga la aplicación para tu Android.</p>
+
+    <a href="app-release.apk" download class="btn-download">
+      <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/>
+      </svg>
+      Descargar APK gratis
+    </a>
+
+    <div class="info-badge">Versión para Android (.apk)</div>
+  </div>
+
+</body>
+</html>
