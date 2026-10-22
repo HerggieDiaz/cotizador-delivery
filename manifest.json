@@ -1,0 +1,13 @@
+{
+  "background_color": "rgb(47, 152, 241)",
+  "dir": "auto",
+  "display": "standalone",
+  "name": "Cotiza tu Viaje",
+  "orientation": "portrait",
+  "scope": "/",
+  "short_name": "Cotizador",
+  "start_url": "/cotizador-delivery/",
+  "theme_color": "#2563eb",
+  "id": "Tu Viaje",
+  "lang": "es"
+}
