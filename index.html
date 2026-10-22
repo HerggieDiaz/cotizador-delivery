@@ -144,7 +144,7 @@
     </div>
 
     <!-- BOTÓN DIRECTOR GOOGLE MAPS -->
-<a href="javascript:void(0);" onclick="abrirMapaReal()" class="w-full mb-4 py-2.5 px-4 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-xl text-center flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition-all">
+<a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="w-full mb-4 py-2.5 px-4 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-xl text-center flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition-all">
   <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
   Abrir Google Maps (Ver Ruta Real)
 </a>
@@ -435,13 +435,6 @@ _(Tasa Oficial BCV: Bs. ${d.bcv})_`;
       }).catch(err => {
         alert("No se pudo copiar el texto automáticamente.");
       });
-    }function abrirMapaReal() {
-    const inputRuta = document.getElementById('link-ruta');
-    let urlDestino = "https://maps.google.com";
-    if (inputRuta && inputRuta.value.trim() !== "") {
-      urlDestino = inputRuta.value.trim();
-    }
-    window.open(urlDestino, '_system');
   }
   </script>
 </body>
