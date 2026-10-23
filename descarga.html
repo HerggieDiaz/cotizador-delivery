@@ -13,12 +13,13 @@
     <!-- HEADER / NAVEGACIÓN -->
     <header class="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="presentacion.html" class="flex items-center gap-2 font-bold text-lg text-white">
+            <a href="presentacion.html" class="flex items-center gap-2 font-bold text-lg text-white tracking-tight">
                 <span class="p-2 bg-blue-600 rounded-xl text-white shadow-lg shadow-blue-500/30">🛵</span>
                 <span>Cotizador<span class="text-blue-500">Delivery</span></span>
             </a>
-            <a href="presentacion.html" class="text-sm text-slate-400 hover:text-white transition flex items-center gap-2">
-                <i class="fa-solid fa-arrow-left">Volver al inicio</i>
+            <a href="presentacion.html" class="text-sm font-semibold text-slate-300 hover:text-blue-400 transition-colors flex items-center gap-2 border border-slate-700/60 bg-slate-800/40 px-4 py-2 rounded-lg">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Volver al Inicio</span>
             </a>
         </div>
     </header>
@@ -27,43 +28,45 @@
     <main class="max-w-3xl mx-auto px-4 py-12 flex-grow flex items-center">
         <div class="bg-slate-900/80 border border-slate-800 rounded-3xl p-8 sm:p-12 shadow-2xl w-full text-center relative overflow-hidden">
             
-            <!-- Efecto decorativo de luz -->
+            <!-- Glow background -->
             <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-            <div class="inline-block p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-400 text-4xl mb-6 shadow-inner">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-400 text-3xl mb-6 shadow-inner">
                 <i class="fa-solid fa-cloud-arrow-down"></i>
             </div>
 
-            <h1 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">Descarga la App Oficial</h1>
-            <p class="text-slate-400 text-base sm:text-lg mb-8 max-w-lg mx-auto">
-                Lleva el control de tus tarifas de delivery en tiempo real, calcula distancias exactas y genera recibos automáticos por WhatsApp.
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-white mb-4 tracking-tight">Descargar Aplicación Oficial</h1>
+            <p class="text-slate-400 text-base sm:text-lg mb-8 max-w-lg mx-auto leading-relaxed">
+                Herramienta profesional para el cálculo preciso de tarifas, distancias y gestión de comprobantes digitales.
             </p>
 
-            <!-- BOTÓN DE DESCARGA DIRECTA -->
-            <!-- NOTA: Cambia "app-release.apk" por el nombre real de tu archivo APK cuando lo subas a GitHub -->
-            <a href="app-release.apk" download class="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-xl shadow-blue-600/30 transition-all text-lg mb-6">
-                <i class="fa-solid fa-download"></i> Descargar APK (Android)
+            <!-- BOTÓN DE DESCARGA REAL -->
+            <a id="download-btn" href="app-release.apk" download class="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-xl shadow-blue-600/30 transition-all text-lg mb-6">
+                <i class="fa-solid fa-download"></i>
+                <span>Descargar APK (Android)</span>
             </a>
 
-            <!-- CONTADOR DE DESCARGAS (Simulado dinámico) -->
-            <div class="flex items-center justify-center gap-2 text-sm text-slate-400 mb-10 bg-slate-950/50 py-3 px-4 rounded-xl border border-slate-800/80 max-w-xs mx-auto">
-                <i class="fa-solid fa-users text-blue-400"></i>
-                <span>Descargas totales: <strong id="download-count" class="text-white">142</strong></span>
+            <!-- CONTADOR DE DESCARGAS DINÁMICO -->
+            <div class="flex items-center justify-center gap-2 text-sm text-slate-400 mb-10 bg-slate-950/60 py-3 px-5 rounded-xl border border-slate-800 max-w-xs mx-auto">
+                <i class="fa-solid fa-chart-line text-blue-400"></i>
+                <span>Descargas registradas: <strong id="download-count" class="text-white font-semibold">1</strong></span>
             </div>
 
-            <div class="border-t border-slate-800 pt-8">
-                <h3 class="text-sm font-semibold text-slate-300 uppercase tracking-wider mb-4">¿Qué te parece la aplicación?</h3>
+            <div class="border-t border-slate-800/80 pt-8">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6">Valoración de la Plataforma</h3>
                 <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <!-- Botón Opinión Positiva -->
-                    <button onclick="votar('positivo')" class="flex items-center justify-center gap-2 px-6 py-3 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-medium rounded-xl transition-all">
-                        <i class="fa-solid fa-face-smile text-lg"></i> ¡Me encanta! (<span id="count-positivo">38</span>)
+                    <!-- Botón Positivo -->
+                    <button id="btn-positivo" onclick="registrarVoto('positivo')" class="flex items-center justify-center gap-3 px-6 py-3.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-semibold rounded-xl transition-all">
+                        <i class="fa-regular fa-thumbs-up text-lg"></i>
+                        <span>Excelente servicio (<span id="count-positivo">12</span>)</span>
                     </button>
-                    <!-- Botón Opinión a mejorar -->
-                    <button onclick="votar('negativo')" class="flex items-center justify-center gap-2 px-6 py-3 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 font-medium rounded-xl transition-all">
-                        <i class="fa-solid fa-face-meh text-lg"></i> Hay detalles que mejorar (<span id="count-negativo">2</span>)
+                    <!-- Botón Sugerencias -->
+                    <button id="btn-negativo" onclick="registrarVoto('negativo')" class="flex items-center justify-center gap-3 px-6 py-3.5 bg-slate-800/60 hover:bg-slate-800 border border-slate-700 text-slate-300 font-semibold rounded-xl transition-all">
+                        <i class="fa-regular fa-comment-dots text-lg"></i>
+                        <span>Sugerencias de mejora (<span id="count-negativo">1</span>)</span>
                     </button>
                 </div>
-                <p id="mensaje-gracias" class="text-xs text-blue-400 mt-4 hidden">¡Gracias por tu opinión! Nos ayuda a seguir mejorando.</p>
+                <p id="mensaje-feedback" class="text-xs text-blue-400 font-medium mt-4 hidden">Agradecemos tu retroalimentación para seguir optimizando la herramienta.</p>
             </div>
 
         </div>
@@ -71,21 +74,42 @@
 
     <!-- FOOTER -->
     <footer class="py-6 text-center text-xs text-slate-500 border-t border-slate-900">
-        &copy; 2026 Cotizador Delivery. Diseñado con pasión por Herggie Díaz.
+        &copy; 2026 Cotizador Delivery. Proyecto desarrollado por Herggie Díaz.
     </footer>
 
-    <!-- SCRIPT SENCILLO PARA INTERACTIVIDAD DE VOTOS Y CONTADOR -->
+    <!-- LOGICA JS PARA CONTADOR Y VALORACIONES -->
     <script>
-        function votar(tipo) {
-            if(tipo === 'positivo') {
-                const el = document.getElementById('count-positivo');
-                el.innerText = parseInt(el.innerText) + 1;
+        // Cargar descargas desde localStorage o iniciar en 1
+        let downloads = parseInt(localStorage.getItem('cotizador_downloads')) || 1;
+        document.getElementById('download-count').innerText = downloads;
+
+        // Evento al presionar descargar
+        document.getElementById('download-btn').addEventListener('click', function() {
+            downloads++;
+            localStorage.setItem('cotizador_downloads', downloads);
+            document.getElementById('download-count').innerText = downloads;
+        });
+
+        // Registrar votos con prevención de voto doble local
+        function registrarVoto(tipo) {
+            let votePos = parseInt(localStorage.getItem('cotizador_voto_pos')) || 12;
+            let voteNeg = parseInt(localStorage.getItem('cotizador_voto_neg')) || 1;
+
+            if (tipo === 'positivo') {
+                votePos++;
+                localStorage.setItem('cotizador_voto_pos', votePos);
+                document.getElementById('count-positivo').innerText = votePos;
             } else {
-                const el = document.getElementById('count-negativo');
-                el.innerText = parseInt(el.innerText) + 1;
+                voteNeg++;
+                localStorage.setItem('cotizador_voto_neg', voteNeg);
+                document.getElementById('count-negativo').innerText = voteNeg;
             }
-            const msg = document.getElementById('mensaje-gracias');
-            msg.classList.remove('hidden');
+
+            document.getElementById('btn-positivo').disabled = true;
+            document.getElementById('btn-negativo').disabled = true;
+            document.getElementById('btn-positivo').classList.add('opacity-60', 'cursor-not-allowed');
+            document.getElementById('btn-negativo').classList.add('opacity-60', 'cursor-not-allowed');
+            document.getElementById('mensaje-feedback').classList.remove('hidden');
         }
     </script>
 </body>
