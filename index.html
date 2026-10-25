@@ -48,21 +48,21 @@
   <!-- Contenedor App -->
   <main class="max-w-md mx-auto px-4 pt-6 space-y-6">
 
-    <!-- Tarjeta de Tasa BCV -->
-    <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between shadow-xl">
-      <div class="flex items-center gap-3">
-        <span class="text-2xl">🏛️</span>
-        <div>
-          <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Tasa Oficial BCV</p>
-          <p id="tasa-bcv-txt" class="text-lg font-bold text-emerald-400">Cargando...</p>
-        </div>
+    <!-- Tarjeta de Tasa BCV y Estado Nocturno -->
+    <div class="grid grid-cols-2 gap-3">
+      <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col justify-between shadow-xl">
+        <p class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Tasa Oficial BCV</p>
+        <p id="tasa-bcv-txt" class="text-base font-bold text-emerald-400">Cargando...</p>
       </div>
-      <button onclick="obtenerTasaBCV()" class="p-2 text-slate-400 hover:text-white transition rounded-lg hover:bg-slate-800" title="Actualizar Tasa">
-        🔄
-      </button>
+      
+      <!-- Indicador Automático de Horario Nocturno -->
+      <div id="badge-nocturno" class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col justify-between shadow-xl hidden">
+        <p class="text-[10px] text-indigo-400 uppercase tracking-wider font-semibold">Modo Activo</p>
+        <p class="text-xs font-bold text-indigo-300">🌙 Nocturno (9pm - 6am)</p>
+      </div>
     </div>
 
-    <!-- Botón directo Google Maps Universal (Compatible con iPhone y Android) -->
+    <!-- Botón directo Google Maps Universal -->
     <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-xl text-center flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition-all active:scale-[0.98]">
       <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
       Abrir Google Maps (Ver Ruta Real)
@@ -98,7 +98,6 @@
           <option value="estandar">📦 Estándar (Documentos, Comida, Ropa)</option>
           <option value="pesado">🏋️ Carga Pesada / Voluminosa</option>
           <option value="fragil">💎 Objeto Frágil / Delicado</option>
-          <option value="nocturno">🌙 Horario Nocturno / Lluvia</option>
         </select>
       </div>
 
@@ -135,15 +134,27 @@
   </main>
 
   <script>
-    let tasaBCV = 88.47; // Valor de respaldo seguro para evitar que se quede en cargando
+    let tasaBCV = 88.47; 
     const TARIFA_BASE_KM = 0.75; 
+    let esHorarioNocturno = false;
+
+    // Verificar si estamos en horario nocturno (9:00 PM a 6:00 AM)
+    function verificarHorarioNocturno() {
+      const horaActual = new Date().getHours();
+      // De 21:00 (9 PM) en adelante o antes de las 06:00 (6 AM)
+      if (horaActual >= 21 || horaActual < 6) {
+        esHorarioNocturno = true;
+        document.getElementById('badge-nocturno').classList.remove('hidden');
+      } else {
+        esHorarioNocturno = false;
+        document.getElementById('badge-nocturno').classList.add('hidden');
+      }
+    }
 
     async function obtenerTasaBCV() {
       const el = document.getElementById('tasa-bcv-txt');
       try {
         el.innerText = 'Actualizando...';
-        
-        // Usamos AbortController para ponerle un límite de tiempo (3 segundos) por si la red móvil está lenta
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 3000);
 
@@ -155,9 +166,8 @@
           tasaBCV = data.promedio;
         }
       } catch (e) {
-        console.log("Usando tasa de respaldo debido a restricciones de red.");
+        console.log("Usando tasa de respaldo.");
       }
-      // Muestra la tasa obtenida o el respaldo garantizado al instante
       el.innerText = `Bs. ${tasaBCV.toFixed(2)} / USD`;
     }
 
@@ -169,13 +179,16 @@
       }
 
       const tipo = document.getElementById('tipo-envio').value;
-      let recargo = 1.0;
+      let recargoCarga = 1.0;
 
-      if(tipo === 'pesado') recargo = 1.25;
-      if(tipo === 'fragil') recargo = 1.15;
-      if(tipo === 'nocturno') recargo = 1.30;
+      if(tipo === 'pesado') recargoCarga = 1.25;
+      if(tipo === 'fragil') recargoCarga = 1.15;
 
-      const totalUSD = (dist * TARIFA_BASE_KM * recargo).toFixed(2);
+      // Recargo nocturno automático (30% adicional si está entre 9pm y 6am)
+      let recargoNocturno = esHorarioNocturno ? 1.30 : 1.0;
+
+      // Cálculo final aplicando ambos factores
+      const totalUSD = (dist * TARIFA_BASE_KM * recargoCarga * recargoNocturno).toFixed(2);
       const totalBS = (totalUSD * tasaBCV).toFixed(2);
 
       document.getElementById('res-usd').innerText = `$${totalUSD}`;
@@ -194,6 +207,10 @@
              
       if(linkMaps) {
         texto += `🗺️ *Ruta Maps:* ${linkMaps}\n`;
+      }
+
+      if(esHorarioNocturno) {
+        texto += `🌙 *Tarifa:* Nocturna (9pm - 6am)\n`;
       }
 
       texto += `💵 *Monto USD:* ${usd}\n` +
@@ -219,7 +236,8 @@
       });
     }
 
-    // Ejecutar al cargar la página
+    // Inicializaciones al cargar la página
+    verificarHorarioNocturno();
     obtenerTasaBCV();
   </script>
 </body>
