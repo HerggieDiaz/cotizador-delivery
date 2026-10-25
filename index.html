@@ -1,440 +1,161 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
-<link rel="manifest" href="manifest.json">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cotiza tu viaje</title>
+  <title>Cotizador de Delivery</title>
+  
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+            }
+          }
+        }
+      }
     }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-    }
-    .custom-shadow {
-      box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08);
-    }
-    @keyframes pulseSoft {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.02); }
-    }
-    .animate-pulse-soft {
-      animation: pulseSoft 3s infinite ease-in-out;
-    }
-  </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-3 sm:p-6 bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300">
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans selection:bg-emerald-500 selection:text-white pb-10">
 
-  <div class="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-7 custom-shadow border border-slate-100 dark:border-slate-800 relative overflow-hidden transition-colors duration-300">
-    
-    <!-- BOTÓN MODO NOCHE / CLARO MANUAL -->
-    <button onclick="toggleDarkMode()" id="theme-toggle-btn" class="absolute top-4 right-4 z-20 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 p-2 rounded-full transition-all text-xs font-bold shadow-sm flex items-center justify-center w-8 h-8" title="Cambiar Modo Noche/Claro">
-      🌙
-    </button>
-
-    <!-- ACENTO DE COLOR EN CABECERA -->
-    <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-amber-500 via-orange-500 to-blue-600"></div>
-
-    <!-- CABECERA CON ILUSTRACIÓN SVG RECREADA EXACTA -->
-    <div class="text-center mb-5 pt-2">
-      <div class="inline-block w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1 bg-gradient-to-tr from-amber-400 via-orange-500 to-blue-600 shadow-lg shadow-orange-500/20 mb-3 animate-pulse-soft">
-        <div class="w-full h-full bg-white dark:bg-slate-800 rounded-full overflow-hidden flex items-center justify-center p-1 border-2 border-white dark:border-slate-800 transition-colors">
-          
-          <!-- VECTOR SVG PURA - ILUSTRACIÓN EXACTA DE MOTO DELIVERY -->
-          <svg viewBox="0 0 500 500" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#f8fafc" />
-                <stop offset="100%" stop-color="#e2e8f0" />
-              </linearGradient>
-              <linearGradient id="roadGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#1e293b" />
-                <stop offset="100%" stop-color="#0f172a" />
-              </linearGradient>
-              <linearGradient id="scooterGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#f97316" />
-                <stop offset="100%" stop-color="#ea580c" />
-              </linearGradient>
-              <linearGradient id="boxGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#fb923c" />
-                <stop offset="100%" stop-color="#d97706" />
-              </linearGradient>
-            </defs>
-
-            <!-- Fondo Circular con Ilustración -->
-            <circle cx="250" cy="250" r="230" fill="url(#bgGrad)" />
-
-            <!-- Líneas de Ruta Punteadas de Fondo -->
-            <path d="M 120 180 Q 200 130 350 170" fill="none" stroke="#cbd5e1" stroke-width="4" stroke-dasharray="8,8" />
-            <path d="M 150 240 Q 280 180 400 220" fill="none" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="6,6" />
-
-            <!-- Pines de Ubicación de Fondo -->
-            <path d="M 360 140 C 350 140 342 148 342 158 C 342 173 360 190 360 190 C 360 190 378 173 378 158 C 378 148 370 140 360 140 Z" fill="#f97316" />
-            <circle cx="360" cy="158" r="6" fill="#ffffff" />
-            
-            <path d="M 190 125 C 182 125 175 132 175 140 C 175 152 190 165 190 165 C 190 165 205 152 205 140 C 205 132 198 125 190 125 Z" fill="#2563eb" />
-            <circle cx="190" cy="140" r="5" fill="#ffffff" />
-
-            <path d="M 410 200 C 403 200 397 206 397 213 C 397 223 410 235 410 235 C 410 235 423 223 423 213 C 423 206 417 200 410 200 Z" fill="#ea580c" />
-            <circle cx="410" cy="213" r="4" fill="#ffffff" />
-
-            <!-- Carretera Curva Inferior -->
-            <path d="M 60 330 C 180 300 280 420 440 330" fill="none" stroke="url(#roadGrad)" stroke-width="42" stroke-linecap="round" />
-            <path d="M 75 328 C 180 300 280 416 425 332" fill="none" stroke="#fef08a" stroke-width="5" stroke-dasharray="16,14" stroke-linecap="round" />
-
-            <!-- MOTO Y REPARTIDOR -->
-            <g transform="translate(10, 0)">
-              <circle cx="190" cy="315" r="38" fill="#1e293b" />
-              <circle cx="190" cy="315" r="22" fill="#94a3b8" />
-              <circle cx="190" cy="315" r="10" fill="#0f172a" />
-
-              <circle cx="355" cy="315" r="38" fill="#1e293b" />
-              <circle cx="355" cy="315" r="22" fill="#94a3b8" />
-              <circle cx="355" cy="315" r="10" fill="#0f172a" />
-
-              <path d="M 180 310 L 260 310 L 290 260 L 330 250 L 350 310 Z" fill="#1e3a8a" />
-              <path d="M 190 270 C 190 240 240 230 270 250 L 320 255 C 335 255 345 270 345 285 L 340 310 L 200 310 Z" fill="url(#scooterGrad)" />
-              
-              <path d="M 330 275 C 330 265 370 265 375 295 L 340 295 Z" fill="#ea580c" />
-              <path d="M 195 240 C 200 230 250 230 260 245 Z" fill="#0f172a" stroke="#1e293b" stroke-width="3" />
-
-              <path d="M 315 245 L 310 195 L 325 195" fill="none" stroke="#64748b" stroke-width="7" stroke-linecap="round" />
-              <circle cx="308" cy="185" r="7" fill="#64748b" />
-              <circle cx="308" cy="185" r="4" fill="#cbd5e1" />
-
-              <path d="M 335 210 L 350 212 L 345 225 Z" fill="#fef08a" />
-
-              <path d="M 235 235 L 260 280 L 295 280 L 280 235 Z" fill="#1d4ed8" />
-              <path d="M 225 180 C 225 160 255 165 265 185 L 275 235 L 230 235 Z" fill="#ea580c" />
-              
-              <path d="M 245 175 L 290 200 L 310 198" fill="none" stroke="#ea580c" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M 245 175 L 290 200 L 310 198" fill="none" stroke="#ffedd5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
-
-              <circle cx="255" cy="130" r="22" fill="#ffedd5" />
-              <path d="M 230 130 C 230 100 280 100 280 130 C 280 138 275 142 255 142 C 235 142 230 138 230 130 Z" fill="#1e3a8a" />
-              <path d="M 235 120 C 240 108 270 108 275 120 Z" fill="#f97316" />
-              <path d="M 260 126 A 8 8 0 0 1 276 132" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" />
-
-              <rect x="135" y="155" width="75" height="80" rx="8" fill="url(#boxGrad)" stroke="#b45309" stroke-width="3" />
-              <rect x="145" y="175" width="55" height="30" rx="4" fill="#ffffff" opacity="0.9" />
-              <rect x="150" y="180" width="45" height="20" rx="2" fill="#f97316" opacity="0.2" />
-
-              <path d="M 90 170 L 120 170" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" opacity="0.7" />
-              <path d="M 70 200 L 115 200" stroke="#f97316" stroke-width="5" stroke-dasharray="10,5" stroke-linecap="round" />
-              <path d="M 100 230 L 125 230" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" opacity="0.8" />
-            </g>
-          </svg>
-
+  <!-- Header principal -->
+  <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md sticky top-0 z-50 px-4 py-3">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-emerald-500/20">
+          🛵
+        </div>
+        <div>
+          <h1 class="font-bold text-white text-base tracking-wide leading-none">Cotizador Delivery</h1>
+          <span class="text-[10px] text-emerald-400 font-medium">Venezuela • Tasa BCV</span>
         </div>
       </div>
+      <a href="presentacion.html" class="text-xs text-slate-400 hover:text-white transition px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900">
+        Web Oficial
+      </a>
+    </div>
+  </header>
 
-      <h1 class="text-2xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">Cotiza tu viaje</h1>
-      <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">Calculadora instantánea de delivery en Venezuela</p>
+  <!-- Contenedor App -->
+  <main class="max-w-md mx-auto px-4 pt-6 space-y-6">
+
+    <!-- Tarjeta de Tasa BCV -->
+    <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between shadow-xl">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">🏛️</span>
+        <div>
+          <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Tasa Oficial BCV</p>
+          <p id="tasa-bcv-txt" class="text-lg font-bold text-emerald-400">Cargando...</p>
+        </div>
+      </div>
+      <button onclick="obtenerTasaBCV()" class="p-2 text-slate-400 hover:text-white transition rounded-lg hover:bg-slate-800">
+        🔄
+      </button>
     </div>
 
-    <!-- TARJETA TASA BCV AUTOMÁTICA -->
-    <div id="bcv-badge" class="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 rounded-xl p-3 text-center mb-5 flex items-center justify-center gap-2 text-xs sm:text-sm font-bold shadow-sm transition-all">
-      <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-      <span id="bcv-text">🏛️ Obteniendo Tasa Oficial BCV...</span>
-    </div>
+    <!-- Botón directo Google Maps Universal (Compatible con iPhone y Android) -->
+    <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-xl text-center flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition-all active:scale-[0.98]">
+      <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+      Abrir Google Maps (Ver Ruta Real)
+    </a>
 
-    <!-- BOTÓN DIRECTOR GOOGLE MAPS -->
-<a href="geo:0,0" class="w-full mb-4 py-2.5 px-4 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-xl text-center flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition-all">
-  <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-  Abrir Google Maps (Ver Ruta Real)
-</a>
-
-    <!-- FORMULARIO DE ENTRADA -->
-    <div class="space-y-4">
+    <!-- Formulario de Cotización -->
+    <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-4 shadow-xl">
       
-      <!-- LINK RUTA MAPS -->
+      <!-- Campo Distancia -->
       <div>
-        <label for="link-ruta" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">🔗 Enlace de Ruta de Google Maps:</label>
-        <input type="text" id="link-ruta" placeholder="Pega el link de la ruta de Maps aquí..." class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-slate-100 transition-all">
-        <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-1">💡 <b>Tip:</b> Pega el enlace de Maps de tu cliente aquí.</p>
+        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+          📐 Distancia Exacta (Kilómetros km):
+        </label>
+        <input type="number" id="distancia" placeholder="Ej. 4.6" step="0.1" 
+               class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
       </div>
 
-      <!-- KILÓMETROS -->
+      <!-- Campo Tipo de Carga -->
       <div>
-        <label for="km-exactos" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">📐 Distancia Exacta (Kilómetros km):</label>
-        <input type="number" id="km-exactos" placeholder="Ej: 5.4" step="0.1" min="0.1" class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-slate-100 transition-all">
-      </div>
-
-      <!-- TIPO DE CARGA -->
-      <div>
-        <label for="tipo-carga" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">📦 Tipo de Envío / Carga:</label>
-        <select id="tipo-carga" class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-slate-100 transition-all">
+        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+          📦 Tipo de Envío / Carga:
+        </label>
+        <select id="tipo-envio" class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
           <option value="estandar">📦 Estándar (Documentos, Comida, Ropa)</option>
-          <option value="pesado">⚖️ Paquete Pesado / Frágil (+ $1.00 USD)</option>
+          <option value="pesado">🏋️ Carga Pesada / Voluminosa</option>
+          <option value="fragil">💎 Objeto Frágil / Delicado</option>
+          <option value="nocturno">🌙 Horario Nocturno / Lluvia</option>
         </select>
       </div>
 
-      <!-- RECARGO NOCTURNO AUTOMÁTICO -->
-      <div id="night-box" class="hidden bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-xl p-3 text-amber-900 dark:text-amber-300 transition-all">
-        <label class="flex items-center gap-2.5 cursor-pointer text-xs font-bold">
-          <input type="checkbox" id="nocturno" checked disabled class="w-4 h-4 text-amber-600 rounded border-slate-300">
-          <span>🌙 Horario Nocturno Activo (9:00 PM - 6:00 AM / +30%)</span>
-        </label>
-      </div>
-
-      <!-- BOTONES: CALCULAR + NUEVA COTIZACIÓN -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-        <button onclick="procesarCotizacion()" class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-blue-600/25">
-          Calcular Tarifa
-        </button>
-        <button onclick="reiniciarCotizacion()" class="w-full py-3 px-4 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 active:scale-[0.99] text-slate-700 dark:text-slate-200 font-bold rounded-xl text-sm transition-all">
-          🔄 Nueva Cotización
-        </button>
-      </div>
+      <!-- Botón Calcular -->
+      <button onclick="calcularTarifa()" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-slate-950 font-bold rounded-xl shadow-lg shadow-emerald-500/10 transition active:scale-[0.98]">
+        ⚡ Calcular Tarifa Exacta
+      </button>
 
     </div>
 
-    <!-- RESULTADO DE LA COTIZACIÓN -->
-    <div id="result-box" class="hidden mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 animate-fadeIn">
-      
-      <div class="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl p-3 mb-3 text-xs space-y-1 text-slate-600 dark:text-slate-300">
-        <p>📏 <b>Distancia Total:</b> <span id="out-km" class="text-blue-600 dark:text-blue-400 font-bold">0 km</span></p>
+    <!-- Resultado desglosado -->
+    <div id="resultado-box" class="hidden p-5 rounded-2xl bg-emerald-950/30 border border-emerald-500/30 space-y-3">
+      <h3 class="text-xs uppercase font-bold text-emerald-400 tracking-wider">Resumen de Cotización:</h3>
+      <div class="flex justify-between items-baseline">
+        <span class="text-slate-300 text-sm">Monto Ref. (USD):</span>
+        <span id="res-usd" class="text-2xl font-black text-white">$0.00</span>
       </div>
-
-      <div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-4 text-white shadow-md flex items-center justify-between">
-        <div>
-          <span class="text-[10px] uppercase font-bold tracking-wider opacity-80 block">Total Dólares</span>
-          <span id="price-usd" class="text-2xl font-black">$0.00</span>
-        </div>
-        <div class="text-right">
-          <span class="text-[10px] uppercase font-bold tracking-wider opacity-80 block">Total Bolívares</span>
-          <span id="price-ves" class="text-lg font-bold">Bs. 0,00</span>
-        </div>
+      <div class="flex justify-between items-baseline border-t border-slate-800 pt-2">
+        <span class="text-slate-300 text-sm">Total en Bolívares:</span>
+        <span id="res-bs" class="text-xl font-bold text-emerald-400">Bs. 0.00</span>
       </div>
-
-      <!-- BOTONES DE ACCIÓN (WHATSAPP + COPIAR) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
-        <!-- BOTÓN WHATSAPP -->
-        <button onclick="enviarWhatsApp()" class="w-full py-2.5 px-3 bg-emerald-500 hover:bg-emerald-600 active:scale-[0.99] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-emerald-500/20">
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984 0 1.762.459 3.48 1.332 5.001l-1.416 5.169 5.293-1.387c1.468.8 3.129 1.222 4.78 1.223h.004c5.505 0 9.988-4.478 9.989-9.985 0-2.668-1.038-5.176-2.925-7.062a9.92 9.92 0 0 0-7.058-2.943zm.003 1.667c2.222 0 4.31.865 5.88 2.435a8.27 8.27 0 0 1 2.433 5.881c-.001 4.587-3.733 8.318-8.32 8.318h-.003c-1.38 0-2.733-.37-3.913-1.071l-.28-.166-2.91.762.776-2.833-.183-.29a8.253 8.253 0 0 1-1.258-4.321c.001-4.588 3.733-8.317 8.322-8.317z"/></svg>
-          WhatsApp
-        </button>
-
-        <!-- BOTÓN COPIAR AL PORTAPAPELES -->
-        <button onclick="copiarAlPortapapeles()" id="btn-copiar" class="w-full py-2.5 px-3 bg-slate-700 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 active:scale-[0.99] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md">
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-          <span id="txt-copiar">Copiar Texto</span>
-        </button>
-      </div>
-
     </div>
 
-  </div>
+    <!-- Botones de Acción (WhatsApp / Copiar) -->
+    <div class="grid grid-cols-2 gap-3 pt-2">
+      <button onclick="enviarWhatsApp()" class="py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.98]">
+        💬 WhatsApp
+      </button>
+      <button onclick="copiarAlPortapapeles()" id="btn-copiar" class="py-3 px-4 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-xl flex items-center justify-center gap-2 border border-slate-700 transition active:scale-[0.98]">
+        📋 Copiar Texto
+      </button>
+    </div>
+
+  </main>
 
   <script>
-    let tasaBCV = 36.50; 
-    let datosCalculados = {};
+    let tasaBCV = 884.75; 
+    const TARIFA_BASE_KM = 0.75; 
 
-    function toggleDarkMode() {
-      const html = document.documentElement;
-      const btn = document.getElementById('theme-toggle-btn');
-      if (html.classList.contains('dark')) {
-        html.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-        btn.innerText = '🌙';
-      } else {
-        html.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-        btn.innerText = '☀️';
-      }
-    }
-
-    function inicializarTema() {
-      const savedTheme = localStorage.getItem('theme');
-      const btn = document.getElementById('theme-toggle-btn');
-      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-        btn.innerText = '☀️';
-      } else {
-        document.documentElement.classList.remove('dark');
-        btn.innerText = '🌙';
-      }
-    }
-
-    async function obtenerTasaOficial() {
-      const badgeText = document.getElementById('bcv-text');
-      
-      const apis = [
-        'https://ve.dolarapi.com/v1/dolares/oficial',
-        'https://pydolarvenezuela-api.vercel.app/api/v1/dollar?page=bcv'
-      ];
-
-      for (let url of apis) {
-        try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 3500);
-          const response = await fetch(url, { signal: controller.signal });
-          clearTimeout(timeoutId);
-
-          if (response.ok) {
-            const data = await response.json();
-            const precio = data.promedio || data.monto || (data.monedas && data.monedas.usd && data.monedas.usd.price);
-            if (precio && !isNaN(precio)) {
-              tasaBCV = parseFloat(precio);
-              badgeText.innerText = `🏛️ Tasa BCV Oficial: Bs. ${tasaBCV.toFixed(2)} / USD`;
-              return;
-            }
-          }
-        } catch (e) {
-          console.warn('Siguiente API de BCV...');
-        }
-      }
-
-      badgeText.innerText = `🏛️ Tasa BCV Oficial: Bs. ${tasaBCV.toFixed(2)} / USD`;
-    }
-
-    function verificarHorarioNocturno() {
+    async function obtenerTasaBCV() {
+      const el = document.getElementById('tasa-bcv-txt');
       try {
-        const options = { timeZone: 'America/Caracas', hour: 'numeric', hour12: false };
-        const horaCaracas = parseInt(new Intl.DateTimeFormat('en-US', options).format(new Date()));
-        
-        const nightBox = document.getElementById('night-box');
-        const checkboxNocturno = document.getElementById('nocturno');
-
-        if (horaCaracas >= 21 || horaCaracas < 6) {
-          nightBox.classList.remove('hidden');
-          checkboxNocturno.checked = true;
-        } else {
-          nightBox.classList.add('hidden');
-          checkboxNocturno.checked = false;
+        el.innerText = 'Actualizando...';
+        const res = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
+        const data = await res.json();
+        if(data && data.promedio) {
+          tasaBCV = data.promedio;
+          el.innerText = `Bs. ${tasaBCV.toFixed(2)} / USD`;
         }
       } catch (e) {
-        document.getElementById('night-box').classList.add('hidden');
+        el.innerText = `Bs. ${tasaBCV.toFixed(2)} / USD`;
       }
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      inicializarTema();
-      obtenerTasaOficial();
-      verificarHorarioNocturno();
-    });
-
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) {
-        verificarHorarioNocturno();
-      }
-    });
-
-    function procesarCotizacion() {
-      const link = document.getElementById('link-ruta').value.trim();
-      const km = parseFloat(document.getElementById('km-exactos').value);
-
-      if (isNaN(km) || km <= 0) {
-        alert("Por favor, introduce una cantidad válida de kilómetros.");
+    function calcularTarifa() {
+      const dist = parseFloat(document.getElementById('distancia').value);
+      if(!dist || dist <= 0) {
+        alert("Por favor ingresa una distancia válida en kilómetros.");
         return;
       }
 
-      const tarifaBase = 2.00;
-      const kmBase = 2;
-      const costoKmExtra = 0.30;
+      const tipo = document.getElementById('tipo-envio').value;
+      let recargo = 1.0;
 
-      let subtotal = 0;
-      if (km <= kmBase) {
-        subtotal = tarifaBase;
-      } else {
-        subtotal = tarifaBase + ((km - kmBase) * costoKmExtra);
-      }
+      if(tipo === 'pesado') recargo = 1.25;
+      if(tipo === 'fragil') recargo = 1.15;
+      if(tipo === 'nocturno') recargo = 1.30;
 
-      const tipoCarga = document.getElementById('tipo-carga').value;
-      let detalleCarga = "Estándar";
-      if (tipoCarga === 'pesado') {
-        subtotal += 1.00;
-        detalleCarga = "Pesado / Frágil (+$1.00 USD)";
-      }
-
-      const esNocturno = document.getElementById('nocturno').checked;
-      if (esNocturno) {
-        subtotal += (subtotal * 0.30);
-      }
-
-      const totalUSD = subtotal;
-      const totalVES = totalUSD * tasaBCV;
-
-      document.getElementById('out-km').innerText = `${km.toFixed(1)} km`;
-
-      document.getElementById('price-usd').innerText = `$${totalUSD.toFixed(2)}`;
-      document.getElementById('price-ves').innerText = `Bs. ${totalVES.toLocaleString('es-VE', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-
-      datosCalculados = {
-        km: km.toFixed(1),
-        tipoCarga: detalleCarga,
-        nocturno: esNocturno ? "Sí (+30% por tarifa nocturna)" : "No",
-        usd: totalUSD.toFixed(2),
-        ves: totalVES.toLocaleString('es-VE', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
-        bcv: tasaBCV.toFixed(2),
-        link: link || "No provisto"
-      };
-
-      document.getElementById('result-box').classList.remove('hidden');
-    }
-
-    function reiniciarCotizacion() {
-      document.getElementById('link-ruta').value = '';
-      document.getElementById('km-exactos').value = '';
-      document.getElementById('tipo-carga').value = 'estandar';
-      document.getElementById('result-box').classList.add('hidden');
-      document.getElementById('link-ruta').focus();
-    }
-
-    function generarTextoPlantilla() {
-      const d = datosCalculados;
-      let texto = `🛵 *COTIZACIÓN DE DELIVERY* 🛵
-
-📏 *Distancia:* ${d.km} km
-📦 *Tipo de Envío:* ${d.tipoCarga}`;
-
-      if (d.nocturno !== "No") {
-        texto += `\n🌙 *Recargo:* Tarifa Nocturna (+30%)`;
-      }
-
-      texto += `
-
-💵 *TOTAL A PAGAR:* *$${d.usd} USD*
-🇻🇪 *Total en Bolívares:* *Bs. ${d.ves}*
-_(Tasa Oficial BCV: Bs. ${d.bcv})_`;
-
-      if (d.link && d.link !== "No provisto") {
-        texto += `\n\n🔗 *Ruta en Mapa:* ${d.link}`;
-      }
-
-      texto += `\n\n_¡Cotización inmediata lista para ser procesada!_`;
-      return texto;
-    }
-
-   function enviarWhatsApp() {
-    const texto = generarTextoPlantilla();
-    const url = `whatsapp://send?text=${encodeURIComponent(texto)}`;
-    window.open(url, '_system');
-}
-    function copiarAlPortapapeles() {
-      const texto = generarTextoPlantilla();
-      navigator.clipboard.writeText(texto).then(() => {
-        const spanTxt = document.getElementById('txt-copiar');
-        const btn = document.getElementById('btn-copiar');
-        
-        spanTxt.innerText = "¡Copiado!";
-        btn.classList.remove('bg-slate-700', 'hover:bg-slate-800', 'dark:bg-slate-800');
-        btn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
-
-        setTimeout(() => {
-          spanTxt.innerText = "Copiar Texto";
-          btn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
-          btn.classList.add('bg-slate-700', 'hover:bg-slate-800', 'dark:bg-slate-800');
-        }, 2000);
-      }).catch(err => {
-        alert("No se pudo copiar el texto automáticamente.");
-      });
-  }
-  </script>
-</body>
-</html>
+      const totalUSD = (dist * TARIFA_BASE_KM * recargo).toFixed(2
