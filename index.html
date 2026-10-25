@@ -57,7 +57,7 @@
           <p id="tasa-bcv-txt" class="text-lg font-bold text-emerald-400">Cargando...</p>
         </div>
       </div>
-      <button onclick="obtenerTasaBCV()" class="p-2 text-slate-400 hover:text-white transition rounded-lg hover:bg-slate-800">
+      <button onclick="obtenerTasaBCV()" class="p-2 text-slate-400 hover:text-white transition rounded-lg hover:bg-slate-800" title="Actualizar Tasa">
         🔄
       </button>
     </div>
@@ -71,6 +71,15 @@
     <!-- Formulario de Cotización -->
     <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-4 shadow-xl">
       
+      <!-- Campo Link de Google Maps -->
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+          🔗 Link de Ruta (Google Maps) - Opcional:
+        </label>
+        <input type="text" id="link-maps" placeholder="Pega aquí el enlace de Google Maps..." 
+               class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition text-sm">
+      </div>
+
       <!-- Campo Distancia -->
       <div>
         <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
@@ -126,22 +135,30 @@
   </main>
 
   <script>
-    let tasaBCV = 884.75; 
+    let tasaBCV = 88.47; // Valor de respaldo seguro para evitar que se quede en cargando
     const TARIFA_BASE_KM = 0.75; 
 
     async function obtenerTasaBCV() {
       const el = document.getElementById('tasa-bcv-txt');
       try {
         el.innerText = 'Actualizando...';
-        const res = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
+        
+        // Usamos AbortController para ponerle un límite de tiempo (3 segundos) por si la red móvil está lenta
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+        const res = await fetch('https://ve.dolarapi.com/v1/dolares/oficial', { signal: controller.signal });
+        clearTimeout(timeoutId);
+        
         const data = await res.json();
         if(data && data.promedio) {
           tasaBCV = data.promedio;
-          el.innerText = `Bs. ${tasaBCV.toFixed(2)} / USD`;
         }
       } catch (e) {
-        el.innerText = `Bs. ${tasaBCV.toFixed(2)} / USD`;
+        console.log("Usando tasa de respaldo debido a restricciones de red.");
       }
+      // Muestra la tasa obtenida o el respaldo garantizado al instante
+      el.innerText = `Bs. ${tasaBCV.toFixed(2)} / USD`;
     }
 
     function calcularTarifa() {
@@ -158,4 +175,52 @@
       if(tipo === 'fragil') recargo = 1.15;
       if(tipo === 'nocturno') recargo = 1.30;
 
-      const totalUSD = (dist * TARIFA_BASE_KM * recargo).toFixed(2
+      const totalUSD = (dist * TARIFA_BASE_KM * recargo).toFixed(2);
+      const totalBS = (totalUSD * tasaBCV).toFixed(2);
+
+      document.getElementById('res-usd').innerText = `$${totalUSD}`;
+      document.getElementById('res-bs').innerText = `Bs. ${totalBS}`;
+      document.getElementById('resultado-box').classList.remove('hidden');
+    }
+
+    function generarTextoPlantilla() {
+      const dist = document.getElementById('distancia').value || '0';
+      const linkMaps = document.getElementById('link-maps').value.trim();
+      const usd = document.getElementById('res-usd').innerText;
+      const bs = document.getElementById('res-bs').innerText;
+
+      let texto = `🛵 *COTIZACIÓN DE DELIVERY*\n\n` +
+             `📍 *Distancia:* ${dist} km\n`;
+             
+      if(linkMaps) {
+        texto += `🗺️ *Ruta Maps:* ${linkMaps}\n`;
+      }
+
+      texto += `💵 *Monto USD:* ${usd}\n` +
+               `💳 *Total a pagar:* ${bs}\n` +
+               `🏛️ *Tasa BCV:* Bs. ${tasaBCV.toFixed(2)}\n\n` +
+               `¡Gracias por preferir nuestro servicio!`;
+
+      return texto;
+    }
+
+    function enviarWhatsApp() {
+      const texto = generarTextoPlantilla();
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
+      window.open(url, '_blank');
+    }
+
+    function copiarAlPortapapeles() {
+      const texto = generarTextoPlantilla();
+      navigator.clipboard.writeText(texto).then(() => {
+        const btn = document.getElementById('btn-copiar');
+        btn.innerText = '✓ ¡Copiado!';
+        setTimeout(() => btn.innerText = '📋 Copiar Texto', 2000);
+      });
+    }
+
+    // Ejecutar al cargar la página
+    obtenerTasaBCV();
+  </script>
+</body>
+</html>
