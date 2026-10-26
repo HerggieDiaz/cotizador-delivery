@@ -24,6 +24,17 @@
       }
     }
   </script>
+  <style>
+    /* Ocultar las flechitas de incremento/decremento en inputs numéricos */
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+  </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen font-sans selection:bg-emerald-500 selection:text-white pb-10 transition-colors duration-300">
 
@@ -120,7 +131,6 @@
     <div id="resultado-box" class="hidden p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-500/30 space-y-4">
       <div class="flex justify-between items-center">
         <h3 class="text-xs uppercase font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">Resumen de Cotización:</h3>
-        <!-- Botón Nueva Cotización integrado en el resultado -->
         <button onclick="reiniciarCotizacion()" class="text-xs px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-600 dark:text-emerald-300 font-semibold rounded-lg transition flex items-center gap-1">
           🔄 Nueva Cotización
         </button>
@@ -250,12 +260,9 @@
       document.getElementById('res-usd').innerText = `$${totalUSD}`;
       document.getElementById('res-bs').innerText = `Bs. ${totalBS}`;
       document.getElementById('resultado-box').classList.remove('hidden');
-      
-      // Desplazarse suavemente al resultado en móviles
       document.getElementById('resultado-box').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Función para limpiar campos y preparar una nueva cotización
     function reiniciarCotizacion() {
       document.getElementById('link-maps').value = '';
       document.getElementById('distancia').value = '';
@@ -304,7 +311,6 @@
       });
     }
 
-    // Inicializaciones al cargar la página
     verificarHorarioNocturno();
     obtenerTasaBCV();
   </script>
