@@ -75,11 +75,11 @@
       </div>
     </div>
 
-    <!-- Botón directo Google Maps (Abre app de mapas nativa en Android) -->
-    <button onclick="abrirGoogleMaps()" class="w-full py-3 px-4 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-xl text-center flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition-all active:scale-[0.98]">
+    <!-- Botón directo Google Maps (Sin texto molesto en el buscador) -->
+    <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-xl text-center flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition-all active:scale-[0.98]">
       <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
       Abrir Google Maps (Ver Ruta Real)
-    </button>
+    </a>
 
     <!-- Formulario de Cotización -->
     <div class="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 space-y-4 shadow-xl">
@@ -139,7 +139,7 @@
       </div>
     </div>
 
-    <!-- Botones de Acción (WhatsApp Nativo) -->
+    <!-- Botones de Acción (WhatsApp Nativo sin bucles de redirección) -->
     <div class="grid grid-cols-2 gap-3 pt-2">
       <button onclick="enviarWhatsApp()" class="py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.98]">
         💬 WhatsApp
@@ -290,31 +290,12 @@
       return texto;
     }
 
-    // Disparador nativo para Google Maps en Android (Abre la app de mapas directamente)
-    function abrirGoogleMaps() {
-      // Intenta abrir el esquema nativo de Android para mapas, con respaldo a la web móvil limpia
-      const geoUrl = "geo:0,0?q=Google+Maps";
-      const webUrl = "https://maps.google.com";
-      
-      window.location.href = geoUrl;
-      setTimeout(() => {
-        // Si en 1 segundo no abrió la app nativa, abre la versión web móvil compatible
-        window.location.href = webUrl;
-      }, 1000);
-    }
-
-    // Disparador nativo para WhatsApp en Android (Abre la aplicación de WhatsApp directamente)
+    // Disparador de WhatsApp limpio sin bucles molestos al regresar a la app
     function enviarWhatsApp() {
       const texto = generarTextoPlantilla();
-      // Esquema directo de la app de WhatsApp para Android
-      const whatsappAppUrl = `whatsapp://send?text=${encodeURIComponent(texto)}`;
-      const whatsappWebFallback = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
-
-      window.location.href = whatsappAppUrl;
-      setTimeout(() => {
-        // Si no tiene la app instalada o el intent no disparó, abre la alternativa web
-        window.location.href = whatsappWebFallback;
-      }, 1000);
+      // Usamos el enlace directo de la API de WhatsApp sin temporizadores de bucle
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
+      window.open(url, '_blank');
     }
 
     function copiarAlPortapapeles() {
