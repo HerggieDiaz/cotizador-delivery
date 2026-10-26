@@ -37,26 +37,28 @@
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen font-sans selection:bg-emerald-500 selection:text-white pb-10 transition-colors duration-300">
 
-  <!-- Contenedor App -->
-  <main class="max-w-md mx-auto px-4 pt-4 space-y-5">
-
-    <!-- Barra Superior Integrada y Limpia -->
-    <div class="flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 shadow-xl">
+  <!-- Header principal (Limpio y sin botón a la web externa) -->
+  <header class="border-b border-slate-200 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/60 backdrop-blur-md sticky top-0 z-50 px-4 py-3">
+    <div class="max-w-md mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center font-black text-slate-950 text-xl shadow-lg shadow-emerald-500/20">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-emerald-500/20">
           🛵
         </div>
         <div>
           <h1 class="font-bold text-slate-900 dark:text-white text-base tracking-wide leading-none">Cotizador Delivery</h1>
-          <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">Venezuela • Tasa BCV</span>
+          <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">Venezuela • Tasa BCV</span>
         </div>
       </div>
       
       <!-- Botón Modo Oscuro / Claro -->
-      <button onclick="toggleTheme()" class="p-2.5 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900" title="Cambiar Tema">
+      <button onclick="toggleTheme()" class="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900" title="Cambiar Tema">
         <span id="theme-icon">☀️</span>
       </button>
     </div>
+  </header>
+
+  <!-- Contenedor App -->
+  <main class="max-w-md mx-auto px-4 pt-6 space-y-6">
 
     <!-- Tarjeta de Tasa BCV y Estado Nocturno -->
     <div class="grid grid-cols-2 gap-3">
@@ -74,10 +76,10 @@
     </div>
 
     <!-- Botón directo Google Maps -->
-    <button onclick="abrirGoogleMaps()" class="w-full py-3.5 px-4 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-xl text-center flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition-all active:scale-[0.98]">
+    <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-xl text-center flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition-all active:scale-[0.98]">
       <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
       Abrir Google Maps (Ver Ruta Real)
-    </button>
+    </a>
 
     <!-- Formulario de Cotización -->
     <div class="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 space-y-4 shadow-xl">
@@ -119,7 +121,7 @@
 
     </div>
 
-    <!-- Resultado desglosado -->
+    <!-- Resultado desglosado con botón Nueva Cotización -->
     <div id="resultado-box" class="hidden p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-500/30 space-y-4">
       <div class="flex justify-between items-center">
         <h3 class="text-xs uppercase font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">Resumen de Cotización:</h3>
@@ -137,7 +139,7 @@
       </div>
     </div>
 
-    <!-- Botones de Acción -->
+    <!-- Botones de Acción (WhatsApp y Copiar) -->
     <div class="grid grid-cols-2 gap-3 pt-2">
       <button onclick="enviarWhatsApp()" class="py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.98]">
         💬 WhatsApp
@@ -288,14 +290,10 @@
       return texto;
     }
 
-    function abrirGoogleMaps() {
-      window.location.href = "https://maps.google.com";
-    }
-
     function enviarWhatsApp() {
       const texto = generarTextoPlantilla();
       const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
-      window.location.href = url;
+      window.open(url, '_blank');
     }
 
     function copiarAlPortapapeles() {
@@ -305,7 +303,7 @@
         btn.innerText = '✓ ¡Copiado!';
         setTimeout(() => btn.innerText = '📋 Copiar Texto', 2000);
       }).catch(err => {
-        alert("Copiado manual requerido.");
+        alert("No se pudo copiar automáticamente.");
       });
     }
 
