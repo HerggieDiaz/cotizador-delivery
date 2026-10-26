@@ -75,11 +75,11 @@
       </div>
     </div>
 
-    <!-- Botón directo Google Maps (Etiqueta <a> nativa para APK y iPhone) -->
-    <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-xl text-center flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition-all active:scale-[0.98]">
+    <!-- Botón directo Google Maps (Función segura para Android WebView) -->
+    <button onclick="abrirGoogleMaps()" class="w-full py-3 px-4 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-xl text-center flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition-all active:scale-[0.98]">
       <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
       Abrir Google Maps (Ver Ruta Real)
-    </a>
+    </button>
 
     <!-- Formulario de Cotización -->
     <div class="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 space-y-4 shadow-xl">
@@ -139,11 +139,11 @@
       </div>
     </div>
 
-    <!-- Botones de Acción (WhatsApp usando etiqueta <a> nativa para evitar bloqueos) -->
+    <!-- Botones de Acción (WhatsApp y Copiar) -->
     <div class="grid grid-cols-2 gap-3 pt-2">
-      <a id="btn-whatsapp" href="#" target="_blank" rel="noopener noreferrer" class="py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.98]">
+      <button onclick="enviarWhatsApp()" class="py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.98]">
         💬 WhatsApp
-      </a>
+      </button>
       <button onclick="copiarAlPortapapeles()" id="btn-copiar" class="py-3 px-4 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-semibold rounded-xl flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-700 transition active:scale-[0.98]">
         📋 Copiar Texto
       </button>
@@ -253,10 +253,6 @@
 
       document.getElementById('res-usd').innerText = `$${totalUSD}`;
       document.getElementById('res-bs').innerText = `Bs. ${totalBS}`;
-      
-      // Actualizar el enlace href del botón de WhatsApp nativamente al calcular
-      actualizarEnlaceWhatsApp();
-
       document.getElementById('resultado-box').classList.remove('hidden');
       document.getElementById('resultado-box').scrollIntoView({ behavior: 'smooth' });
     }
@@ -294,11 +290,27 @@
       return texto;
     }
 
-    // Inyecta dinámicamente la URL en el enlace <a> nativo de WhatsApp
-    function actualizarEnlaceWhatsApp() {
+    // Método infalible para forzar el cambio de ubicación en el WebView de Android hacia Google Maps
+    function abrirGoogleMaps() {
+      const targetUrl = "https://www.google.com/maps";
+      try {
+        // En contenedores APK, cambiar directamente el location.href fuerza al WebView a abrir la URL nativamente
+        window.location.href = targetUrl;
+      } catch (e) {
+        window.open(targetUrl, '_blank');
+      }
+    }
+
+    // Método infalible para forzar la redirección a WhatsApp desde la aplicación instalada
+    function enviarWhatsApp() {
       const texto = generarTextoPlantilla();
       const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
-      document.getElementById('btn-whatsapp').href = url;
+      try {
+        // Forzar la navegación directa en la misma instancia del contenedor APK
+        window.location.href = url;
+      } catch (e) {
+        window.open(url, '_blank');
+      }
     }
 
     function copiarAlPortapapeles() {
@@ -308,7 +320,7 @@
         btn.innerText = '✓ ¡Copiado!';
         setTimeout(() => btn.innerText = '📋 Copiar Texto', 2000);
       }).catch(err => {
-        alert("No se pudo copiar automáticamente.");
+        alert("Copiado manual requerido o no soportado en este entorno.");
       });
     }
 
