@@ -75,7 +75,7 @@
       </div>
     </div>
 
-    <!-- Botón directo Google Maps (Intent nativo para Android) -->
+    <!-- Botón directo Google Maps (Apertura limpia garantizada) -->
     <button onclick="abrirGoogleMaps()" class="w-full py-3 px-4 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-xl text-center flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition-all active:scale-[0.98]">
       <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
       Abrir Google Maps (Ver Ruta Real)
@@ -139,7 +139,7 @@
       </div>
     </div>
 
-    <!-- Botones de Acción (WhatsApp Nativo) -->
+    <!-- Botones de Acción -->
     <div class="grid grid-cols-2 gap-3 pt-2">
       <button onclick="enviarWhatsApp()" class="py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.98]">
         💬 WhatsApp
@@ -254,7 +254,7 @@
       document.getElementById('res-usd').innerText = `$${totalUSD}`;
       document.getElementById('res-bs').innerText = `Bs. ${totalBS}`;
       document.getElementById('resultado-box').classList.remove('hidden');
-      document.getElementById('resultado-box').scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('resultado-box'].scrollIntoView({ behavior: 'smooth' });
     }
 
     function reiniciarCotizacion() {
@@ -290,29 +290,16 @@
       return texto;
     }
 
-    // DISPARADOR DIRECTO PARA GOOGLE MAPS (Abre la app de mapas de Android limpia, sin texto traba)
+    // APERTURA LIMPIA DE GOOGLE MAPS (Sin palabras traba ni redirección a Play Store)
     function abrirGoogleMaps() {
-      // Usamos el intent nativo de Android para Maps; si no está soportado, abre el mapa general limpio
-      const intentUrl = "intent://maps.google.com/#Intent;scheme=https;package=com.google.android.apps.maps;end;";
-      try {
-        window.location.href = intentUrl;
-      } catch (e) {
-        window.location.href = "https://maps.google.com";
-      }
+      window.location.href = "https://maps.google.com";
     }
 
-    // DISPARADOR DIRECTO PARA WHATSAPP (Abre la app de WhatsApp directo al chat sin pasar por la web de escritorio)
+    // APERTURA LIMPIA DE WHATSAPP
     function enviarWhatsApp() {
       const texto = generarTextoPlantilla();
-      // Esquema estricto de la aplicación móvil de WhatsApp
-      const appUrl = `whatsapp://send?text=${encodeURIComponent(texto)}`;
-      
-      try {
-        window.location.href = appUrl;
-      } catch (e) {
-        // Fallback por si acaso en un entorno extraño no abre la app
-        window.location.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
-      }
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
+      window.location.href = url;
     }
 
     function copiarAlPortapapeles() {
