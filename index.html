@@ -75,11 +75,11 @@
       </div>
     </div>
 
-    <!-- Botón directo Google Maps (Compatible con Android y iPhone) -->
-    <button onclick="abrirGoogleMaps()" class="w-full py-3 px-4 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-xl text-center flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition-all active:scale-[0.98]">
+    <!-- Botón directo Google Maps (Etiqueta <a> nativa para APK y iPhone) -->
+    <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-xl text-center flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition-all active:scale-[0.98]">
       <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
       Abrir Google Maps (Ver Ruta Real)
-    </button>
+    </a>
 
     <!-- Formulario de Cotización -->
     <div class="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 space-y-4 shadow-xl">
@@ -139,11 +139,11 @@
       </div>
     </div>
 
-    <!-- Botones de Acción (WhatsApp / Copiar optimizados para iPhone y Android) -->
+    <!-- Botones de Acción (WhatsApp usando etiqueta <a> nativa para evitar bloqueos) -->
     <div class="grid grid-cols-2 gap-3 pt-2">
-      <button onclick="enviarWhatsApp()" class="py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.98]">
+      <a id="btn-whatsapp" href="#" target="_blank" rel="noopener noreferrer" class="py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.98]">
         💬 WhatsApp
-      </button>
+      </a>
       <button onclick="copiarAlPortapapeles()" id="btn-copiar" class="py-3 px-4 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-semibold rounded-xl flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-700 transition active:scale-[0.98]">
         📋 Copiar Texto
       </button>
@@ -253,6 +253,10 @@
 
       document.getElementById('res-usd').innerText = `$${totalUSD}`;
       document.getElementById('res-bs').innerText = `Bs. ${totalBS}`;
+      
+      // Actualizar el enlace href del botón de WhatsApp nativamente al calcular
+      actualizarEnlaceWhatsApp();
+
       document.getElementById('resultado-box').classList.remove('hidden');
       document.getElementById('resultado-box').scrollIntoView({ behavior: 'smooth' });
     }
@@ -290,28 +294,11 @@
       return texto;
     }
 
-    // Apertura robusta de Google Maps compatible con Android y iPhone (Webview / Navegador)
-    function abrirGoogleMaps() {
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      const mapsUrl = isIOS ? "comgooglemaps://?q=current_location" : "https://www.google.com/maps";
-      
-      // Intenta abrir el esquema nativo o redirige a la web de maps de forma segura
-      const win = window.open('https://www.google.com/maps', '_blank');
-      if (!win) {
-        window.location.href = 'https://www.google.com/maps';
-      }
-    }
-
-    // Redirección de WhatsApp universal impecable para Android y iPhone
-    function enviarWhatsApp() {
+    // Inyecta dinámicamente la URL en el enlace <a> nativo de WhatsApp
+    function actualizarEnlaceWhatsApp() {
       const texto = generarTextoPlantilla();
-      // Usar api.whatsapp.com con codificación estricta garantiza compatibilidad total en Safari (iPhone) y Chrome (Android)
       const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
-      
-      const win = window.open(url, '_blank');
-      if (!win) {
-        window.location.href = url;
-      }
+      document.getElementById('btn-whatsapp').href = url;
     }
 
     function copiarAlPortapapeles() {
@@ -321,8 +308,7 @@
         btn.innerText = '✓ ¡Copiado!';
         setTimeout(() => btn.innerText = '📋 Copiar Texto', 2000);
       }).catch(err => {
-        // Fallback por si el portapapeles requiere permisos especiales en WebView antiguos
-        alert("No se pudo copiar automáticamente. Puedes usar el botón de WhatsApp.");
+        alert("No se pudo copiar automáticamente.");
       });
     }
 
