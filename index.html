@@ -25,7 +25,7 @@
     }
   </script>
   <style>
-    /* Ocultar las flechitas de incremento/decremento en inputs numéricos */
+    /* Ocultar flechitas de incremento/decremento en inputs numéricos */
     input[type=number]::-webkit-inner-spin-button, 
     input[type=number]::-webkit-outer-spin-button { 
       -webkit-appearance: none; 
@@ -38,7 +38,7 @@
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen font-sans selection:bg-emerald-500 selection:text-white pb-10 transition-colors duration-300">
 
-  <!-- Header principal -->
+  <!-- Header principal (Sin enlace externo para evitar bloqueos en APK) -->
   <header class="border-b border-slate-200 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/60 backdrop-blur-md sticky top-0 z-50 px-4 py-3">
     <div class="max-w-md mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -51,15 +51,10 @@
         </div>
       </div>
       
-      <div class="flex items-center gap-2">
-        <!-- Botón Modo Oscuro / Claro -->
-        <button onclick="toggleTheme()" class="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900" title="Cambiar Tema">
-          <span id="theme-icon">☀️</span>
-        </button>
-        <a href="presentacion.html" class="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 font-medium">
-          Web
-        </a>
-      </div>
+      <!-- Botón Modo Oscuro / Claro -->
+      <button onclick="toggleTheme()" class="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900" title="Cambiar Tema">
+        <span id="theme-icon">☀️</span>
+      </button>
     </div>
   </header>
 
