@@ -102,20 +102,39 @@
                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
       </div>
 
-      <!-- CAMPO TIPO DE CARGA / ENVÍO (DISEÑO TÁCTIL MODERNO) -->
-    <div class="space-y-2">
+     <!-- CAMPO TIPO DE CARGA / ENVÍO (DESPLEGABLE PERSONALIZADO) -->
+    <div class="space-y-2 relative">
       <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
         Tipo de Envío / Carga:
       </label>
       
-      <!-- Input oculto que almacena el valor seleccionado -->
+      <!-- Input oculto para la lógica de cálculo -->
       <input type="hidden" id="tipo-envio" value="estandar">
 
-      <!-- Opciones visuales estilo tarjetas -->
-      <div class="grid grid-cols-1 gap-2">
+      <!-- Botón Principal (Muestra la opción seleccionada) -->
+      <button 
+        type="button" 
+        id="btn-desplegable-envio"
+        onclick="toggleMenuEnvio()" 
+        class="w-full p-3 rounded-xl border border-slate-800 bg-slate-900/80 text-left flex items-center justify-between transition-all hover:border-emerald-500/40">
+        <div class="flex items-center gap-2.5">
+          <span id="icono-envio-actual" class="text-base">📦</span>
+          <div>
+            <p id="titulo-envio-actual" class="text-xs font-bold text-white">Estándar</p>
+            <p id="subtitulo-envio-actual" class="text-[10px] text-slate-400">Documentos, Comida, Ropa</p>
+          </div>
+        </div>
+        <span id="flecha-desplegable" class="text-slate-400 text-xs transition-transform duration-200">▼</span>
+      </button>
+
+      <!-- Menú Opciones Desplegables (Oculto por defecto) -->
+      <div 
+        id="opciones-desplegable-envio" 
+        class="hidden absolute left-0 right-0 top-full mt-1.5 bg-slate-900 border border-slate-800 rounded-2xl p-2 shadow-2xl z-40 space-y-1 backdrop-blur-md">
+        
         <!-- Opción 1: Estándar -->
-        <button type="button" onclick="seleccionarTipoEnvio('estandar', this)" 
-          class="opcion-envio w-full p-3 rounded-xl border border-emerald-500 bg-emerald-500/10 text-left flex items-center justify-between transition-all">
+        <button type="button" onclick="seleccionarOpcionEnvio('estandar', '📦', 'Estándar', 'Documentos, Comida, Ropa')" 
+          class="w-full p-2.5 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all">
           <div class="flex items-center gap-2.5">
             <span class="text-base">📦</span>
             <div>
@@ -123,12 +142,11 @@
               <p class="text-[10px] text-slate-400">Documentos, Comida, Ropa</p>
             </div>
           </div>
-          <span class="w-4 h-4 rounded-full border border-emerald-400 flex items-center justify-center bg-emerald-500 text-slate-950 text-[10px] font-bold check-icon">✓</span>
         </button>
 
         <!-- Opción 2: Pesado -->
-        <button type="button" onclick="seleccionarTipoEnvio('pesado', this)" 
-          class="opcion-envio w-full p-3 rounded-xl border border-slate-800 bg-slate-900/60 text-left flex items-center justify-between transition-all hover:border-slate-700">
+        <button type="button" onclick="seleccionarOpcionEnvio('pesado', '🏋️', 'Carga Pesada / Voluminosa', 'Recargo del +25%')" 
+          class="w-full p-2.5 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all">
           <div class="flex items-center gap-2.5">
             <span class="text-base">🏋️</span>
             <div>
@@ -136,12 +154,11 @@
               <p class="text-[10px] text-slate-400">Recargo del +25%</p>
             </div>
           </div>
-          <span class="w-4 h-4 rounded-full border border-slate-700 flex items-center justify-center text-transparent text-[10px] check-icon">✓</span>
         </button>
 
         <!-- Opción 3: Frágil -->
-        <button type="button" onclick="seleccionarTipoEnvio('fragil', this)" 
-          class="opcion-envio w-full p-3 rounded-xl border border-slate-800 bg-slate-900/60 text-left flex items-center justify-between transition-all hover:border-slate-700">
+        <button type="button" onclick="seleccionarOpcionEnvio('fragil', '💎', 'Objeto Frágil / Delicado', 'Recargo del +15%')" 
+          class="w-full p-2.5 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all">
           <div class="flex items-center gap-2.5">
             <span class="text-base">💎</span>
             <div>
@@ -149,11 +166,9 @@
               <p class="text-[10px] text-slate-400">Recargo del +15%</p>
             </div>
           </div>
-          <span class="w-4 h-4 rounded-full border border-slate-700 flex items-center justify-center text-transparent text-[10px] check-icon">✓</span>
         </button>
       </div>
     </div>
-
       <!-- Botón Calcular -->
       <button onclick="calcularTarifa()" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-slate-950 font-bold rounded-xl shadow-lg shadow-emerald-500/10 transition active:scale-[0.98]">
         ⚡ Calcular Tarifa Exacta
@@ -432,19 +447,37 @@
         document.getElementById('modal-alerta').classList.add('hidden');
       }
     </script>
-<script>
-      function seleccionarTipoEnvio(tipo, elemento) {
-        document.getElementById('tipo-envio').value = tipo;
-        const botones = document.querySelectorAll('.opcion-envio');
-        botones.forEach(btn => {
-          btn.className = "opcion-envio w-full p-3 rounded-xl border border-slate-800 bg-slate-900/60 text-left flex items-center justify-between transition-all hover:border-slate-700";
-          const check = btn.querySelector('.check-icon');
-          check.className = "w-4 h-4 rounded-full border border-slate-700 flex items-center justify-center text-transparent text-[10px] check-icon";
-        });
-        elemento.className = "opcion-envio w-full p-3 rounded-xl border border-emerald-500 bg-emerald-500/10 text-left flex items-center justify-between transition-all";
-        const checkActivo = elemento.querySelector('.check-icon');
-        checkActivo.className = "w-4 h-4 rounded-full border border-emerald-400 flex items-center justify-center bg-emerald-500 text-slate-950 text-[10px] font-bold check-icon";
+<!-- SCRIPT CONTROLADOR DEL DESPLEGABLE PERSONALIZADO -->
+    <script>
+      function toggleMenuEnvio() {
+        const menu = document.getElementById('opciones-desplegable-envio');
+        const flecha = document.getElementById('flecha-desplegable');
+        menu.classList.toggle('hidden');
+        flecha.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
       }
+
+      function seleccionarOpcionEnvio(valor, icono, titulo, subtitulo) {
+        // Actualizar el valor oculto para el cálculo
+        document.getElementById('tipo-envio').value = valor;
+
+        // Actualizar la vista del botón principal
+        document.getElementById('icono-envio-actual').innerText = icono;
+        document.getElementById('titulo-envio-actual').innerText = titulo;
+        document.getElementById('subtitulo-envio-actual').innerText = subtitulo;
+
+        // Cerrar menú desplegable
+        toggleMenuEnvio();
+      }
+
+      // Cerrar si se toca fuera del selector
+      document.addEventListener('click', function(e) {
+        const btn = document.getElementById('btn-desplegable-envio');
+        const menu = document.getElementById('opciones-desplegable-envio');
+        if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
+          menu.classList.add('hidden');
+          document.getElementById('flecha-desplegable').style.transform = 'rotate(0deg)';
+        }
+      });
     </script>
 </body>
 </html>
