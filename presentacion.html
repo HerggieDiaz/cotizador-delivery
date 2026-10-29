@@ -315,52 +315,62 @@
         </div>
     </section>
 
-   <!-- TEASER FUNCIONALIDAD PRO (VISTA PREVIA PARA INVERSORES) -->
-    <div class="pt-4 mt-2 border-t border-slate-800/60">
-      <button 
-        type="button"
-        onclick="mostrarModalPro()" 
-        class="w-full py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 font-medium text-xs rounded-xl border border-slate-800 hover:border-emerald-500/30 transition-all duration-200 flex items-center justify-center gap-2 shadow-sm">
-        <span>📊</span>
-        <span>Activar Registro de Ganancias Pro</span>
-        <span class="bg-emerald-500/10 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/20 font-bold">PRO</span>
-      </button>
-    </div>
+<!-- SECCIÓN DE PLANES Y MONETIZACIÓN (VISTA INVERSIONISTA) -->
+    <section class="py-16 px-4 max-w-5xl mx-auto">
+        <div class="text-center space-y-3 mb-12">
+            <span class="text-emerald-400 font-semibold text-xs uppercase tracking-wider bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                Modelo de Negocio & Escalabilidad
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white">Sostenibilidad y Planes Estratégicos</h2>
+            <p class="text-slate-400 text-sm max-w-xl mx-auto">
+                Diseñado para empoderar al trabajador de última milla mientras construye una base rentable mediante servicios de valor agregado.
+            </p>
+        </div>
 
-    <!-- MODAL INFORMATIVO PRO -->
-    <div id="modal-pro" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl relative">
-        <div class="w-12 h-12 bg-emerald-500/10 rounded-full border border-emerald-500/20 flex items-center justify-center mx-auto text-xl">
-          🚀
-        </div>
-        <div class="space-y-1">
-          <h3 class="text-base font-bold text-white">Edición Pro (En Desarrollo)</h3>
-          <p class="text-xs text-slate-400">
-            Esta función permitirá registrar cada carrera realizada, proyectar ganancias semanales en USD/BS y emitir recibos personalizados.
-          </p>
-        </div>
-        <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800 text-[11px] text-slate-300 text-left space-y-1">
-          <p class="font-semibold text-emerald-400">💡 Modelo Monetizable:</p>
-          <p>Orientado a repartidores de alto volumen y comercios con flotas independientes.</p>
-        </div>
-        <button 
-          type="button" 
-          onclick="cerrarModalPro()" 
-          class="w-full py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition">
-          Entendido
-        </button>
-      </div>
-    </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Plan Gratuito Base -->
+            <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-5 flex flex-col justify-between">
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-white">Comunidad / Independiente</h3>
+                        <span class="text-xs font-semibold text-slate-400 bg-slate-800 px-2.5 py-0.5 rounded-full">Actual</span>
+                    </div>
+                    <p class="text-xs text-slate-400">
+                        Acceso libre para calculo inmediato de tarifas y tasa oficial BCV. Sin comisiones por carrera.
+                    </p>
+                    <div class="text-3xl font-black text-emerald-400">Gratis <span class="text-xs font-normal text-slate-500">/ siempre</span></div>
+                    
+                    <ul class="text-xs text-slate-300 space-y-2.5 pt-2">
+                        <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> Cálculo exacto por distancia (Km)</li>
+                        <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> Actualización automática de Tasa BCV</li>
+                        <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> Generación de desglose para WhatsApp</li>
+                        <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> Modo nocturno y recargo personalizable</li>
+                    </ul>
+                </div>
+            </div>
 
-    <!-- SCRIPT PARA EL MODAL PRO -->
-    <script>
-      function mostrarModalPro() {
-        document.getElementById('modal-pro').classList.remove('hidden');
-      }
-      function cerrarModalPro() {
-        document.getElementById('modal-pro').classList.add('hidden');
-      }
-    </script>
+            <!-- Plan Pro (SaaS) -->
+            <div class="p-6 rounded-2xl bg-gradient-to-b from-slate-900 via-slate-900 to-emerald-950/20 border border-emerald-500/30 space-y-5 relative overflow-hidden flex flex-col justify-between">
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-white">Edición Pro & Flotas</h3>
+                        <span class="bg-emerald-500 text-slate-950 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Próximamente</span>
+                    </div>
+                    <p class="text-xs text-slate-400">
+                        Herramientas de contabilidad, historial y personalización para repartidores frecuentes y comercios locales.
+                    </p>
+                    <div class="text-3xl font-black text-white">$2.99 <span class="text-xs font-normal text-slate-400">/ mes</span></div>
+                    
+                    <ul class="text-xs text-slate-300 space-y-2.5 pt-2">
+                        <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> Todo lo incluido en la versión gratuita</li>
+                        <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> Historial de carreras y balance semanal de ganancias</li>
+                        <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> Plantillas de WhatsApp con marca/logo propio</li>
+                        <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> Módulo B2B de despacho para comercios locales</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
     <!-- Footer de la Landing Page con Sello de Autoría -->
     <footer class="border-t border-slate-800 bg-slate-950 py-8">
         <div class="max-w-6xl mx-auto px-4 text-center space-y-3">
