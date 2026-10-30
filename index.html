@@ -55,6 +55,10 @@
         <span id="theme-icon">☀️</span>
       </button>
     </div>
+    <!-- Botón de Acceso a Cuenta -->
+    <button onclick="abrirAuth()" class="w-full mt-2 px-3 py-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-emerald-500/20 transition">
+      <span>👤</span> Mi Cuenta / Acceso Pro
+    </button>
   </header>
 
   <!-- Contenedor App -->
@@ -412,6 +416,103 @@
       }
       function cerrarModalPro() {
         document.getElementById('modal-pro').classList.add('hidden');
+      }
+    </script>
+  <!-- MODAL DE AUTENTICACIÓN (LOGIN / REGISTRO) -->
+    <div id="modal-auth" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-all">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-5 shadow-2xl relative">
+        
+        <!-- Botón de Cerrar Modal -->
+        <button onclick="cerrarAuth()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold">
+          ✕
+        </button>
+
+        <!-- Cabecera -->
+        <div class="text-center space-y-1">
+          <div class="w-12 h-12 bg-emerald-500/10 rounded-full border border-emerald-500/20 flex items-center justify-center mx-auto text-xl text-emerald-400">
+            👤
+          </div>
+          <h3 id="auth-titulo" class="text-base font-bold text-white">Acceso a Cotizador Pro</h3>
+          <p class="text-xs text-slate-400">Gestiona tus cotizaciones e historial de entregas</p>
+        </div>
+
+        <!-- Selector de Tipo de Cuenta -->
+        <div id="selector-rol" class="hidden grid grid-cols-2 gap-2">
+          <button type="button" class="py-2 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/10 text-white transition">
+            🛵 Repartidor
+          </button>
+          <button type="button" class="py-2 text-xs font-bold rounded-xl border border-slate-800 bg-slate-900/60 text-slate-400 transition hover:border-slate-700">
+            🏪 Comercio
+          </button>
+        </div>
+
+        <!-- Formulario -->
+        <form class="space-y-3" onsubmit="event.preventDefault(); alert('Módulo de autenticación conectado para la siguiente fase');">
+          <div class="space-y-1 text-left">
+            <label class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Correo electrónico</label>
+            <input type="email" required placeholder="tu@correo.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none transition">
+          </div>
+
+          <div class="space-y-1 text-left">
+            <label class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Contraseña</label>
+            <input type="password" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none transition">
+          </div>
+
+          <button type="submit" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition shadow-lg shadow-emerald-500/10">
+            Iniciar Sesión
+          </button>
+        </form>
+
+        <!-- Separador -->
+        <div class="flex items-center gap-3">
+          <div class="flex-1 h-px bg-slate-800"></div>
+          <span class="text-[10px] text-slate-500 uppercase">O continuar con</span>
+          <div class="flex-1 h-px bg-slate-800"></div>
+        </div>
+
+        <!-- Botón Google -->
+        <button type="button" class="w-full py-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-2 transition">
+          <span>🌐</span> Google (Próximamente)
+        </button>
+
+        <!-- Cambio entre Login y Registro -->
+        <div class="text-center pt-2">
+          <p class="text-xs text-slate-400">
+            ¿No tienes una cuenta? 
+            <button type="button" onclick="alternarModoAuth()" id="link-cambio-auth" class="text-emerald-400 font-bold hover:underline">Regístrate</button>
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SCRIPT DE CONTROL PARA EL MODAL DE AUTH -->
+    <script>
+      let esRegistro = false;
+
+      function abrirAuth() {
+        document.getElementById('modal-auth').classList.remove('hidden');
+      }
+
+      function cerrarAuth() {
+        document.getElementById('modal-auth').classList.add('hidden');
+      }
+
+      function alternarModoAuth() {
+        esRegistro = !esRegistro;
+        const titulo = document.getElementById('auth-titulo');
+        const selectorRol = document.getElementById('selector-rol');
+        const linkCambio = document.getElementById('link-cambio-auth');
+
+        if (esRegistro) {
+          titulo.innerText = "Crea tu cuenta Pro";
+          selectorRol.classList.remove('hidden');
+          linkCambio.innerText = "Inicia Sesión";
+        } else {
+          titulo.innerText = "Acceso a Cotizador Pro";
+          selectorRol.classList.add('hidden');
+          linkCambio.innerText = "Regístrate";
+        }
       }
     </script>
   <!-- ALERTA PROFESIONAL (BOTTOM SHEET) -->
