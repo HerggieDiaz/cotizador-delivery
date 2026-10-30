@@ -453,7 +453,7 @@
         const btn = document.getElementById('btn-copiar');
         btn.innerText = '✓ ¡Copiado!';
         setTimeout(() => btn.innerText = '📋 Copiar Texto', 2000);
-      }).catch(() => alert("No se pudo copiar automáticamente."));
+      }).catch(() => mostrarAlertaPro("No se pudo copiar automáticamente."));
     }
 
     // Menú desplegable tipo de envío
@@ -477,6 +477,7 @@
     function cerrarAuth() { document.getElementById('modal-auth').classList.add('hidden'); }
     function mostrarModalPro() { document.getElementById('modal-pro').classList.remove('hidden'); }
     function cerrarModalPro() { document.getElementById('modal-pro').classList.add('hidden'); }
+    
     function mostrarAlertaPro(msg) {
       if(msg) document.getElementById('mensaje-alerta-texto').innerText = msg;
       document.getElementById('modal-alerta').classList.remove('hidden');
@@ -524,25 +525,24 @@
     function intentarAccesoPro() {
       const usuarioActual = auth.currentUser;
       if (!usuarioActual) {
-        alert("🔒 Debes iniciar sesión o registrarte para acceder al Registro de Ganancias Pro.");
+        mostrarAlertaPro("🔒 Debes iniciar sesión o registrarte para acceder al Registro de Ganancias Pro.");
         abrirAuth();
       } else {
         mostrarModalPro();
       }
     }
 
-    // Google Auth
+    // Google Auth corregido con Redirect para APK / móviles
     async function iniciarConGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
       try {
-        await auth.signInWithPopup(provider);
-        cerrarAuth();
+        await auth.signInWithRedirect(provider);
       } catch (error) {
-        alert('Error con Google: ' + error.message);
+        mostrarAlertaPro('Error con Google: ' + error.message);
       }
     }
 
-    // Email / Password Auth Submit
+    // Email / Password Auth Submit con Alerta Estilizada
     const formAuth = document.getElementById('form-auth');
     if (formAuth) {
       formAuth.addEventListener('submit', async (e) => {
@@ -553,17 +553,26 @@
         try {
           if (esRegistro) {
             await auth.createUserWithEmailAndPassword(email, password);
-            alert(`¡Bienvenido! Cuenta (${rolSeleccionado}) creada con 14 días Pro activos.`);
+            mostrarAlertaPro(`¡Bienvenido! Cuenta (${rolSeleccionado}) creada con 14 días Pro activos.`);
           } else {
             await auth.signInWithEmailAndPassword(email, password);
-            alert('¡Inicio de sesión exitoso!');
+            mostrarAlertaPro('¡Inicio de sesión exitoso!');
           }
           cerrarAuth();
         } catch (error) {
-          alert('Error: ' + error.message);
+          mostrarAlertaPro('Error: ' + error.message);
         }
       });
     }
+
+    // Manejar el resultado de redirección de Google
+    auth.getRedirectResult().then((result) => {
+      if (result.user) {
+        mostrarAlertaPro(`¡Bienvenido de nuevo, ${result.user.displayName || result.user.email}!`);
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
 
     // Escuchar estado de sesión
     auth.onAuthStateChanged((user) => {
