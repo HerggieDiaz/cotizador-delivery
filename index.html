@@ -209,24 +209,26 @@
       </button>
     </div>
 
-    <!-- BOTÓN GANANCIAS PRO -->
+    <!-- BOTÓN DESPLEGABLE GANANCIAS PRO -->
     <div class="pt-4 ml-2 border-t border-slate-800/60">
       <button type="button" onclick="intentarAccesoPro()" 
         class="w-full py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 font-medium text-xs rounded-xl border border-slate-800 flex items-center justify-between px-4 transition cursor-pointer">
-        <span>⚡</span>
-        <span id="btn-pro-label">Registro de Ganancias Pro</span>
-        <span class="bg-emerald-500/10 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/20 font-bold">PRO</span>
+        <div class="flex items-center gap-2">
+          <span>⚡</span>
+          <span id="btn-pro-label">Registro de Ganancias Pro</span>
+          <span class="bg-emerald-500/10 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/20 font-bold">PRO</span>
+        </div>
+        <span id="flecha-pro" class="text-slate-400 text-xs transition-transform duration-200">▼</span>
       </button>
     </div>
 
     <!-- MÓDULO DE REGISTRO DE GANANCIAS PRO CON HISTORIAL Y EXPORTACIÓN PDF -->
-    <div id="modulo-ganancias-pro" class="hidden p-5 rounded-2xl bg-slate-900 border border-emerald-500/30 space-y-4 shadow-2xl">
+    <div id="modulo-ganancias-pro" class="hidden p-5 rounded-2xl bg-slate-900 border border-emerald-500/30 space-y-4 shadow-2xl transition-all">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <div class="flex items-center gap-2">
           <span class="text-xl">📊</span>
           <h2 class="text-sm font-bold text-white uppercase tracking-wider">Registro de Ganancias Pro</h2>
         </div>
-        <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">PERSISTENTE</span>
       </div>
 
       <!-- Formulario de Ingreso de Carrera -->
@@ -552,6 +554,7 @@
         await auth.signOut();
         cerrarPerfil();
         document.getElementById('modulo-ganancias-pro').classList.add('hidden');
+        document.getElementById('flecha-pro').style.transform = 'rotate(0deg)';
         mostrarAlertaPro("Sesión cerrada correctamente.");
       } catch (e) {
         mostrarAlertaPro("Error al cerrar sesión.");
@@ -595,7 +598,7 @@
       }
     }
 
-    // Acceso y Lógica de Ganancias Pro
+    // Toggle Desplegable Pro (Abre y cierra suavemente)
     function intentarAccesoPro() {
       const usuarioActual = auth.currentUser;
       if (!usuarioActual) {
@@ -603,9 +606,16 @@
         abrirAuth();
       } else {
         const mod = document.getElementById('modulo-ganancias-pro');
-        mod.classList.remove('hidden');
-        cargarHistorialGuardado();
-        mod.scrollIntoView({ behavior: 'smooth' });
+        const flecha = document.getElementById('flecha-pro');
+        
+        mod.classList.toggle('hidden');
+        const estaAbierto = !mod.classList.contains('hidden');
+        flecha.style.transform = estaAbierto ? 'rotate(180deg)' : 'rotate(0deg)';
+
+        if (estaAbierto) {
+          cargarHistorialGuardado();
+          mod.scrollIntoView({ behavior: 'smooth' });
+        }
       }
     }
 
@@ -701,7 +711,6 @@
       const user = auth.currentUser;
       const usuarioNombre = user ? (user.displayName || user.email) : 'Usuario Pro';
 
-      // Estilos del Documento PDF
       doc.setFont("helvetica", "bold");
       doc.setFontSize(16);
       doc.text("COTIZADOR DELIVERY - REPORTE PRO", 20, 20);
@@ -804,12 +813,13 @@
       if (user) {
         const nombre = user.displayName || user.email.split('@')[0];
         btnTexto.innerText = `👤 ${nombre}`;
-        if(btnProLabel) btnProLabel.innerText = "Abrir Registro de Ganancias Pro";
+        if(btnProLabel) btnProLabel.innerText = "Registro de Ganancias Pro";
         cargarHistorialGuardado();
       } else {
         btnTexto.innerText = "👤 Mi Cuenta / Acceso Pro";
         if(btnProLabel) btnProLabel.innerText = "Activar Registro de Ganancias Pro";
         document.getElementById('modulo-ganancias-pro').classList.add('hidden');
+        document.getElementById('flecha-pro').style.transform = 'rotate(0deg)';
       }
     });
 
