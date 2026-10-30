@@ -221,15 +221,15 @@
       </button>
     </div>
 <!-- TEASER FUNCIONALIDAD PRO (VISTA PREVIA PARA INVERSORES) -->
-    <div class="pt-4 mt-2 border-t border-slate-800/60">
+    <div class="pt-4 ml-2 border-t border-slate-800/60">
       <button 
-        type="button"
-        onclick="mostrarModalPro()" 
-        class="w-full py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 font-medium text-xs rounded-xl border border-slate-800 hover:border-emerald-500/30 transition-all duration-200 flex items-center justify-center gap-2 shadow-sm">
-        <span>📊</span>
-        <span>Activar Registro de Ganancias Pro</span>
-        <span class="bg-emerald-500/10 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/20 font-bold">PRO</span>
-      </button>
+  type="button" 
+  onclick="intentarAccesoPro()" 
+  class="w-full py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 font-medium text-xs rounded-xl border border-slate-800 flex items-center justify-between px-4 transition cursor-pointer">
+  <span>🔒</span>
+  <span>Activar Registro de Ganancias Pro</span>
+  <span class="bg-emerald-500/10 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/20 font-bold">PRO</span>
+</button>
     </div>
   </main>
 
@@ -759,5 +759,24 @@ async function iniciarConGoogle() {
     }
   });
 </script>
+  <script>
+  // Validar si el usuario ha iniciado sesión para dejarlo entrar al botón Pro
+function intentarAccesoPro() {
+  const usuarioActual = auth.currentUser;
+
+  if (!usuarioActual) {
+    // Si NO ha iniciado sesión, le avisa y le abre el modal de autenticación
+    alert("🔒 Debes iniciar sesión o registrarte para acceder al Registro de Ganancias Pro.");
+    if (typeof abrirAuth === 'function') {
+      abrirAuth();
+    }
+  } else {
+    // Si SÍ ha iniciado sesión, le muestra el modal normal de Pro que ya tenías
+    if (typeof mostrarModalPro === 'function') {
+      mostrarModalPro();
+    }
+  }
+}
+    </script>
 </body>
 </html>
