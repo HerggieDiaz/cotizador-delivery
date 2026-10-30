@@ -48,7 +48,6 @@
       messagingSenderId: "252784432176",
       appId: "1:252784432176:web:6369747b0e31e0fd3789f5"
     };
-    // Inicializar Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
   </script>
@@ -74,8 +73,8 @@
       </button>
     </div>
 
-    <!-- Botón de Acceso a Cuenta -->
-    <button onclick="abrirAuth()" class="w-full mt-2 px-3 py-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-emerald-500/20 transition cursor-pointer">
+    <!-- Botón Dinámico de Cuenta / Perfil -->
+    <button onclick="gestionarClicCuenta()" class="w-full mt-2 px-3 py-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-emerald-500/20 transition cursor-pointer">
       <span id="btn-mi-cuenta-texto">👤 Mi Cuenta / Acceso Pro</span>
     </button>
   </header>
@@ -207,15 +206,51 @@
       </button>
     </div>
 
-    <!-- TEASER FUNCIONALIDAD PRO PROTEGIDA -->
+    <!-- BOTÓN / SECCIÓN GANANCIAS PRO (FUNCIONAL) -->
     <div class="pt-4 ml-2 border-t border-slate-800/60">
       <button type="button" onclick="intentarAccesoPro()" 
         class="w-full py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 font-medium text-xs rounded-xl border border-slate-800 flex items-center justify-between px-4 transition cursor-pointer">
-        <span>🔒</span>
-        <span>Activar Registro de Ganancias Pro</span>
+        <span>⚡</span>
+        <span id="btn-pro-label">Registro de Ganancias Pro</span>
         <span class="bg-emerald-500/10 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/20 font-bold">PRO</span>
       </button>
     </div>
+
+    <!-- MÓDULO DE REGISTRO DE GANANCIAS PRO (OCULTO HASTA ENTRAR COMO PRO) -->
+    <div id="modulo-ganancias-pro" class="hidden p-5 rounded-2xl bg-slate-900 border border-emerald-500/30 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📊</span>
+          <h2 class="text-sm font-bold text-white uppercase tracking-wider">Registro de Ganancias Pro</h2>
+        </div>
+        <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">ACTIVO</span>
+      </div>
+
+      <!-- Formulario rápido de ingreso de carrera realizada -->
+      <div class="space-y-3 pt-1">
+        <p class="text-xs text-slate-400">Registra tus carreras del día para el acumulado semanal:</p>
+        <div class="grid grid-cols-2 gap-2">
+          <input type="number" id="pro-monto-usd" placeholder="Monto ($ USD)" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white text-xs focus:border-emerald-500 focus:outline-none">
+          <input type="text" id="pro-cliente-nota" placeholder="Cliente / Zona" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white text-xs focus:border-emerald-500 focus:outline-none">
+        </div>
+        <button type="button" onclick="registrarCarreraPro()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition cursor-pointer">
+          + Añadir Carrera
+        </button>
+      </div>
+
+      <!-- Resumen Acumulado -->
+      <div class="grid grid-cols-2 gap-2 pt-2">
+        <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800 text-center">
+          <p class="text-[10px] text-slate-500 uppercase font-semibold">Total USD Hoy</p>
+          <p id="pro-total-usd" class="text-lg font-black text-emerald-400">$0.00</p>
+        </div>
+        <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800 text-center">
+          <p class="text-[10px] text-slate-500 uppercase font-semibold">Total Bolívares</p>
+          <p id="pro-total-bs" class="text-lg font-black text-white">Bs. 0.00</p>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <!-- Footer -->
@@ -224,25 +259,30 @@
     <p class="font-medium text-slate-400">Desarrollado con dedicación por <span class="text-emerald-400">Herggie Díaz</span></p>
   </footer>
 
-  <!-- MODAL INFORMATIVO PRO -->
-  <div id="modal-pro" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl relative">
-      <div class="w-12 h-12 bg-emerald-500/10 rounded-full border border-emerald-500/20 flex items-center justify-center mx-auto text-xl">
-        🚀
-      </div>
-      <div class="space-y-1">
-        <h3 class="text-base font-bold text-white">Edición Pro (En Desarrollo)</h3>
-        <p class="text-xs text-slate-400">
-          Esta función permitirá registrar cada carrera realizada, proyectar ganancias semanales en USD/BS y emitir recibos personalizados.
-        </p>
-      </div>
-      <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800 text-[11px] text-slate-300 text-left space-y-1">
-        <p class="font-semibold text-emerald-400">💡 Modelo Monetizable:</p>
-        <p>Orientado a repartidores de alto volumen y comercios con flotas independientes.</p>
-      </div>
-      <button type="button" onclick="cerrarModalPro()" class="w-full py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition cursor-pointer">
-        Entendido
+  <!-- MODAL PERFIL DE USUARIO / CERRAR SESIÓN -->
+  <div id="modal-perfil" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative text-center">
+      <button onclick="cerrarPerfil()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold cursor-pointer">
+        ✕
       </button>
+
+      <div class="w-16 h-16 bg-gradient-to-tr from-emerald-500 to-cyan-500 rounded-full flex items-center justify-center text-slate-950 text-2xl font-black mx-auto shadow-lg shadow-emerald-500/20">
+        🛵
+      </div>
+
+      <div>
+        <h3 id="perfil-nombre" class="text-base font-bold text-white">Cargando...</h3>
+        <p id="perfil-email" class="text-xs text-slate-400">correo@ejemplo.com</p>
+        <span id="perfil-badge-rol" class="inline-block mt-2 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">
+          Repartidor
+        </span>
+      </div>
+
+      <div class="border-t border-slate-800 pt-3 space-y-2">
+        <button type="button" onclick="cerrarSesion()" class="w-full py-2.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 font-bold text-xs rounded-xl transition cursor-pointer">
+          🚪 Cerrar Sesión
+        </button>
+      </div>
     </div>
   </div>
 
@@ -269,7 +309,7 @@
         </button>
       </div>
 
-      <!-- Formulario de Correo y Contraseña -->
+      <!-- Formulario -->
       <form id="form-auth" class="space-y-3">
         <input type="email" id="email-input" placeholder="Correo electrónico" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-xs focus:outline-none focus:border-emerald-500">
         <input type="password" id="password-input" placeholder="Contraseña" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-xs focus:outline-none focus:border-emerald-500">
@@ -281,7 +321,7 @@
 
       <div class="flex items-center my-3">
         <div class="flex-grow border-t border-slate-800"></div>
-        <span class="px-3 text-[10px] text-slate-500 uppercase tracking-wider text-slate-500">o continúa con</span>
+        <span class="px-3 text-[10px] text-slate-500 uppercase tracking-wider">o continúa con</span>
         <div class="flex-grow border-t border-slate-800"></div>
       </div>
 
@@ -306,7 +346,7 @@
     </div>
   </div>
 
-  <!-- MODAL DE ALERTA GENERAL -->
+  <!-- MODAL DE ALERTA GENERAL ESTILIZADA -->
   <div id="modal-alerta" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
     <div class="bg-slate-900 border-t sm:border border-slate-800 rounded-t-3xl sm:rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl relative">
       <div class="w-12 h-12 bg-amber-500/10 rounded-full border border-amber-500/20 flex items-center justify-center mx-auto text-xl">
@@ -331,6 +371,7 @@
     let esHorarioNocturno = false;
     let esRegistro = false;
     let rolSeleccionado = 'repartidor';
+    let carrerasAcumuladasUSD = 0;
 
     // Control de Tema
     function toggleTheme() {
@@ -359,7 +400,6 @@
       }
     })();
 
-    // Horario nocturno
     function verificarHorarioNocturno() {
       const horaActual = new Date().getHours();
       if (horaActual >= 21 || horaActual < 6) {
@@ -371,7 +411,6 @@
       }
     }
 
-    // Tasa BCV
     async function obtenerTasaBCV() {
       const el = document.getElementById('tasa-bcv-txt');
       const card = document.getElementById('card-bcv');
@@ -394,7 +433,6 @@
       card.classList.remove('animate-pulse');
     }
 
-    // Cálculos
     function calcularTarifa() {
       const dist = parseFloat(document.getElementById('distancia').value);
       if(!dist || dist <= 0) {
@@ -456,7 +494,6 @@
       }).catch(() => mostrarAlertaPro("No se pudo copiar automáticamente."));
     }
 
-    // Menú desplegable tipo de envío
     function toggleMenuEnvio() {
       const menu = document.getElementById('opciones-desplegable-envio');
       const flecha = document.getElementById('flecha-desplegable');
@@ -472,17 +509,43 @@
       toggleMenuEnvio();
     }
 
-    // Modales Auth y Pro
+    // Modales Control
     function abrirAuth() { document.getElementById('modal-auth').classList.remove('hidden'); }
     function cerrarAuth() { document.getElementById('modal-auth').classList.add('hidden'); }
-    function mostrarModalPro() { document.getElementById('modal-pro').classList.remove('hidden'); }
-    function cerrarModalPro() { document.getElementById('modal-pro').classList.add('hidden'); }
+    function abrirPerfil() { document.getElementById('modal-perfil').classList.remove('hidden'); }
+    function cerrarPerfil() { document.getElementById('modal-perfil').classList.add('hidden'); }
     
     function mostrarAlertaPro(msg) {
       if(msg) document.getElementById('mensaje-alerta-texto').innerText = msg;
       document.getElementById('modal-alerta').classList.remove('hidden');
     }
     function cerrarAlertaPro() { document.getElementById('modal-alerta').classList.add('hidden'); }
+
+    // Clic Inteligente en el Botón Header
+    function gestionarClicCuenta() {
+      const user = auth.currentUser;
+      if (user) {
+        // Cargar datos en el modal de perfil
+        document.getElementById('perfil-nombre').innerText = user.displayName || user.email.split('@')[0];
+        document.getElementById('perfil-email').innerText = user.email;
+        document.getElementById('perfil-badge-rol').innerText = rolSeleccionado.toUpperCase();
+        abrirPerfil();
+      } else {
+        abrirAuth();
+      }
+    }
+
+    // Cerrar Sesión
+    async function cerrarSesion() {
+      try {
+        await auth.signOut();
+        cerrarPerfil();
+        document.getElementById('modulo-ganancias-pro').classList.add('hidden');
+        mostrarAlertaPro("Sesión cerrada correctamente.");
+      } catch (e) {
+        mostrarAlertaPro("Error al cerrar sesión.");
+      }
+    }
 
     function alternarModoAuth() {
       esRegistro = !esRegistro;
@@ -521,18 +584,38 @@
       }
     }
 
-    // Proteger Acceso al Botón Pro
+    // Acceso directo a Ganancias Pro cuando ya hay sesión
     function intentarAccesoPro() {
       const usuarioActual = auth.currentUser;
       if (!usuarioActual) {
         mostrarAlertaPro("🔒 Debes iniciar sesión o registrarte para acceder al Registro de Ganancias Pro.");
         abrirAuth();
       } else {
-        mostrarModalPro();
+        const mod = document.getElementById('modulo-ganancias-pro');
+        mod.classList.remove('hidden');
+        mod.scrollIntoView({ behavior: 'smooth' });
       }
     }
 
-    // Google Auth corregido con Redirect para APK / móviles
+    // Registro dentro del panel Pro
+    function registrarCarreraPro() {
+      const monto = parseFloat(document.getElementById('pro-monto-usd').value);
+      if(!monto || monto <= 0) {
+        mostrarAlertaPro("Ingresa un monto válido en USD.");
+        return;
+      }
+      carrerasAcumuladasUSD += monto;
+      const totalBS = carrerasAcumuladasUSD * tasaBCV;
+
+      document.getElementById('pro-total-usd').innerText = `$${carrerasAcumuladasUSD.toFixed(2)}`;
+      document.getElementById('pro-total-bs').innerText = `Bs. ${totalBS.toFixed(2)}`;
+      
+      document.getElementById('pro-monto-usd').value = '';
+      document.getElementById('pro-cliente-nota').value = '';
+      mostrarAlertaPro("¡Carrera registrada en tu historial Pro!");
+    }
+
+    // Google Auth Redirect
     async function iniciarConGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
       try {
@@ -542,7 +625,7 @@
       }
     }
 
-    // Email / Password Auth Submit con Alerta Estilizada
+    // Formulario Submit
     const formAuth = document.getElementById('form-auth');
     if (formAuth) {
       formAuth.addEventListener('submit', async (e) => {
@@ -565,22 +648,28 @@
       });
     }
 
-    // Manejar el resultado de redirección de Google
+    // Retorno de Google Auth
     auth.getRedirectResult().then((result) => {
-      if (result.user) {
+      if (result && result.user) {
+        cerrarAuth();
         mostrarAlertaPro(`¡Bienvenido de nuevo, ${result.user.displayName || result.user.email}!`);
       }
     }).catch((error) => {
       console.error(error);
     });
 
-    // Escuchar estado de sesión
+    // Escuchar estado de sesión en tiempo real
     auth.onAuthStateChanged((user) => {
       const btnTexto = document.getElementById('btn-mi-cuenta-texto');
+      const btnProLabel = document.getElementById('btn-pro-label');
+      
       if (user) {
-        btnTexto.innerText = `👤 ${user.displayName || user.email.split('@')[0]}`;
+        const nombre = user.displayName || user.email.split('@')[0];
+        btnTexto.innerText = `👤 ${nombre}`;
+        if(btnProLabel) btnProLabel.innerText = "Abrir Registro de Ganancias Pro";
       } else {
         btnTexto.innerText = "👤 Mi Cuenta / Acceso Pro";
+        if(btnProLabel) btnProLabel.innerText = "Activar Registro de Ganancias Pro";
       }
     });
 
