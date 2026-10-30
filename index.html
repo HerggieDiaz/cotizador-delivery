@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" class="dark">
-  <head>
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cotizador de Delivery</title>
@@ -34,23 +34,28 @@
       -moz-appearance: textfield;
     }
   </style>
-    <!-- SDKs de Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script>
-  const firebaseConfig = {
-  apiKey: "AIzaSyDZuk7ZU_7oBCJ4yvf9nHIgwT1__HUkpaQ",
-  authDomain: "cotizadordeliverybeta.firebaseapp.com",
-  projectId: "cotizadordeliverybeta",
-  storageBucket: "cotizadordeliverybeta.firebasestorage.app",
-  messagingSenderId: "252784432176",
-  appId: "1:252784432176:web:6369747b0e31e0fd3789f5"
-};
-</script>
+
+  <!-- SDKs de Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDZuk7ZU_7oBCJ4yvf9nHIgwT1__HUkpaQ",
+      authDomain: "cotizadordeliverybeta.firebaseapp.com",
+      projectId: "cotizadordeliverybeta",
+      storageBucket: "cotizadordeliverybeta.firebasestorage.app",
+      messagingSenderId: "252784432176",
+      appId: "1:252784432176:web:6369747b0e31e0fd3789f5"
+    };
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+  </script>
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen font-sans selection:bg-emerald-500 selection:text-white pb-10 transition-colors duration-300">
 
-  <!-- Header principal (Limpio y sin botón a la web externa) -->
+  <!-- Header principal -->
   <header class="border-b border-slate-200 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/60 backdrop-blur-md sticky top-0 z-50 px-4 py-3">
     <div class="max-w-md mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -68,9 +73,10 @@
         <span id="theme-icon">☀️</span>
       </button>
     </div>
+
     <!-- Botón de Acceso a Cuenta -->
-    <button onclick="abrirAuth()" class="w-full mt-2 px-3 py-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-emerald-500/20 transition">
-      <span>👤</span> Mi Cuenta / Acceso Pro
+    <button onclick="abrirAuth()" class="w-full mt-2 px-3 py-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-emerald-500/20 transition cursor-pointer">
+      <span id="btn-mi-cuenta-texto">👤 Mi Cuenta / Acceso Pro</span>
     </button>
   </header>
 
@@ -79,13 +85,11 @@
 
     <!-- Tarjeta de Tasa BCV y Estado Nocturno -->
     <div class="grid grid-cols-2 gap-3">
-      <!-- Tasa BCV con Efecto Pulsante -->
       <div id="card-bcv" class="p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-xl animate-pulse">
         <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Tasa Oficial BCV</p>
         <p id="tasa-bcv-txt" class="text-base font-bold text-emerald-600 dark:text-emerald-400">Actualizando...</p>
       </div>
       
-      <!-- Indicador Automático de Horario Nocturno -->
       <div id="badge-nocturno" class="p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-xl hidden">
         <p class="text-[10px] text-indigo-600 dark:text-indigo-400 uppercase tracking-wider font-semibold">Modo Activo</p>
         <p class="text-xs font-bold text-indigo-700 dark:text-indigo-300">🌙 Nocturno (9pm - 6am)</p>
@@ -100,8 +104,6 @@
 
     <!-- Formulario de Cotización -->
     <div class="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 space-y-4 shadow-xl">
-      
-      <!-- Campo Link de Google Maps -->
       <div>
         <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
           🔗 Link de Ruta (Google Maps) - Opcional:
@@ -110,7 +112,6 @@
                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition text-sm">
       </div>
 
-      <!-- Campo Distancia -->
       <div>
         <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
           📐 Distancia Exacta (Kilómetros km):
@@ -119,85 +120,70 @@
                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
       </div>
 
-     <!-- CAMPO TIPO DE CARGA / ENVÍO (DESPLEGABLE PERSONALIZADO) -->
-    <div class="space-y-2 relative">
-      <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
-        Tipo de Envío / Carga:
-      </label>
-      
-      <!-- Input oculto para la lógica de cálculo -->
-      <input type="hidden" id="tipo-envio" value="estandar">
+      <!-- Tipo de Envío -->
+      <div class="space-y-2 relative">
+        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          Tipo de Envío / Carga:
+        </label>
+        <input type="hidden" id="tipo-envio" value="estandar">
 
-      <!-- Botón Principal (Muestra la opción seleccionada) -->
-      <button 
-        type="button" 
-        id="btn-desplegable-envio"
-        onclick="toggleMenuEnvio()" 
-        class="w-full p-3 rounded-xl border border-slate-800 bg-slate-900/80 text-left flex items-center justify-between transition-all hover:border-emerald-500/40">
-        <div class="flex items-center gap-2.5">
-          <span id="icono-envio-actual" class="text-base">📦</span>
-          <div>
-            <p id="titulo-envio-actual" class="text-xs font-bold text-white">Estándar</p>
-            <p id="subtitulo-envio-actual" class="text-[10px] text-slate-400">Documentos, Comida, Ropa</p>
+        <button type="button" id="btn-desplegable-envio" onclick="toggleMenuEnvio()" 
+          class="w-full p-3 rounded-xl border border-slate-800 bg-slate-900/80 text-left flex items-center justify-between transition-all hover:border-emerald-500/40 cursor-pointer">
+          <div class="flex items-center gap-2.5">
+            <span id="icono-envio-actual" class="text-base">📦</span>
+            <div>
+              <p id="titulo-envio-actual" class="text-xs font-bold text-white">Estándar</p>
+              <p id="subtitulo-envio-actual" class="text-[10px] text-slate-400">Documentos, Comida, Ropa</p>
+            </div>
           </div>
+          <span id="flecha-desplegable" class="text-slate-400 text-xs transition-transform duration-200">▼</span>
+        </button>
+
+        <div id="opciones-desplegable-envio" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-slate-900 border border-slate-800 rounded-2xl p-2 shadow-2xl z-40 space-y-1 backdrop-blur-md">
+          <button type="button" onclick="seleccionarOpcionEnvio('estandar', '📦', 'Estándar', 'Documentos, Comida, Ropa')" 
+            class="w-full p-2.5 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
+            <div class="flex items-center gap-2.5">
+              <span class="text-base">📦</span>
+              <div>
+                <p class="text-xs font-bold text-white">Estándar</p>
+                <p class="text-[10px] text-slate-400">Documentos, Comida, Ropa</p>
+              </div>
+            </div>
+          </button>
+          <button type="button" onclick="seleccionarOpcionEnvio('pesado', '🏋️', 'Carga Pesada / Voluminosa', 'Recargo del +25%')" 
+            class="w-full p-2.5 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
+            <div class="flex items-center gap-2.5">
+              <span class="text-base">🏋️</span>
+              <div>
+                <p class="text-xs font-bold text-white">Carga Pesada / Voluminosa</p>
+                <p class="text-[10px] text-slate-400">Recargo del +25%</p>
+              </div>
+            </div>
+          </button>
+          <button type="button" onclick="seleccionarOpcionEnvio('fragil', '💎', 'Objeto Frágil / Delicado', 'Recargo del +15%')" 
+            class="w-full p-2.5 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
+            <div class="flex items-center gap-2.5">
+              <span class="text-base">💎</span>
+              <div>
+                <p class="text-xs font-bold text-white">Objeto Frágil / Delicado</p>
+                <p class="text-[10px] text-slate-400">Recargo del +15%</p>
+              </div>
+            </div>
+          </button>
         </div>
-        <span id="flecha-desplegable" class="text-slate-400 text-xs transition-transform duration-200">▼</span>
-      </button>
-
-      <!-- Menú Opciones Desplegables (Oculto por defecto) -->
-      <div 
-        id="opciones-desplegable-envio" 
-        class="hidden absolute left-0 right-0 top-full mt-1.5 bg-slate-900 border border-slate-800 rounded-2xl p-2 shadow-2xl z-40 space-y-1 backdrop-blur-md">
-        
-        <!-- Opción 1: Estándar -->
-        <button type="button" onclick="seleccionarOpcionEnvio('estandar', '📦', 'Estándar', 'Documentos, Comida, Ropa')" 
-          class="w-full p-2.5 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all">
-          <div class="flex items-center gap-2.5">
-            <span class="text-base">📦</span>
-            <div>
-              <p class="text-xs font-bold text-white">Estándar</p>
-              <p class="text-[10px] text-slate-400">Documentos, Comida, Ropa</p>
-            </div>
-          </div>
-        </button>
-
-        <!-- Opción 2: Pesado -->
-        <button type="button" onclick="seleccionarOpcionEnvio('pesado', '🏋️', 'Carga Pesada / Voluminosa', 'Recargo del +25%')" 
-          class="w-full p-2.5 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all">
-          <div class="flex items-center gap-2.5">
-            <span class="text-base">🏋️</span>
-            <div>
-              <p class="text-xs font-bold text-white">Carga Pesada / Voluminosa</p>
-              <p class="text-[10px] text-slate-400">Recargo del +25%</p>
-            </div>
-          </div>
-        </button>
-
-        <!-- Opción 3: Frágil -->
-        <button type="button" onclick="seleccionarOpcionEnvio('fragil', '💎', 'Objeto Frágil / Delicado', 'Recargo del +15%')" 
-          class="w-full p-2.5 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all">
-          <div class="flex items-center gap-2.5">
-            <span class="text-base">💎</span>
-            <div>
-              <p class="text-xs font-bold text-white">Objeto Frágil / Delicado</p>
-              <p class="text-[10px] text-slate-400">Recargo del +15%</p>
-            </div>
-          </div>
-        </button>
       </div>
-    </div>
+
       <!-- Botón Calcular -->
-      <button onclick="calcularTarifa()" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-slate-950 font-bold rounded-xl shadow-lg shadow-emerald-500/10 transition active:scale-[0.98]">
+      <button onclick="calcularTarifa()" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-slate-950 font-bold rounded-xl shadow-lg shadow-emerald-500/10 transition active:scale-[0.98] cursor-pointer">
         ⚡ Calcular Tarifa Exacta
       </button>
-
     </div>
 
-    <!-- Resultado desglosado con botón Nueva Cotización -->
+    <!-- Resultado -->
     <div id="resultado-box" class="hidden p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-500/30 space-y-4">
       <div class="flex justify-between items-center">
         <h3 class="text-xs uppercase font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">Resumen de Cotización:</h3>
-        <button onclick="reiniciarCotizacion()" class="text-xs px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-600 dark:text-emerald-300 font-semibold rounded-lg transition flex items-center gap-1">
+        <button onclick="reiniciarCotizacion()" class="text-xs px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-600 dark:text-emerald-300 font-semibold rounded-lg transition flex items-center gap-1 cursor-pointer">
           🔄 Nueva Cotización
         </button>
       </div>
@@ -213,34 +199,140 @@
 
     <!-- Botones de Acción (WhatsApp y Copiar) -->
     <div class="grid grid-cols-2 gap-3 pt-2">
-      <button onclick="enviarWhatsApp()" class="py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.98]">
+      <button onclick="enviarWhatsApp()" class="py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.98] cursor-pointer">
         💬 WhatsApp
       </button>
-      <button onclick="copiarAlPortapapeles()" id="btn-copiar" class="py-3 px-4 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-semibold rounded-xl flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-700 transition active:scale-[0.98]">
+      <button onclick="copiarAlPortapapeles()" id="btn-copiar" class="py-3 px-4 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-semibold rounded-xl flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-700 transition active:scale-[0.98] cursor-pointer">
         📋 Copiar Texto
       </button>
     </div>
-<!-- TEASER FUNCIONALIDAD PRO (VISTA PREVIA PARA INVERSORES) -->
+
+    <!-- TEASER FUNCIONALIDAD PRO PROTEGIDA -->
     <div class="pt-4 ml-2 border-t border-slate-800/60">
-      <button 
-  type="button" 
-  onclick="intentarAccesoPro()" 
-  class="w-full py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 font-medium text-xs rounded-xl border border-slate-800 flex items-center justify-between px-4 transition cursor-pointer">
-  <span>🔒</span>
-  <span>Activar Registro de Ganancias Pro</span>
-  <span class="bg-emerald-500/10 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/20 font-bold">PRO</span>
-</button>
+      <button type="button" onclick="intentarAccesoPro()" 
+        class="w-full py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 font-medium text-xs rounded-xl border border-slate-800 flex items-center justify-between px-4 transition cursor-pointer">
+        <span>🔒</span>
+        <span>Activar Registro de Ganancias Pro</span>
+        <span class="bg-emerald-500/10 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/20 font-bold">PRO</span>
+      </button>
     </div>
   </main>
 
+  <!-- Footer -->
+  <footer class="text-center space-y-1 pt-8 pb-6 text-xs text-slate-500 border-t border-slate-800/80 mt-8">
+    <p>© 2026 Cotizador Delivery. Todos los derechos reservados.</p>
+    <p class="font-medium text-slate-400">Desarrollado con dedicación por <span class="text-emerald-400">Herggie Díaz</span></p>
+  </footer>
+
+  <!-- MODAL INFORMATIVO PRO -->
+  <div id="modal-pro" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl relative">
+      <div class="w-12 h-12 bg-emerald-500/10 rounded-full border border-emerald-500/20 flex items-center justify-center mx-auto text-xl">
+        🚀
+      </div>
+      <div class="space-y-1">
+        <h3 class="text-base font-bold text-white">Edición Pro (En Desarrollo)</h3>
+        <p class="text-xs text-slate-400">
+          Esta función permitirá registrar cada carrera realizada, proyectar ganancias semanales en USD/BS y emitir recibos personalizados.
+        </p>
+      </div>
+      <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800 text-[11px] text-slate-300 text-left space-y-1">
+        <p class="font-semibold text-emerald-400">💡 Modelo Monetizable:</p>
+        <p>Orientado a repartidores de alto volumen y comercios con flotas independientes.</p>
+      </div>
+      <button type="button" onclick="cerrarModalPro()" class="w-full py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition cursor-pointer">
+        Entendido
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL DE AUTENTICACIÓN (LOGIN / REGISTRO) -->
+  <div id="modal-auth" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-5 shadow-2xl relative">
+      
+      <button onclick="cerrarAuth()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold cursor-pointer">
+        ✕
+      </button>
+
+      <div class="text-center space-y-1">
+        <h3 id="auth-titulo" class="text-lg font-bold text-white">Bienvenido de nuevo</h3>
+        <p class="text-xs text-slate-400">Accede para gestionar tus cotizaciones y rutas</p>
+      </div>
+
+      <!-- Selector de Rol -->
+      <div id="selector-rol" class="hidden grid grid-cols-2 gap-2 pt-1">
+        <button type="button" id="btn-rol-repartidor" onclick="seleccionarRol('repartidor')" class="py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/10 text-white transition flex items-center justify-center gap-2 cursor-pointer">
+          🛵 Repartidor
+        </button>
+        <button type="button" id="btn-rol-comercio" onclick="seleccionarRol('comercio')" class="py-2.5 text-xs font-bold rounded-xl border border-slate-800 bg-slate-900/60 text-slate-400 transition hover:border-slate-700 flex items-center justify-center gap-2 cursor-pointer">
+          🏪 Comercio
+        </button>
+      </div>
+
+      <!-- Formulario de Correo y Contraseña -->
+      <form id="form-auth" class="space-y-3">
+        <input type="email" id="email-input" placeholder="Correo electrónico" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-xs focus:outline-none focus:border-emerald-500">
+        <input type="password" id="password-input" placeholder="Contraseña" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-xs focus:outline-none focus:border-emerald-500">
+        
+        <button type="submit" id="btn-submit-auth" class="w-full py-3 bg-emerald-500 text-slate-950 font-bold rounded-xl text-xs hover:bg-emerald-400 transition cursor-pointer">
+          Iniciar Sesión
+        </button>
+      </form>
+
+      <div class="flex items-center my-3">
+        <div class="flex-grow border-t border-slate-800"></div>
+        <span class="px-3 text-[10px] text-slate-500 uppercase tracking-wider text-slate-500">o continúa con</span>
+        <div class="flex-grow border-t border-slate-800"></div>
+      </div>
+
+      <!-- Botón de Google -->
+      <button type="button" onclick="iniciarConGoogle()" class="w-full py-3 px-4 rounded-xl border border-slate-700 bg-slate-800 text-white font-semibold text-xs flex items-center justify-center gap-3 hover:bg-slate-700 transition cursor-pointer active:scale-95">
+        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+        </svg>
+        <span>Continuar con Google</span>
+      </button>
+
+      <!-- Cambiar entre Login y Registro -->
+      <div class="text-center pt-2">
+        <button type="button" onclick="alternarModoAuth()" class="text-xs text-slate-400 hover:text-emerald-400 transition cursor-pointer">
+          <span id="texto-cambio-auth">¿No tienes cuenta?</span> <span id="link-cambio-auth" class="underline font-bold text-white">Regístrate</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL DE ALERTA GENERAL -->
+  <div id="modal-alerta" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
+    <div class="bg-slate-900 border-t sm:border border-slate-800 rounded-t-3xl sm:rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl relative">
+      <div class="w-12 h-12 bg-amber-500/10 rounded-full border border-amber-500/20 flex items-center justify-center mx-auto text-xl">
+        ⚠️
+      </div>
+      <div class="space-y-1">
+        <h3 class="text-base font-bold text-white">Aviso</h3>
+        <p id="mensaje-alerta-texto" class="text-xs text-slate-400">Mensaje de alerta</p>
+      </div>
+      <button type="button" onclick="cerrarAlertaPro()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition shadow-lg cursor-pointer">
+        Entendido
+      </button>
+    </div>
+  </div>
+
+  <!-- SCRIPT GENERAL Y LÓGICA DE LA APLICACIÓN -->
   <script>
     let tasaBCV = 88.47; 
     const TARIFA_BASE = 2.00;       
     const KM_BASE = 2.0;            
     const PRECIO_KM_EXTRA = 0.40;   
     let esHorarioNocturno = false;
+    let esRegistro = false;
+    let rolSeleccionado = 'repartidor';
 
-    // Control de Tema (Modo Claro / Oscuro)
+    // Control de Tema
     function toggleTheme() {
       const html = document.documentElement;
       const icon = document.getElementById('theme-icon');
@@ -255,7 +347,6 @@
       }
     }
 
-    // Cargar preferencia guardada de tema
     (function() {
       const savedTheme = localStorage.getItem('theme');
       const icon = document.getElementById('theme-icon');
@@ -268,7 +359,7 @@
       }
     })();
 
-    // Verificar si estamos en horario nocturno (9:00 PM a 6:00 AM)
+    // Horario nocturno
     function verificarHorarioNocturno() {
       const horaActual = new Date().getHours();
       if (horaActual >= 21 || horaActual < 6) {
@@ -280,20 +371,18 @@
       }
     }
 
+    // Tasa BCV
     async function obtenerTasaBCV() {
       const el = document.getElementById('tasa-bcv-txt');
       const card = document.getElementById('card-bcv');
-      
       card.classList.add('animate-pulse');
 
       try {
         el.innerText = 'Actualizando...';
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 3000);
-
         const res = await fetch('https://ve.dolarapi.com/v1/dolares/oficial', { signal: controller.signal });
         clearTimeout(timeoutId);
-        
         const data = await res.json();
         if(data && data.promedio) {
           tasaBCV = data.promedio;
@@ -301,11 +390,11 @@
       } catch (e) {
         console.log("Usando tasa de respaldo.");
       }
-      
       el.innerText = `Bs. ${tasaBCV.toFixed(2)} / USD`;
       card.classList.remove('animate-pulse');
     }
 
+    // Cálculos
     function calcularTarifa() {
       const dist = parseFloat(document.getElementById('distancia').value);
       if(!dist || dist <= 0) {
@@ -315,20 +404,14 @@
 
       let subtotalUSD = TARIFA_BASE;
       if (dist > KM_BASE) {
-        const kmAdicionales = dist - KM_BASE;
-        subtotalUSD += kmAdicionales * PRECIO_KM_EXTRA;
+        subtotalUSD += (dist - KM_BASE) * PRECIO_KM_EXTRA;
       }
 
       const tipo = document.getElementById('tipo-envio').value;
-      if(tipo === 'pesado') {
-        subtotalUSD *= 1.25; 
-      } else if(tipo === 'fragil') {
-        subtotalUSD *= 1.15; 
-      }
+      if(tipo === 'pesado') subtotalUSD *= 1.25; 
+      else if(tipo === 'fragil') subtotalUSD *= 1.15; 
 
-      if(esHorarioNocturno) {
-        subtotalUSD *= 1.30;
-      }
+      if(esHorarioNocturno) subtotalUSD *= 1.30;
 
       const totalUSD = subtotalUSD.toFixed(2);
       const totalBS = (totalUSD * tasaBCV).toFixed(2);
@@ -342,7 +425,6 @@
     function reiniciarCotizacion() {
       document.getElementById('link-maps').value = '';
       document.getElementById('distancia').value = '';
-      document.getElementById('tipo-envio').selectedIndex = 0;
       document.getElementById('resultado-box').classList.add('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -353,29 +435,16 @@
       const usd = document.getElementById('res-usd').innerText;
       const bs = document.getElementById('res-bs').innerText;
 
-      let texto = `🛵 *COTIZACIÓN DE DELIVERY*\n\n` +
-             `📍 *Distancia:* ${dist} km\n`;
-             
-      if(linkMaps) {
-        texto += `🗺️ *Ruta Maps:* ${linkMaps}\n`;
-      }
-
-      if(esHorarioNocturno) {
-        texto += `🌙 *Tarifa:* Nocturna (9pm - 6am)\n`;
-      }
-
-      texto += `💵 *Monto USD:* ${usd}\n` +
-               `💳 *Total a pagar:* ${bs}\n` +
-               `🏛️ *Tasa BCV:* Bs. ${tasaBCV.toFixed(2)}\n\n` +
-               `¡Gracias por preferir nuestro servicio!`;
-
+      let texto = `🛵 *COTIZACIÓN DE DELIVERY*\n\n` + `📍 *Distancia:* ${dist} km\n`;
+      if(linkMaps) texto += `🗺️ *Ruta Maps:* ${linkMaps}\n`;
+      if(esHorarioNocturno) texto += `🌙 *Tarifa:* Nocturna (9pm - 6am)\n`;
+      texto += `💵 *Monto USD:* ${usd}\n` + `💳 *Total a pagar:* ${bs}\n` + `🏛️ *Tasa BCV:* Bs. ${tasaBCV.toFixed(2)}\n\n` + `¡Gracias por preferir nuestro servicio!`;
       return texto;
     }
 
     function enviarWhatsApp() {
       const texto = generarTextoPlantilla();
-      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
-      window.open(url, '_blank');
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
     }
 
     function copiarAlPortapapeles() {
@@ -384,399 +453,130 @@
         const btn = document.getElementById('btn-copiar');
         btn.innerText = '✓ ¡Copiado!';
         setTimeout(() => btn.innerText = '📋 Copiar Texto', 2000);
-      }).catch(err => {
-        alert("No se pudo copiar automáticamente.");
+      }).catch(() => alert("No se pudo copiar automáticamente."));
+    }
+
+    // Menú desplegable tipo de envío
+    function toggleMenuEnvio() {
+      const menu = document.getElementById('opciones-desplegable-envio');
+      const flecha = document.getElementById('flecha-desplegable');
+      menu.classList.toggle('hidden');
+      flecha.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+
+    function seleccionarOpcionEnvio(valor, icono, titulo, subtitulo) {
+      document.getElementById('tipo-envio').value = valor;
+      document.getElementById('icono-envio-actual').innerText = icono;
+      document.getElementById('titulo-envio-actual').innerText = titulo;
+      document.getElementById('subtitulo-envio-actual').innerText = subtitulo;
+      toggleMenuEnvio();
+    }
+
+    // Modales Auth y Pro
+    function abrirAuth() { document.getElementById('modal-auth').classList.remove('hidden'); }
+    function cerrarAuth() { document.getElementById('modal-auth').classList.add('hidden'); }
+    function mostrarModalPro() { document.getElementById('modal-pro').classList.remove('hidden'); }
+    function cerrarModalPro() { document.getElementById('modal-pro').classList.add('hidden'); }
+    function mostrarAlertaPro(msg) {
+      if(msg) document.getElementById('mensaje-alerta-texto').innerText = msg;
+      document.getElementById('modal-alerta').classList.remove('hidden');
+    }
+    function cerrarAlertaPro() { document.getElementById('modal-alerta').classList.add('hidden'); }
+
+    function alternarModoAuth() {
+      esRegistro = !esRegistro;
+      const titulo = document.getElementById('auth-titulo');
+      const selectorRol = document.getElementById('selector-rol');
+      const textoCambio = document.getElementById('texto-cambio-auth');
+      const linkCambio = document.getElementById('link-cambio-auth');
+      const btnSubmit = document.getElementById('btn-submit-auth');
+
+      if (esRegistro) {
+        titulo.innerText = "Crea tu cuenta y gana 14 días Pro";
+        selectorRol.classList.remove('hidden');
+        textoCambio.innerText = "¿Ya tienes cuenta?";
+        linkCambio.innerText = "Inicia Sesión";
+        btnSubmit.innerText = "Crear Cuenta Pro";
+      } else {
+        titulo.innerText = "Bienvenido de nuevo";
+        selectorRol.classList.add('hidden');
+        textoCambio.innerText = "¿No tienes cuenta?";
+        linkCambio.innerText = "Regístrate";
+        btnSubmit.innerText = "Iniciar Sesión";
+      }
+    }
+
+    function seleccionarRol(rol) {
+      rolSeleccionado = rol;
+      const btnRepartidor = document.getElementById('btn-rol-repartidor');
+      const btnComercio = document.getElementById('btn-rol-comercio');
+
+      if (rol === 'repartidor') {
+        btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/10 text-white transition flex items-center justify-center gap-2 cursor-pointer";
+        btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-800 bg-slate-900/60 text-slate-400 transition hover:border-slate-700 cursor-pointer";
+      } else {
+        btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/10 text-white transition flex items-center justify-center gap-2 cursor-pointer";
+        btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-800 bg-slate-900/60 text-slate-400 transition hover:border-slate-700 cursor-pointer";
+      }
+    }
+
+    // Proteger Acceso al Botón Pro
+    function intentarAccesoPro() {
+      const usuarioActual = auth.currentUser;
+      if (!usuarioActual) {
+        alert("🔒 Debes iniciar sesión o registrarte para acceder al Registro de Ganancias Pro.");
+        abrirAuth();
+      } else {
+        mostrarModalPro();
+      }
+    }
+
+    // Google Auth
+    async function iniciarConGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      try {
+        await auth.signInWithPopup(provider);
+        cerrarAuth();
+      } catch (error) {
+        alert('Error con Google: ' + error.message);
+      }
+    }
+
+    // Email / Password Auth Submit
+    const formAuth = document.getElementById('form-auth');
+    if (formAuth) {
+      formAuth.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email-input').value;
+        const password = document.getElementById('password-input').value;
+
+        try {
+          if (esRegistro) {
+            await auth.createUserWithEmailAndPassword(email, password);
+            alert(`¡Bienvenido! Cuenta (${rolSeleccionado}) creada con 14 días Pro activos.`);
+          } else {
+            await auth.signInWithEmailAndPassword(email, password);
+            alert('¡Inicio de sesión exitoso!');
+          }
+          cerrarAuth();
+        } catch (error) {
+          alert('Error: ' + error.message);
+        }
       });
     }
+
+    // Escuchar estado de sesión
+    auth.onAuthStateChanged((user) => {
+      const btnTexto = document.getElementById('btn-mi-cuenta-texto');
+      if (user) {
+        btnTexto.innerText = `👤 ${user.displayName || user.email.split('@')[0]}`;
+      } else {
+        btnTexto.innerText = "👤 Mi Cuenta / Acceso Pro";
+      }
+    });
 
     verificarHorarioNocturno();
     obtenerTasaBCV();
   </script>
-<!-- Sello de Autoría y Copyright -->
-  <footer class="text-center space-y-1 pt-8 pb-6 text-xs text-slate-500 border-t border-slate-800/80 mt-8">
-    <p>© 2026 Cotizador Delivery. Todos los derechos reservados.</p>
-    <p class="font-medium text-slate-400">Desarrollado con dedicación por <span class="text-emerald-400">Herggie Díaz</span></p>
-  </footer>
-  <!-- MODAL INFORMATIVO PRO -->
-    <div id="modal-pro" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl relative">
-        <div class="w-12 h-12 bg-emerald-500/10 rounded-full border border-emerald-500/20 flex items-center justify-center mx-auto text-xl">
-          🚀
-        </div>
-        <div class="space-y-1">
-          <h3 class="text-base font-bold text-white">Edición Pro (En Desarrollo)</h3>
-          <p class="text-xs text-slate-400">
-            Esta función permitirá registrar cada carrera realizada, proyectar ganancias semanales en USD/BS y emitir recibos personalizados.
-          </p>
-        </div>
-        <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800 text-[11px] text-slate-300 text-left space-y-1">
-          <p class="font-semibold text-emerald-400">💡 Modelo Monetizable:</p>
-          <p>Orientado a repartidores de alto volumen y comercios con flotas independientes.</p>
-        </div>
-        <button 
-          type="button" 
-          onclick="cerrarModalPro()" 
-          class="w-full py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition">
-          Entendido
-        </button>
-      </div>
-    </div>
-
-    <!-- SCRIPT PARA EL MODAL PRO -->
-    <script>
-      function mostrarModalPro() {
-        document.getElementById('modal-pro').classList.remove('hidden');
-      }
-      function cerrarModalPro() {
-        document.getElementById('modal-pro').classList.add('hidden');
-      }
-    </script>
-  <!-- MODAL DE AUTENTICACIÓN (LOGIN / REGISTRO) -->
-<div id="modal-auth" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-  <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-5 shadow-2xl relative">
-    
-    <!-- Botón de Cerrar Modal -->
-    <button onclick="cerrarAuth()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold cursor-pointer">
-      ✕
-    </button>
-
-    <!-- Cabecera -->
-    <div class="text-center space-y-1">
-      <h3 id="auth-titulo" class="text-lg font-bold text-white">Bienvenido de nuevo</h3>
-      <p class="text-xs text-slate-400">Accede para gestionar tus cotizaciones y rutas</p>
-    </div>
-
-    <!-- Selector de Rol (Aparece al registrarse) -->
-    <div id="selector-rol" class="hidden grid grid-cols-2 gap-2 pt-1">
-      <button type="button" id="btn-rol-repartidor" onclick="seleccionarRol('repartidor')" class="py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/10 text-white transition flex items-center justify-center gap-2 cursor-pointer">
-        🛵 Repartidor
-      </button>
-      <button type="button" id="btn-rol-comercio" onclick="seleccionarRol('comercio')" class="py-2.5 text-xs font-bold rounded-xl border border-slate-800 bg-slate-900/60 text-slate-400 transition hover:border-slate-700 flex items-center justify-center gap-2 cursor-pointer">
-        🏪 Comercio
-      </button>
-    </div>
-
-    <!-- Formulario de Correo y Contraseña -->
-    <form id="form-auth" class="space-y-3">
-      <input type="email" id="email-input" placeholder="Correo electrónico" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-xs focus:outline-none focus:border-emerald-500">
-      <input type="password" id="password-input" placeholder="Contraseña" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-xs focus:outline-none focus:border-emerald-500">
-      
-      <button type="submit" id="btn-submit-auth" class="w-full py-3 bg-emerald-500 text-slate-950 font-bold rounded-xl text-xs hover:bg-emerald-400 transition cursor-pointer">
-        Iniciar Sesión
-      </button>
-    </form>
-
-    <!-- Separador -->
-    <div class="flex items-center my-3">
-      <div class="flex-grow border-t border-slate-800"></div>
-      <span class="px-3 text-[10px] text-slate-500 uppercase tracking-wider text-slate-500">o continúa con</span>
-      <div class="flex-grow border-t border-slate-800"></div>
-    </div>
-
-    <!-- Botón de Google Corregido y Forzado -->
-<button type="button" id="btn-google-auth" onclick="iniciarConGoogle()" class="w-full py-3 px-4 rounded-xl border border-slate-700 bg-slate-800 text-white font-semibold text-xs flex items-center justify-center gap-3 hover:bg-slate-700 transition cursor-pointer active:scale-95">
-  <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-  </svg>
-  <span>Continuar con Google</span>
-</button>
-  
-    <!-- Cambiar entre Login y Registro Dinámico -->
-    <div class="text-center pt-2">
-      <button type="button" onclick="alternarModoAuth()" class="text-xs text-slate-400 hover:text-emerald-400 transition cursor-pointer">
-        <span id="texto-cambio-auth">¿No tienes cuenta?</span> <span id="link-cambio-auth" class="underline font-bold text-white">Regístrate</span>
-      </button>
-    </div>
-
-  </div>
-</div>
-
-        <!-- Botón de Google Estilizado y Funcional -->
-<button type="button" onclick="iniciarConGoogle()" class="w-full mt-4 py-3 px-4 rounded-xl border border-slate-700 bg-slate-800 text-white font-semibold text-sm flex items-center justify-center gap-3 hover:bg-slate-700 transition shadow-lg cursor-pointer">
-  <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24">
-    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-  </svg>
-  <span>Continuar con Google</span>
-</button>
-
-        <!-- Cambio entre Login y Registro -->
-        <div class="text-center pt-2">
-          <p class="text-xs text-slate-400">
-            ¿No tienes una cuenta? 
-            <button type="button" onclick="alternarModoAuth()" id="link-cambio-auth" class="text-emerald-400 font-bold hover:underline">Regístrate</button>
-          </p>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- SCRIPT DE CONTROL PARA EL MODAL DE AUTH -->
-    <script>
-      let esRegistro = false;
-
-      function abrirAuth() {
-        document.getElementById('modal-auth').classList.remove('hidden');
-      }
-
-      function cerrarAuth() {
-        document.getElementById('modal-auth').classList.add('hidden');
-      }
-
-     function alternarModoAuth() {
-    esRegistro = !esRegistro;
-    const titulo = document.getElementById('auth-titulo');
-    const selectorRol = document.getElementById('selector-rol');
-    const textoCambio = document.getElementById('texto-cambio-auth');
-    const linkCambio = document.getElementById('link-cambio-auth');
-    const btnSubmit = document.getElementById('btn-submit-auth');
-
-    if (esRegistro) {
-      titulo.innerText = "Crea tu cuenta y gana 14 días Pro";
-      selectorRol.classList.remove('hidden');
-      textoCambio.innerText = "¿Ya tienes cuenta?";
-      linkCambio.innerText = "Inicia Sesión";
-      btnSubmit.innerText = "Crear Cuenta Pro";
-    } else {
-      titulo.innerText = "Bienvenido de nuevo";
-      selectorRol.classList.add('hidden');
-      textoCambio.innerText = "¿No tienes cuenta?";
-      linkCambio.innerText = "Regístrate";
-      btnSubmit.innerText = "Iniciar Sesión";
-    }
-  }
-    </script>
-  <!-- ALERTA PROFESIONAL (BOTTOM SHEET) -->
-    <div id="modal-alerta" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
-      <div class="bg-slate-900 border-t sm:border border-slate-800 rounded-t-3xl sm:rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl relative">
-        <div class="w-12 h-12 bg-amber-500/10 rounded-full border border-amber-500/20 flex items-center justify-center mx-auto text-xl">
-          ⚠️
-        </div>
-        <div class="space-y-1">
-          <h3 class="text-base font-bold text-white">Kilómetros requeridos</h3>
-          <p id="mensaje-alerta-texto" class="text-xs text-slate-400">
-            Por favor ingresa una distancia válida en kilómetros.
-          </p>
-        </div>
-        <button 
-          type="button" 
-          onclick="cerrarAlertaPro()" 
-          class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition shadow-lg shadow-emerald-500/10">
-          Entendido
-        </button>
-      </div>
-    </div>
-
-    <!-- SCRIPT PARA CONTROLAR LA ALERTA -->
-    <script>
-      function mostrarAlertaPro(mensaje) {
-        if (mensaje) {
-          document.getElementById('mensaje-alerta-texto').innerText = mensaje;
-        }
-        document.getElementById('modal-alerta').classList.remove('hidden');
-      }
-      function cerrarAlertaPro() {
-        document.getElementById('modal-alerta').classList.add('hidden');
-      }
-    </script>
-<!-- SCRIPT CONTROLADOR DEL DESPLEGABLE PERSONALIZADO -->
-    <script>
-      function toggleMenuEnvio() {
-        const menu = document.getElementById('opciones-desplegable-envio');
-        const flecha = document.getElementById('flecha-desplegable');
-        menu.classList.toggle('hidden');
-        flecha.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
-      }
-
-      function seleccionarOpcionEnvio(valor, icono, titulo, subtitulo) {
-        // Actualizar el valor oculto para el cálculo
-        document.getElementById('tipo-envio').value = valor;
-
-        // Actualizar la vista del botón principal
-        document.getElementById('icono-envio-actual').innerText = icono;
-        document.getElementById('titulo-envio-actual').innerText = titulo;
-        document.getElementById('subtitulo-envio-actual').innerText = subtitulo;
-
-        // Cerrar menú desplegable
-        toggleMenuEnvio();
-      }
-
-      // Cerrar si se toca fuera del selector
-      document.addEventListener('click', function(e) {
-        const btn = document.getElementById('btn-desplegable-envio');
-        const menu = document.getElementById('opciones-desplegable-envio');
-        if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
-          menu.classList.add('hidden');
-          document.getElementById('flecha-desplegable').style.transform = 'rotate(0deg)';
-        }
-      });
-    // Variable para guardar el rol seleccionado actual
-      let rolSeleccionado = 'repartidor';
-
-      function seleccionarRol(rol) {
-        rolSeleccionado = rol;
-        const btnRepartidor = document.getElementById('btn-rol-repartidor');
-        const btnComercio = document.getElementById('btn-rol-comercio');
-
-        if (rol === 'repartidor') {
-          btnRepartidor.className = "py-2 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/10 text-white transition";
-          btnComercio.className = "py-2 text-xs font-bold rounded-xl border border-slate-800 bg-slate-900/60 text-slate-400 transition hover:border-slate-700";
-        } else {
-          btnComercio.className = "py-2 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/10 text-white transition";
-          btnRepartidor.className = "py-2 text-xs font-bold rounded-xl border border-slate-800 bg-slate-900/60 text-slate-400 transition hover:border-slate-700";
-        }
-      }
-    </script>
-  <script>
-  // === CONFIGURACIÓN DE FIREBASE ===
-  // Reemplaza los valores entre comillas con tus llaves reales:
-  const firebaseConfig = {
-    apiKey: "TU_API_KEY_AQUI",
-    authDomain: "TU_AUTH_DOMAIN_AQUI",
-    projectId: "TU_PROJECT_ID_AQUI",
-    storageBucket: "TU_STORAGE_BUCKET_AQUI",
-    messagingSenderId: "TU_MESSAGING_SENDER_ID_AQUI",
-    appId: "TU_APP_ID_AQUI"
-  };
-
-  // Inicializar Firebase y Autenticación
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-
-  let esRegistro = false;
-  let rolSeleccionado = 'repartidor';
-
-  function abrirAuth() {
-    document.getElementById('modal-auth').classList.remove('hidden');
-  }
-
-  function cerrarAuth() {
-    document.getElementById('modal-auth').classList.add('hidden');
-  }
-
-  function alternarModoAuth() {
-    esRegistro = !esRegistro;
-    const titulo = document.getElementById('auth-titulo');
-    const selectorRol = document.getElementById('selector-rol');
-    const linkCambio = document.getElementById('link-cambio-auth');
-
-    if (esRegistro) {
-      titulo.innerText = "Crea tu cuenta y gana 14 días Pro";
-      selectorRol.classList.remove('hidden');
-      linkCambio.innerText = "Inicia Sesión";
-    } else {
-      titulo.innerText = "Bienvenido de nuevo";
-      selectorRol.classList.add('hidden');
-      linkCambio.innerText = "Regístrate";
-    }
-  }
-
-  function seleccionarRol(rol) {
-    rolSeleccionado = rol;
-    const btnRepartidor = document.getElementById('btn-rol-repartidor');
-    const btnComercio = document.getElementById('btn-rol-comercio');
-
-    if (rol === 'repartidor') {
-      btnRepartidor.className = "py-2 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/10 text-white transition";
-      btnComercio.className = "py-2 text-xs font-bold rounded-xl border border-slate-800 bg-slate-900/60 text-slate-400 transition hover:border-slate-700";
-    } else {
-      btnComercio.className = "py-2 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/10 text-white transition";
-      btnRepartidor.className = "py-2 text-xs font-bold rounded-xl border border-slate-800 bg-slate-900/60 text-slate-400 transition hover:border-slate-700";
-    }
-  }
-
-  <button type="button" id="btn-google-directo" class="w-full py-3 px-4 rounded-xl border border-slate-700 bg-slate-800 text-white font-semibold text-xs flex items-center justify-center gap-3 hover:bg-slate-700 transition cursor-pointer">
-  <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-  </svg>
-  <span>Continuar con Google</span>
-</button>
-
-<script>
-  // Escucha el clic por ID para evitar cualquier fallo de sintaxis en el HTML
-  document.addEventListener("DOMContentLoaded", () => {
-    const btnGoogle = document.getElementById("btn-google-directo");
-    if (btnGoogle) {
-      btnGoogle.addEventListener("click", () => {
-        iniciarConGoogle();
-      });
-    }
-  });
-  <script>
-  // === AUTENTICACIÓN CON EMAIL Y CONTRASEÑA ===
-  const formAuth = document.getElementById('form-auth');
-  if (formAuth) {
-    formAuth.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email-input').value;
-      const password = document.getElementById('password-input').value;
-
-      try {
-        if (esRegistro) {
-          const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-          alert(`¡Bienvenido a Cotizador Delivery! Tu cuenta (${rolSeleccionado}) ha sido creada y tus 14 días Pro están activos.`);
-        } else {
-          await auth.signInWithEmailAndPassword(email, password);
-          alert('¡Inicio de sesión exitoso!');
-        }
-        cerrarAuth();
-      } catch (error) {
-        alert('Error: ' + error.message);
-      }
-    });
-  }
-
-async function iniciarConGoogle() {
-  console.log("Iniciando autenticación con Google...");
-  const provider = new firebase.auth.GoogleAuthProvider();
-  try {
-    await auth.signInWithPopup(provider); // Volvemos a popup para pruebas directas en web
-    cerrarAuth();
-  } catch (error) {
-    alert('Error detallado de Google: ' + error.message);
-  }
-}
-
-  // Escuchar el estado de la sesión
-  auth.onAuthStateChanged((user) => {
-    const btnMiCuenta = document.getElementById('btn-mi-cuenta');
-    if (user) {
-      if (btnMiCuenta) {
-        btnMiCuenta.innerText = `👤 ${user.displayName || user.email.split('@')[0]}`;
-      }
-    } else {
-      if (btnMiCuenta) {
-        btnMiCuenta.innerText = "Mi Cuenta";
-      }
-    }
-  });
-</script>
-  <script>
-  // Validar si el usuario ha iniciado sesión para dejarlo entrar al botón Pro
-function intentarAccesoPro() {
-  const usuarioActual = auth.currentUser;
-
-  if (!usuarioActual) {
-    // Si NO ha iniciado sesión, le avisa y le abre el modal de autenticación
-    alert("🔒 Debes iniciar sesión o registrarte para acceder al Registro de Ganancias Pro.");
-    if (typeof abrirAuth === 'function') {
-      abrirAuth();
-    }
-  } else {
-    // Si SÍ ha iniciado sesión, le muestra el modal normal de Pro que ya tenías
-    if (typeof mostrarModalPro === 'function') {
-      mostrarModalPro();
-    }
-  }
-}
-    </script>
 </body>
 </html>
