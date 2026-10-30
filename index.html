@@ -39,6 +39,9 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   
+  <!-- Librería JSPDF para Descarga de PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyDZuk7ZU_7oBCJ4yvf9nHIgwT1__HUkpaQ",
@@ -206,7 +209,7 @@
       </button>
     </div>
 
-    <!-- BOTÓN / SECCIÓN GANANCIAS PRO (FUNCIONAL) -->
+    <!-- BOTÓN GANANCIAS PRO -->
     <div class="pt-4 ml-2 border-t border-slate-800/60">
       <button type="button" onclick="intentarAccesoPro()" 
         class="w-full py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 font-medium text-xs rounded-xl border border-slate-800 flex items-center justify-between px-4 transition cursor-pointer">
@@ -216,37 +219,51 @@
       </button>
     </div>
 
-    <!-- MÓDULO DE REGISTRO DE GANANCIAS PRO (OCULTO HASTA ENTRAR COMO PRO) -->
+    <!-- MÓDULO DE REGISTRO DE GANANCIAS PRO CON HISTORIAL Y EXPORTACIÓN PDF -->
     <div id="modulo-ganancias-pro" class="hidden p-5 rounded-2xl bg-slate-900 border border-emerald-500/30 space-y-4 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <div class="flex items-center gap-2">
           <span class="text-xl">📊</span>
           <h2 class="text-sm font-bold text-white uppercase tracking-wider">Registro de Ganancias Pro</h2>
         </div>
-        <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">ACTIVO</span>
+        <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">PERSISTENTE</span>
       </div>
 
-      <!-- Formulario rápido de ingreso de carrera realizada -->
+      <!-- Formulario de Ingreso de Carrera -->
       <div class="space-y-3 pt-1">
-        <p class="text-xs text-slate-400">Registra tus carreras del día para el acumulado semanal:</p>
+        <p class="text-xs text-slate-400">Registra de forma ética cada carrera realizada:</p>
         <div class="grid grid-cols-2 gap-2">
           <input type="number" id="pro-monto-usd" placeholder="Monto ($ USD)" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white text-xs focus:border-emerald-500 focus:outline-none">
-          <input type="text" id="pro-cliente-nota" placeholder="Cliente / Zona" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white text-xs focus:border-emerald-500 focus:outline-none">
+          <input type="text" id="pro-cliente-nota" placeholder="Cliente / Zona / Descripción" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white text-xs focus:border-emerald-500 focus:outline-none">
         </div>
-        <button type="button" onclick="registrarCarreraPro()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition cursor-pointer">
-          + Añadir Carrera
+        <button type="button" onclick="registrarCarreraPro()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition cursor-pointer flex items-center justify-center gap-2">
+          <span>+ Añadir al Historial</span>
         </button>
       </div>
 
-      <!-- Resumen Acumulado -->
+      <!-- Resumen Acumulado en Vivo -->
       <div class="grid grid-cols-2 gap-2 pt-2">
         <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800 text-center">
-          <p class="text-[10px] text-slate-500 uppercase font-semibold">Total USD Hoy</p>
+          <p class="text-[10px] text-slate-500 uppercase font-semibold">Total USD Acumulado</p>
           <p id="pro-total-usd" class="text-lg font-black text-emerald-400">$0.00</p>
         </div>
         <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800 text-center">
-          <p class="text-[10px] text-slate-500 uppercase font-semibold">Total Bolívares</p>
+          <p class="text-[10px] text-slate-500 uppercase font-semibold">Total en Bolívares</p>
           <p id="pro-total-bs" class="text-lg font-black text-white">Bs. 0.00</p>
+        </div>
+      </div>
+
+      <!-- Historial de Carreras Registradas -->
+      <div class="space-y-2 pt-3 border-t border-slate-800">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">📜 Historial de Registros</h3>
+          <button onclick="descargarReportePDF()" class="text-[11px] px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-bold rounded-lg transition border border-emerald-500/30 flex items-center gap-1 cursor-pointer">
+            📄 Descargar PDF
+          </button>
+        </div>
+
+        <div id="lista-carreras-pro" class="space-y-2 max-h-60 overflow-y-auto pr-1 text-xs">
+          <p class="text-center text-slate-500 py-4 text-[11px]" id="msg-historial-vacio">No hay registros guardados aún.</p>
         </div>
       </div>
     </div>
@@ -299,7 +316,6 @@
         <p class="text-xs text-slate-400">Accede para gestionar tus cotizaciones y rutas</p>
       </div>
 
-      <!-- Selector de Rol -->
       <div id="selector-rol" class="hidden grid grid-cols-2 gap-2 pt-1">
         <button type="button" id="btn-rol-repartidor" onclick="seleccionarRol('repartidor')" class="py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/10 text-white transition flex items-center justify-center gap-2 cursor-pointer">
           🛵 Repartidor
@@ -309,7 +325,6 @@
         </button>
       </div>
 
-      <!-- Formulario -->
       <form id="form-auth" class="space-y-3">
         <input type="email" id="email-input" placeholder="Correo electrónico" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-xs focus:outline-none focus:border-emerald-500">
         <input type="password" id="password-input" placeholder="Contraseña" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-xs focus:outline-none focus:border-emerald-500">
@@ -325,7 +340,6 @@
         <div class="flex-grow border-t border-slate-800"></div>
       </div>
 
-      <!-- Botón de Google -->
       <button type="button" onclick="iniciarConGoogle()" class="w-full py-3 px-4 rounded-xl border border-slate-700 bg-slate-800 text-white font-semibold text-xs flex items-center justify-center gap-3 hover:bg-slate-700 transition cursor-pointer active:scale-95">
         <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -336,7 +350,6 @@
         <span>Continuar con Google</span>
       </button>
 
-      <!-- Cambiar entre Login y Registro -->
       <div class="text-center pt-2">
         <button type="button" onclick="alternarModoAuth()" class="text-xs text-slate-400 hover:text-emerald-400 transition cursor-pointer">
           <span id="texto-cambio-auth">¿No tienes cuenta?</span> <span id="link-cambio-auth" class="underline font-bold text-white">Regístrate</span>
@@ -371,7 +384,7 @@
     let esHorarioNocturno = false;
     let esRegistro = false;
     let rolSeleccionado = 'repartidor';
-    let carrerasAcumuladasUSD = 0;
+    let historialCarreras = [];
 
     // Control de Tema
     function toggleTheme() {
@@ -431,6 +444,7 @@
       }
       el.innerText = `Bs. ${tasaBCV.toFixed(2)} / USD`;
       card.classList.remove('animate-pulse');
+      actualizarTotalesPro();
     }
 
     function calcularTarifa() {
@@ -521,11 +535,9 @@
     }
     function cerrarAlertaPro() { document.getElementById('modal-alerta').classList.add('hidden'); }
 
-    // Clic Inteligente en el Botón Header
     function gestionarClicCuenta() {
       const user = auth.currentUser;
       if (user) {
-        // Cargar datos en el modal de perfil
         document.getElementById('perfil-nombre').innerText = user.displayName || user.email.split('@')[0];
         document.getElementById('perfil-email').innerText = user.email;
         document.getElementById('perfil-badge-rol').innerText = rolSeleccionado.toUpperCase();
@@ -535,7 +547,6 @@
       }
     }
 
-    // Cerrar Sesión
     async function cerrarSesion() {
       try {
         await auth.signOut();
@@ -584,7 +595,7 @@
       }
     }
 
-    // Acceso directo a Ganancias Pro cuando ya hay sesión
+    // Acceso y Lógica de Ganancias Pro
     function intentarAccesoPro() {
       const usuarioActual = auth.currentUser;
       if (!usuarioActual) {
@@ -593,26 +604,153 @@
       } else {
         const mod = document.getElementById('modulo-ganancias-pro');
         mod.classList.remove('hidden');
+        cargarHistorialGuardado();
         mod.scrollIntoView({ behavior: 'smooth' });
       }
     }
 
-    // Registro dentro del panel Pro
+    // Guardar en LocalStorage por usuario
+    function obtenerClaveStorage() {
+      const user = auth.currentUser;
+      return user ? `carreras_pro_${user.uid}` : 'carreras_pro_invitado';
+    }
+
+    function cargarHistorialGuardado() {
+      const clave = obtenerClaveStorage();
+      const datos = localStorage.getItem(clave);
+      historialCarreras = datos ? JSON.parse(datos) : [];
+      renderizarHistorial();
+    }
+
     function registrarCarreraPro() {
       const monto = parseFloat(document.getElementById('pro-monto-usd').value);
+      const nota = document.getElementById('pro-cliente-nota').value.trim() || 'Carrera estándar';
+
       if(!monto || monto <= 0) {
         mostrarAlertaPro("Ingresa un monto válido en USD.");
         return;
       }
-      carrerasAcumuladasUSD += monto;
-      const totalBS = carrerasAcumuladasUSD * tasaBCV;
 
-      document.getElementById('pro-total-usd').innerText = `$${carrerasAcumuladasUSD.toFixed(2)}`;
-      document.getElementById('pro-total-bs').innerText = `Bs. ${totalBS.toFixed(2)}`;
-      
+      const nuevaCarrera = {
+        id: Date.now(),
+        monto: monto,
+        nota: nota,
+        fecha: new Date().toLocaleString('es-VE', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true })
+      };
+
+      historialCarreras.unshift(nuevaCarrera);
+      localStorage.setItem(obtenerClaveStorage(), JSON.stringify(historialCarreras));
+
       document.getElementById('pro-monto-usd').value = '';
       document.getElementById('pro-cliente-nota').value = '';
-      mostrarAlertaPro("¡Carrera registrada en tu historial Pro!");
+      
+      renderizarHistorial();
+      mostrarAlertaPro("¡Carrera registrada y guardada!");
+    }
+
+    function eliminarCarrera(id) {
+      historialCarreras = historialCarreras.filter(c => c.id !== id);
+      localStorage.setItem(obtenerClaveStorage(), JSON.stringify(historialCarreras));
+      renderizarHistorial();
+    }
+
+    function renderizarHistorial() {
+      const contenedor = document.getElementById('lista-carreras-pro');
+      contenedor.innerHTML = '';
+
+      if (historialCarreras.length === 0) {
+        contenedor.innerHTML = '<p class="text-center text-slate-500 py-4 text-[11px]">No hay registros guardados aún.</p>';
+      } else {
+        historialCarreras.forEach(c => {
+          const item = document.createElement('div');
+          item.className = 'p-2.5 bg-slate-950/80 rounded-xl border border-slate-800 flex items-center justify-between gap-2';
+          item.innerHTML = `
+            <div>
+              <p class="font-bold text-white text-xs">${c.nota}</p>
+              <p class="text-[10px] text-slate-500">🕒 ${c.fecha}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="font-black text-emerald-400 text-xs">+$${c.monto.toFixed(2)}</span>
+              <button onclick="eliminarCarrera(${c.id})" class="text-rose-400 hover:text-rose-300 p-1 text-xs cursor-pointer" title="Eliminar">✕</button>
+            </div>
+          `;
+          contenedor.appendChild(item);
+        });
+      }
+
+      actualizarTotalesPro();
+    }
+
+    function actualizarTotalesPro() {
+      const totalUSD = historialCarreras.reduce((acc, c) => acc + c.monto, 0);
+      const totalBS = totalUSD * tasaBCV;
+
+      document.getElementById('pro-total-usd').innerText = `$${totalUSD.toFixed(2)}`;
+      document.getElementById('pro-total-bs').innerText = `Bs. ${totalBS.toFixed(2)}`;
+    }
+
+    // Exportar a PDF usando jsPDF
+    function descargarReportePDF() {
+      if (historialCarreras.length === 0) {
+        mostrarAlertaPro("No tienes registros en el historial para exportar.");
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const user = auth.currentUser;
+      const usuarioNombre = user ? (user.displayName || user.email) : 'Usuario Pro';
+
+      // Estilos del Documento PDF
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text("COTIZADOR DELIVERY - REPORTE PRO", 20, 20);
+
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Usuario: ${usuarioNombre}`, 20, 28);
+      doc.text(`Fecha de emisión: ${new Date().toLocaleDateString('es-VE')}`, 20, 34);
+      doc.text(`Tasa Oficial BCV: Bs. ${tasaBCV.toFixed(2)} / USD`, 20, 40);
+
+      doc.setLineWidth(0.5);
+      doc.line(20, 44, 190, 44);
+
+      let y = 52;
+      doc.setFont("helvetica", "bold");
+      doc.text("Fecha / Hora", 20, y);
+      doc.text("Detalle / Cliente", 70, y);
+      doc.text("Monto ($)", 160, y);
+      
+      y += 4;
+      doc.line(20, y, 190, y);
+      y += 6;
+
+      doc.setFont("helvetica", "normal");
+      historialCarreras.forEach((c) => {
+        if (y > 270) {
+          doc.addPage();
+          y = 20;
+        }
+        doc.text(c.fecha, 20, y);
+        doc.text(c.nota.substring(0, 35), 70, y);
+        doc.text(`$${c.monto.toFixed(2)}`, 160, y);
+        y += 7;
+      });
+
+      y += 4;
+      doc.line(20, y, 190, y);
+      y += 8;
+
+      const totalUSD = historialCarreras.reduce((acc, c) => acc + c.monto, 0);
+      const totalBS = totalUSD * tasaBCV;
+
+      doc.setFont("helvetica", "bold");
+      doc.text(`TOTAL ACUMULADO USD: $${totalUSD.toFixed(2)}`, 20, y);
+      y += 6;
+      doc.text(`TOTAL ACUMULADO BS: Bs. ${totalBS.toFixed(2)}`, 20, y);
+
+      doc.save(`Reporte_Ganancias_Delivery_${Date.now()}.pdf`);
+      mostrarAlertaPro("📄 ¡Reporte PDF generado y descargado!");
     }
 
     // Google Auth Redirect
@@ -625,7 +763,7 @@
       }
     }
 
-    // Formulario Submit
+    // Formulario Auth Submit
     const formAuth = document.getElementById('form-auth');
     if (formAuth) {
       formAuth.addEventListener('submit', async (e) => {
@@ -648,7 +786,7 @@
       });
     }
 
-    // Retorno de Google Auth
+    // Retorno de Google Auth Redirect
     auth.getRedirectResult().then((result) => {
       if (result && result.user) {
         cerrarAuth();
@@ -658,7 +796,7 @@
       console.error(error);
     });
 
-    // Escuchar estado de sesión en tiempo real
+    // Escuchar cambios de sesión
     auth.onAuthStateChanged((user) => {
       const btnTexto = document.getElementById('btn-mi-cuenta-texto');
       const btnProLabel = document.getElementById('btn-pro-label');
@@ -667,9 +805,11 @@
         const nombre = user.displayName || user.email.split('@')[0];
         btnTexto.innerText = `👤 ${nombre}`;
         if(btnProLabel) btnProLabel.innerText = "Abrir Registro de Ganancias Pro";
+        cargarHistorialGuardado();
       } else {
         btnTexto.innerText = "👤 Mi Cuenta / Acceso Pro";
         if(btnProLabel) btnProLabel.innerText = "Activar Registro de Ganancias Pro";
+        document.getElementById('modulo-ganancias-pro').classList.add('hidden');
       }
     });
 
