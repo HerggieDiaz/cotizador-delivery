@@ -754,13 +754,30 @@
       mostrarAlertaPro("📄 ¡Reporte PDF generado y descargado!");
     }
 
-    // Google Auth con soporte óptimo para iOS (Safari / PWA)
+    // Google Auth optimizado para evitar bloqueos en iOS y Android
     async function iniciarConGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
+      
+      // Detectar si es dispositivo iOS (iPhone / iPad)
+      const esIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
       try {
-        await auth.signInWithRedirect(provider);
+        if (esIOS) {
+          await auth.signInWithPopup(provider);
+          cerrarAuth();
+        } else {
+          await auth.signInWithRedirect(provider);
+        }
       } catch (error) {
-        mostrarAlertaPro('Error con Google: ' + error.message);
+        if (error.code === 'auth/popup-blocked' || error.code === 'auth/cancelled-popup-request') {
+          try {
+            await auth.signInWithRedirect(provider);
+          } catch (redirectError) {
+            mostrarAlertaPro('Error de autenticación con Google: ' + redirectError.message);
+          }
+        } else {
+          mostrarAlertaPro('Error con Google: ' + error.message);
+        }
       }
     }
 
