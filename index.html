@@ -222,7 +222,7 @@
       </button>
     </div>
 
-    <!-- MÓDULO DE REGISTRO DE GANANCIAS PRO CON HISTORIAL Y EXPORTACIÓN PDF -->
+    <!-- MÓDULO DE REGISTRO DE GANANCIAS PRO -->
     <div id="modulo-ganancias-pro" class="hidden p-5 rounded-2xl bg-slate-900 border border-emerald-500/30 space-y-4 shadow-2xl transition-all">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <div class="flex items-center gap-2">
@@ -231,7 +231,6 @@
         </div>
       </div>
 
-      <!-- Formulario de Ingreso de Carrera -->
       <div class="space-y-3 pt-1">
         <p class="text-xs text-slate-400">Registra de forma ética cada carrera realizada:</p>
         <div class="grid grid-cols-2 gap-2">
@@ -243,7 +242,6 @@
         </button>
       </div>
 
-      <!-- Resumen Acumulado en Vivo -->
       <div class="grid grid-cols-2 gap-2 pt-2">
         <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800 text-center">
           <p class="text-[10px] text-slate-500 uppercase font-semibold">Total USD Acumulado</p>
@@ -255,7 +253,6 @@
         </div>
       </div>
 
-      <!-- Historial de Carreras Registradas -->
       <div class="space-y-2 pt-3 border-t border-slate-800">
         <div class="flex items-center justify-between">
           <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">📜 Historial de Registros</h3>
@@ -388,7 +385,6 @@
     let rolSeleccionado = 'repartidor';
     let historialCarreras = [];
 
-    // Control de Tema
     function toggleTheme() {
       const html = document.documentElement;
       const icon = document.getElementById('theme-icon');
@@ -525,7 +521,6 @@
       toggleMenuEnvio();
     }
 
-    // Modales Control
     function abrirAuth() { document.getElementById('modal-auth').classList.remove('hidden'); }
     function cerrarAuth() { document.getElementById('modal-auth').classList.add('hidden'); }
     function abrirPerfil() { document.getElementById('modal-perfil').classList.remove('hidden'); }
@@ -598,7 +593,6 @@
       }
     }
 
-    // Toggle Desplegable Pro (Abre y cierra suavemente)
     function intentarAccesoPro() {
       const usuarioActual = auth.currentUser;
       if (!usuarioActual) {
@@ -619,7 +613,6 @@
       }
     }
 
-    // Guardar en LocalStorage por usuario
     function obtenerClaveStorage() {
       const user = auth.currentUser;
       return user ? `carreras_pro_${user.uid}` : 'carreras_pro_invitado';
@@ -699,7 +692,6 @@
       document.getElementById('pro-total-bs').innerText = `Bs. ${totalBS.toFixed(2)}`;
     }
 
-    // Exportar a PDF usando jsPDF
     function descargarReportePDF() {
       if (historialCarreras.length === 0) {
         mostrarAlertaPro("No tienes registros en el historial para exportar.");
@@ -762,7 +754,7 @@
       mostrarAlertaPro("📄 ¡Reporte PDF generado y descargado!");
     }
 
-    // Google Auth Redirect
+    // Google Auth con soporte óptimo para iOS (Safari / PWA)
     async function iniciarConGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
       try {
@@ -772,7 +764,6 @@
       }
     }
 
-    // Formulario Auth Submit
     const formAuth = document.getElementById('form-auth');
     if (formAuth) {
       formAuth.addEventListener('submit', async (e) => {
@@ -795,17 +786,16 @@
       });
     }
 
-    // Retorno de Google Auth Redirect
+    // Capturar redirección en iOS / Safari con persistencia local asegurada
     auth.getRedirectResult().then((result) => {
       if (result && result.user) {
         cerrarAuth();
         mostrarAlertaPro(`¡Bienvenido de nuevo, ${result.user.displayName || result.user.email}!`);
       }
     }).catch((error) => {
-      console.error(error);
+      console.error("Error en redirect de Google:", error);
     });
 
-    // Escuchar cambios de sesión
     auth.onAuthStateChanged((user) => {
       const btnTexto = document.getElementById('btn-mi-cuenta-texto');
       const btnProLabel = document.getElementById('btn-pro-label');
