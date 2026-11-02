@@ -231,28 +231,44 @@
         </div>
       </div>
 
+      <!-- Formulario de Ingreso de Carrera -->
       <div class="space-y-3 pt-1">
         <p class="text-xs text-slate-400">Registra de forma ética cada carrera realizada:</p>
         <div class="grid grid-cols-2 gap-2">
           <input type="number" id="pro-monto-usd" placeholder="Monto ($ USD)" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white text-xs focus:border-emerald-500 focus:outline-none">
           <input type="text" id="pro-cliente-nota" placeholder="Cliente / Zona / Descripción" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white text-xs focus:border-emerald-500 focus:outline-none">
         </div>
+        
+        <!-- Calculadora Pro de Descuento de Gasolina -->
+        <div class="flex items-center justify-between p-2.5 bg-slate-950/60 rounded-xl border border-slate-800 text-xs">
+          <label class="text-slate-400 flex items-center gap-1.5">
+            ⛽ <span>Descuento Gasolina / Mantenimiento:</span>
+          </label>
+          <input type="number" id="pro-descuento-gasolina" value="0.50" step="0.10" class="w-20 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-center font-bold text-amber-400 focus:outline-none">
+        </div>
+
         <button type="button" onclick="registrarCarreraPro()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition cursor-pointer flex items-center justify-center gap-2">
           <span>+ Añadir al Historial</span>
         </button>
       </div>
 
-      <div class="grid grid-cols-2 gap-2 pt-2">
-        <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800 text-center">
-          <p class="text-[10px] text-slate-500 uppercase font-semibold">Total USD Acumulado</p>
-          <p id="pro-total-usd" class="text-lg font-black text-emerald-400">$0.00</p>
+      <!-- Resumen Acumulado en Vivo (Bruto y Neto Real) -->
+      <div class="grid grid-cols-3 gap-2 pt-2">
+        <div class="p-2.5 bg-slate-950/80 rounded-xl border border-slate-800 text-center">
+          <p class="text-[9px] text-slate-500 uppercase font-semibold">Total Bruto</p>
+          <p id="pro-total-bruto" class="text-sm font-black text-slate-300">$0.00</p>
         </div>
-        <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800 text-center">
-          <p class="text-[10px] text-slate-500 uppercase font-semibold">Total en Bolívares</p>
-          <p id="pro-total-bs" class="text-lg font-black text-white">Bs. 0.00</p>
+        <div class="p-2.5 bg-slate-950/80 rounded-xl border border-emerald-500/30 text-center">
+          <p class="text-[9px] text-emerald-400 uppercase font-bold">Ganancia Neta</p>
+          <p id="pro-total-usd" class="text-sm font-black text-emerald-400">$0.00</p>
+        </div>
+        <div class="p-2.5 bg-slate-950/80 rounded-xl border border-slate-800 text-center">
+          <p class="text-[9px] text-slate-500 uppercase font-semibold">Total Bolívares</p>
+          <p id="pro-total-bs" class="text-sm font-black text-white">Bs. 0.00</p>
         </div>
       </div>
 
+      <!-- Historial de Carreras Registradas -->
       <div class="space-y-2 pt-3 border-t border-slate-800">
         <div class="flex items-center justify-between">
           <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">📜 Historial de Registros</h3>
@@ -275,7 +291,7 @@
     <p class="font-medium text-slate-400">Desarrollado con dedicación por <span class="text-emerald-400">Herggie Díaz</span></p>
   </footer>
 
-  <!-- MODAL PERFIL DE USUARIO / CERRAR SESIÓN -->
+  <!-- MODAL PERFIL DE USUARIO PRO / CONFIGURACIÓN DE MARCA -->
   <div id="modal-perfil" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative text-center">
       <button onclick="cerrarPerfil()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold cursor-pointer">
@@ -290,8 +306,24 @@
         <h3 id="perfil-nombre" class="text-base font-bold text-white">Cargando...</h3>
         <p id="perfil-email" class="text-xs text-slate-400">correo@ejemplo.com</p>
         <span id="perfil-badge-rol" class="inline-block mt-2 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">
-          Repartidor
+          Repartidor Pro
         </span>
+      </div>
+
+      <!-- Configuración de Marca Personal y Pago Móvil -->
+      <div class="border-t border-slate-800 pt-3 text-left space-y-2">
+        <p class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">⚙️ Configuración Marca Pro (WhatsApp):</p>
+        <div>
+          <label class="text-[10px] text-slate-400">Nombre de tu Marca / Servicio:</label>
+          <input type="text" id="cfg-nombre-marca" placeholder="Ej. Express Valencia" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="text-[10px] text-slate-400">Datos Pago Móvil (Opcional):</label>
+          <input type="text" id="cfg-pago-movil" placeholder="Ej. 0414-1234567 / BDV" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
+        </div>
+        <button onclick="guardarConfiguracionMarca()" class="w-full py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition cursor-pointer">
+          💾 Guardar Datos Pro
+        </button>
       </div>
 
       <div class="border-t border-slate-800 pt-3 space-y-2">
@@ -485,10 +517,16 @@
       const usd = document.getElementById('res-usd').innerText;
       const bs = document.getElementById('res-bs').innerText;
 
-      let texto = `🛵 *COTIZACIÓN DE DELIVERY*\n\n` + `📍 *Distancia:* ${dist} km\n`;
+      const user = auth.currentUser;
+      const nombreMarca = (user && localStorage.getItem(`marca_${user.uid}`)) || 'COTIZACIÓN DE DELIVERY';
+      const pagoMovil = (user && localStorage.getItem(`pagomovil_${user.uid}`)) || '';
+
+      let texto = `🛵 *${nombreMarca.toUpperCase()}*\n\n` + `📍 *Distancia:* ${dist} km\n`;
       if(linkMaps) texto += `🗺️ *Ruta Maps:* ${linkMaps}\n`;
       if(esHorarioNocturno) texto += `🌙 *Tarifa:* Nocturna (9pm - 6am)\n`;
-      texto += `💵 *Monto USD:* ${usd}\n` + `💳 *Total a pagar:* ${bs}\n` + `🏛️ *Tasa BCV:* Bs. ${tasaBCV.toFixed(2)}\n\n` + `¡Gracias por preferir nuestro servicio!`;
+      texto += `💵 *Monto USD:* ${usd}\n` + `💳 *Total a pagar:* ${bs}\n` + `🏛️ *Tasa BCV:* Bs. ${tasaBCV.toFixed(2)}\n`;
+      if(pagoMovil) texto += `🏦 *Pago Móvil:* ${pagoMovil}\n`;
+      texto += `\n¡Gracias por preferir nuestro servicio!`;
       return texto;
     }
 
@@ -523,7 +561,14 @@
 
     function abrirAuth() { document.getElementById('modal-auth').classList.remove('hidden'); }
     function cerrarAuth() { document.getElementById('modal-auth').classList.add('hidden'); }
-    function abrirPerfil() { document.getElementById('modal-perfil').classList.remove('hidden'); }
+    function abrirPerfil() { 
+      const user = auth.currentUser;
+      if (user) {
+        document.getElementById('cfg-nombre-marca').value = localStorage.getItem(`marca_${user.uid}`) || '';
+        document.getElementById('cfg-pago-movil').value = localStorage.getItem(`pagomovil_${user.uid}`) || '';
+      }
+      document.getElementById('modal-perfil').classList.remove('hidden'); 
+    }
     function cerrarPerfil() { document.getElementById('modal-perfil').classList.add('hidden'); }
     
     function mostrarAlertaPro(msg) {
@@ -541,6 +586,18 @@
         abrirPerfil();
       } else {
         abrirAuth();
+      }
+    }
+
+    function guardarConfiguracionMarca() {
+      const user = auth.currentUser;
+      if (user) {
+        const marca = document.getElementById('cfg-nombre-marca').value.trim();
+        const pago = document.getElementById('cfg-pago-movil').value.trim();
+        localStorage.setItem(`marca_${user.uid}`, marca);
+        localStorage.setItem(`pagomovil_${user.uid}`, pago);
+        mostrarAlertaPro("¡Datos de marca guardados! Ahora tus cotizaciones de WhatsApp saldrán personalizadas.");
+        cerrarPerfil();
       }
     }
 
@@ -626,17 +683,22 @@
     }
 
     function registrarCarreraPro() {
-      const monto = parseFloat(document.getElementById('pro-monto-usd').value);
+      const montoBruto = parseFloat(document.getElementById('pro-monto-usd').value);
       const nota = document.getElementById('pro-cliente-nota').value.trim() || 'Carrera estándar';
+      const descuentoGas = parseFloat(document.getElementById('pro-descuento-gasolina').value) || 0;
 
-      if(!monto || monto <= 0) {
+      if(!montoBruto || montoBruto <= 0) {
         mostrarAlertaPro("Ingresa un monto válido en USD.");
         return;
       }
 
+      const montoNeto = Math.max(0, montoBruto - descuentoGas);
+
       const nuevaCarrera = {
         id: Date.now(),
-        monto: monto,
+        bruto: montoBruto,
+        monto: montoNeto,
+        descuento: descuentoGas,
         nota: nota,
         fecha: new Date().toLocaleString('es-VE', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true })
       };
@@ -648,7 +710,7 @@
       document.getElementById('pro-cliente-nota').value = '';
       
       renderizarHistorial();
-      mostrarAlertaPro("¡Carrera registrada y guardada!");
+      mostrarAlertaPro("¡Carrera y ganancia neta registrada!");
     }
 
     function eliminarCarrera(id) {
@@ -670,10 +732,10 @@
           item.innerHTML = `
             <div>
               <p class="font-bold text-white text-xs">${c.nota}</p>
-              <p class="text-[10px] text-slate-500">🕒 ${c.fecha}</p>
+              <p class="text-[10px] text-slate-500">🕒 ${c.fecha} • Gasolina: -$${(c.descuento || 0).toFixed(2)}</p>
             </div>
             <div class="flex items-center gap-2">
-              <span class="font-black text-emerald-400 text-xs">+$${c.monto.toFixed(2)}</span>
+              <span class="font-black text-emerald-400 text-xs">+$${c.monto.toFixed(2)} <span class="text-[9px] text-slate-500 font-normal">neto</span></span>
               <button onclick="eliminarCarrera(${c.id})" class="text-rose-400 hover:text-rose-300 p-1 text-xs cursor-pointer" title="Eliminar">✕</button>
             </div>
           `;
@@ -685,10 +747,12 @@
     }
 
     function actualizarTotalesPro() {
-      const totalUSD = historialCarreras.reduce((acc, c) => acc + c.monto, 0);
-      const totalBS = totalUSD * tasaBCV;
+      const totalBruto = historialCarreras.reduce((acc, c) => acc + (c.bruto || c.monto), 0);
+      const totalNetoUSD = historialCarreras.reduce((acc, c) => acc + c.monto, 0);
+      const totalBS = totalNetoUSD * tasaBCV;
 
-      document.getElementById('pro-total-usd').innerText = `$${totalUSD.toFixed(2)}`;
+      document.getElementById('pro-total-bruto').innerText = `$${totalBruto.toFixed(2)}`;
+      document.getElementById('pro-total-usd').innerText = `$${totalNetoUSD.toFixed(2)}`;
       document.getElementById('pro-total-bs').innerText = `Bs. ${totalBS.toFixed(2)}`;
     }
 
@@ -720,7 +784,8 @@
       doc.setFont("helvetica", "bold");
       doc.text("Fecha / Hora", 20, y);
       doc.text("Detalle / Cliente", 70, y);
-      doc.text("Monto ($)", 160, y);
+      doc.text("Bruto ($)", 135, y);
+      doc.text("Neto ($)", 165, y);
       
       y += 4;
       doc.line(20, y, 190, y);
@@ -733,8 +798,9 @@
           y = 20;
         }
         doc.text(c.fecha, 20, y);
-        doc.text(c.nota.substring(0, 35), 70, y);
-        doc.text(`$${c.monto.toFixed(2)}`, 160, y);
+        doc.text(c.nota.substring(0, 28), 70, y);
+        doc.text(`$${(c.bruto || c.monto).toFixed(2)}`, 135, y);
+        doc.text(`$${c.monto.toFixed(2)}`, 165, y);
         y += 7;
       });
 
@@ -742,23 +808,23 @@
       doc.line(20, y, 190, y);
       y += 8;
 
-      const totalUSD = historialCarreras.reduce((acc, c) => acc + c.monto, 0);
-      const totalBS = totalUSD * tasaBCV;
+      const totalBruto = historialCarreras.reduce((acc, c) => acc + (c.bruto || c.monto), 0);
+      const totalNetoUSD = historialCarreras.reduce((acc, c) => acc + c.monto, 0);
+      const totalBS = totalNetoUSD * tasaBCV;
 
       doc.setFont("helvetica", "bold");
-      doc.text(`TOTAL ACUMULADO USD: $${totalUSD.toFixed(2)}`, 20, y);
+      doc.text(`TOTAL BRUTO ACUMULADO: $${totalBruto.toFixed(2)}`, 20, y);
       y += 6;
-      doc.text(`TOTAL ACUMULADO BS: Bs. ${totalBS.toFixed(2)}`, 20, y);
+      doc.text(`GANANCIA NETA REAL (USD): $${totalNetoUSD.toFixed(2)}`, 20, y);
+      y += 6;
+      doc.text(`TOTAL NETO EN BOLÍVARES: Bs. ${totalBS.toFixed(2)}`, 20, y);
 
       doc.save(`Reporte_Ganancias_Delivery_${Date.now()}.pdf`);
       mostrarAlertaPro("📄 ¡Reporte PDF generado y descargado!");
     }
 
-    // Google Auth optimizado para evitar bloqueos en iOS y Android
     async function iniciarConGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
-      
-      // Detectar si es dispositivo iOS (iPhone / iPad)
       const esIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
       try {
@@ -803,7 +869,6 @@
       });
     }
 
-    // Capturar redirección en iOS / Safari con persistencia local asegurada
     auth.getRedirectResult().then((result) => {
       if (result && result.user) {
         cerrarAuth();
