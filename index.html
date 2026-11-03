@@ -122,7 +122,7 @@
                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
       </div>
 
-      <!-- Opcionales: Recargo por Lluvia -->
+      <!-- Recargo por Lluvia -->
       <div class="pt-1">
         <label class="flex items-center justify-between p-3 rounded-xl border border-slate-800 bg-slate-950/60 cursor-pointer hover:border-cyan-500/40 transition">
           <div class="flex items-center gap-2.5">
@@ -241,58 +241,50 @@
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <div class="flex items-center gap-2">
           <span class="text-xl">📊</span>
-          <h2 class="text-sm font-bold text-white uppercase tracking-wider">Registro de Ganancias Pro</h2>
+          <h2 class="text-sm font-bold text-white uppercase tracking-wider">Turno Activo del Día</h2>
         </div>
       </div>
 
-      <!-- Formulario de Ingreso de Carrera -->
+      <!-- Formulario Ágil de Registro de Carrera Bruta -->
       <div class="space-y-3 pt-1">
-        <p class="text-xs text-slate-400">Registra de forma ética cada carrera realizada:</p>
+        <p class="text-xs text-slate-400">Registra tus servicios del turno actual:</p>
         <div class="grid grid-cols-2 gap-2">
           <input type="number" id="pro-monto-usd" placeholder="Monto ($ USD)" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white text-xs focus:border-emerald-500 focus:outline-none">
-          <input type="text" id="pro-cliente-nota" placeholder="Cliente / Zona / Descripción" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white text-xs focus:border-emerald-500 focus:outline-none">
-        </div>
-        
-        <!-- Calculadora Pro de Descuento de Gasolina -->
-        <div class="flex items-center justify-between p-2.5 bg-slate-950/60 rounded-xl border border-slate-800 text-xs">
-          <label class="text-slate-400 flex items-center gap-1.5">
-            ⛽ <span>Descuento Gasolina / Mantenimiento:</span>
-          </label>
-          <input type="number" id="pro-descuento-gasolina" value="0.50" step="0.10" class="w-20 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-center font-bold text-amber-400 focus:outline-none">
+          <input type="text" id="pro-cliente-nota" placeholder="Ej. San Diego - El Trigal" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white text-xs focus:border-emerald-500 focus:outline-none">
         </div>
 
         <button type="button" onclick="registrarCarreraPro()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition cursor-pointer flex items-center justify-center gap-2">
-          <span>+ Añadir al Historial</span>
+          <span>+ Añadir Carrera</span>
         </button>
       </div>
 
-      <!-- Resumen Acumulado en Vivo -->
-      <div class="grid grid-cols-3 gap-2 pt-2">
-        <div class="p-2.5 bg-slate-950/80 rounded-xl border border-slate-800 text-center">
-          <p class="text-[9px] text-slate-500 uppercase font-semibold">Total Bruto</p>
-          <p id="pro-total-bruto" class="text-sm font-black text-slate-300">$0.00</p>
+      <!-- Resumen Acumulado del Turno Actual (El botón de corte siempre visible) -->
+      <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800 flex items-center justify-between">
+        <div>
+          <p class="text-[10px] text-slate-400 uppercase font-semibold">Total Bruto Turno:</p>
+          <p id="pro-total-turno" class="text-base font-black text-emerald-400">$0.00 <span id="pro-total-turno-bs" class="text-xs text-slate-400 font-normal">(Bs. 0.00)</span></p>
         </div>
-        <div class="p-2.5 bg-slate-950/80 rounded-xl border border-emerald-500/30 text-center">
-          <p class="text-[9px] text-emerald-400 uppercase font-bold">Ganancia Neta</p>
-          <p id="pro-total-usd" class="text-sm font-black text-emerald-400">$0.00</p>
-        </div>
-        <div class="p-2.5 bg-slate-950/80 rounded-xl border border-slate-800 text-center">
-          <p class="text-[9px] text-slate-500 uppercase font-semibold">Total Bolívares</p>
-          <p id="pro-total-bs" class="text-sm font-black text-white">Bs. 0.00</p>
-        </div>
+        <button type="button" onclick="abrirModalCorte()" class="py-2 px-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl transition cursor-pointer flex items-center gap-1 shadow-md">
+          ✂️ Realizar Corte Diario
+        </button>
       </div>
 
-      <!-- Historial de Carreras Registradas -->
-      <div class="space-y-2 pt-3 border-t border-slate-800">
+      <!-- Carreras Pendientes del Turno -->
+      <div id="contenedor-carreras-turno" class="space-y-1 max-h-40 overflow-y-auto pr-1 text-xs">
+        <p class="text-center text-slate-500 py-2 text-[11px]" id="msg-turno-vacio">Sin carreras registradas en este turno.</p>
+      </div>
+
+      <!-- HISTORIAL ARCHIVADO DE CORTES DIARIOS (ACORDEÓN) -->
+      <div class="space-y-3 pt-3 border-t border-slate-800">
         <div class="flex items-center justify-between">
-          <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">📜 Historial de Registros</h3>
+          <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">📁 Cortes Diarios Archivados</h3>
           <button onclick="descargarReportePDF()" class="text-[11px] px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-bold rounded-lg transition border border-emerald-500/30 flex items-center gap-1 cursor-pointer">
-            📄 Descargar PDF
+            📄 Reporte PDF
           </button>
         </div>
 
-        <div id="lista-carreras-pro" class="space-y-2 max-h-60 overflow-y-auto pr-1 text-xs">
-          <p class="text-center text-slate-500 py-4 text-[11px]" id="msg-historial-vacio">No hay registros guardados aún.</p>
+        <div id="lista-cortes-acordeon" class="space-y-2 max-h-72 overflow-y-auto pr-1 text-xs">
+          <p class="text-center text-slate-500 py-4 text-[11px]" id="msg-cortes-vacio">No hay cortes diarios archivados aún.</p>
         </div>
       </div>
     </div>
@@ -304,6 +296,33 @@
     <p>© 2026 Cotizador Delivery. Todos los derechos reservados.</p>
     <p class="font-medium text-slate-400">Desarrollado con dedicación por <span class="text-emerald-400">Herggie Díaz</span></p>
   </footer>
+
+  <!-- MODAL REALIZAR CORTE DIARIO (Gasolina por defecto en 0.00) -->
+  <div id="modal-corte" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative">
+      <button onclick="cerrarModalCorte()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold cursor-pointer">✕</button>
+
+      <div class="text-center space-y-1">
+        <span class="text-3xl">✂️</span>
+        <h3 class="text-base font-bold text-white">Cierre y Corte Diario</h3>
+        <p class="text-xs text-slate-400">Ingresa el gasto total de gasolina o mantenimiento de la jornada.</p>
+      </div>
+
+      <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 text-center space-y-1">
+        <p class="text-[10px] text-slate-500 uppercase font-bold">Total Bruto Acumulado:</p>
+        <p id="corte-monto-bruto" class="text-lg font-black text-emerald-400">$0.00</p>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 mb-1">⛽ Gastos de Gasolina / Mantenimiento ($ USD):</label>
+        <input type="number" id="corte-gasto-gasolina" placeholder="Ej. 0.00" step="0.50" value="0.00" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-xs font-bold text-center focus:border-amber-500 focus:outline-none">
+      </div>
+
+      <button type="button" onclick="confirmarCorteDiario()" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs transition cursor-pointer">
+        ✅ Guardar y Archivar Corte
+      </button>
+    </div>
+  </div>
 
   <!-- MODAL PERFIL DE USUARIO PRO -->
   <div id="modal-perfil" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
@@ -435,7 +454,9 @@
     let esHorarioNocturno = false;
     let esRegistro = false;
     let rolSeleccionado = 'repartidor';
-    let historialCarreras = [];
+    
+    let carrerasTurnoActual = [];
+    let cortesArchivados = [];
 
     function toggleTheme() {
       const html = document.documentElement;
@@ -494,7 +515,7 @@
       }
       el.innerText = `Bs. ${tasaBCV.toFixed(2)} / USD`;
       card.classList.remove('animate-pulse');
-      actualizarTotalesPro();
+      renderizarMóduloPro();
     }
 
     function calcularTarifa() {
@@ -515,7 +536,6 @@
 
       if(esHorarioNocturno) subtotalUSD *= 1.30;
 
-      // Recargo por Lluvia
       const hayLluvia = document.getElementById('check-lluvia').checked;
       if(hayLluvia) subtotalUSD *= 1.30;
 
@@ -775,142 +795,272 @@
         const estaAbierto = !mod.classList.contains('hidden');
         flecha.style.transform = estaAbierto ? 'rotate(180deg)' : 'rotate(0deg)';
         if (estaAbierto) {
-          cargarHistorialGuardado();
+          cargarDatosProGuardados();
           mod.scrollIntoView({ behavior: 'smooth' });
         }
       }
     }
 
-    function obtenerClaveStorage() {
+    function obtenerClavesStorage() {
       const user = auth.currentUser;
-      return user ? `carreras_pro_${user.uid}` : 'carreras_pro_invitado';
+      const uid = user ? user.uid : 'invitado';
+      return {
+        keyTurno: `carreras_turno_${uid}`,
+        keyCortes: `cortes_archivados_${uid}`
+      };
     }
 
-    function cargarHistorialGuardado() {
-      const clave = obtenerClaveStorage();
-      const datos = localStorage.getItem(clave);
-      historialCarreras = datos ? JSON.parse(datos) : [];
-      renderizarHistorial();
+    function cargarDatosProGuardados() {
+      const { keyTurno, keyCortes } = obtenerClavesStorage();
+      const rawTurno = localStorage.getItem(keyTurno);
+      const rawCortes = localStorage.getItem(keyCortes);
+
+      carrerasTurnoActual = rawTurno ? JSON.parse(rawTurno) : [];
+      cortesArchivados = rawCortes ? JSON.parse(rawCortes) : [];
+
+      renderizarMóduloPro();
     }
 
     function registrarCarreraPro() {
       const montoBruto = parseFloat(document.getElementById('pro-monto-usd').value);
-      const nota = document.getElementById('pro-cliente-nota').value.trim() || 'Carrera estándar';
-      const descuentoGas = parseFloat(document.getElementById('pro-descuento-gasolina').value) || 0;
+      const nota = document.getElementById('pro-cliente-nota').value.trim() || 'Servicio estándar';
+
       if(!montoBruto || montoBruto <= 0) {
         mostrarAlertaPro("Ingresa un monto válido en USD.");
         return;
       }
-      const montoNeto = Math.max(0, montoBruto - descuentoGas);
+
       const nuevaCarrera = {
         id: Date.now(),
-        bruto: montoBruto,
-        monto: montoNeto,
-        descuento: descuentoGas,
+        monto: montoBruto,
         nota: nota,
-        fecha: new Date().toLocaleString('es-VE', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true })
+        hora: new Date().toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', hour12: true })
       };
-      historialCarreras.unshift(nuevaCarrera);
-      localStorage.setItem(obtenerClaveStorage(), JSON.stringify(historialCarreras));
+
+      carrerasTurnoActual.unshift(nuevaCarrera);
+      const { keyTurno } = obtenerClavesStorage();
+      localStorage.setItem(keyTurno, JSON.stringify(carrerasTurnoActual));
+
       document.getElementById('pro-monto-usd').value = '';
       document.getElementById('pro-cliente-nota').value = '';
-      renderizarHistorial();
-      mostrarAlertaPro("¡Carrera y ganancia neta registrada!");
+
+      renderizarMóduloPro();
+      mostrarAlertaPro("¡Carrera añadida al turno!");
     }
 
-    function eliminarCarrera(id) {
-      historialCarreras = historialCarreras.filter(c => c.id !== id);
-      localStorage.setItem(obtenerClaveStorage(), JSON.stringify(historialCarreras));
-      renderizarHistorial();
+    function eliminarCarreraTurno(id) {
+      carrerasTurnoActual = carrerasTurnoActual.filter(c => c.id !== id);
+      const { keyTurno } = obtenerClavesStorage();
+      localStorage.setItem(keyTurno, JSON.stringify(carrerasTurnoActual));
+      renderizarMóduloPro();
     }
 
-    function renderizarHistorial() {
-      const contenedor = document.getElementById('lista-carreras-pro');
-      contenedor.innerHTML = '';
-      if (historialCarreras.length === 0) {
-        contenedor.innerHTML = '<p class="text-center text-slate-500 py-4 text-[11px]">No hay registros guardados aún.</p>';
+    function abrirModalCorte() {
+      if (carrerasTurnoActual.length === 0) {
+        mostrarAlertaPro("⚠️ No tienes carreras en el turno actual para hacer un corte.");
+        return;
+      }
+      const totalBruto = carrerasTurnoActual.reduce((acc, c) => acc + c.monto, 0);
+      document.getElementById('corte-monto-bruto').innerText = `$${totalBruto.toFixed(2)}`;
+      document.getElementById('corte-gasto-gasolina').value = "0.00"; // Asegurar en 0.00
+      document.getElementById('modal-corte').classList.remove('hidden');
+    }
+
+    function cerrarModalCorte() {
+      document.getElementById('modal-corte').classList.add('hidden');
+    }
+
+    function confirmarCorteDiario() {
+      const gastoGas = parseFloat(document.getElementById('corte-gasto-gasolina').value) || 0;
+      const totalBruto = carrerasTurnoActual.reduce((acc, c) => acc + c.monto, 0);
+      const totalNeto = Math.max(0, totalBruto - gastoGas);
+
+      const nuevoCorte = {
+        id: Date.now(),
+        fecha: new Date().toLocaleDateString('es-VE', { day: '2-digit', month: 'short', year: 'numeric' }),
+        horaCorte: new Date().toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', hour12: true }),
+        totalBruto: totalBruto,
+        gastoGas: gastoGas,
+        totalNeto: totalNeto,
+        carreras: [...carrerasTurnoActual]
+      };
+
+      cortesArchivados.unshift(nuevoCorte);
+      carrerasTurnoActual = [];
+
+      const { keyTurno, keyCortes } = obtenerClavesStorage();
+      localStorage.setItem(keyCortes, JSON.stringify(cortesArchivados));
+      localStorage.setItem(keyTurno, JSON.stringify(carrerasTurnoActual));
+
+      cerrarModalCorte();
+      renderizarMóduloPro();
+      mostrarAlertaPro("✂️ ¡Corte diario realizado y archivado correctamente!");
+    }
+
+    function toggleAcordeonCorte(id) {
+      const el = document.getElementById(`detalle-corte-${id}`);
+      const flecha = document.getElementById(`flecha-corte-${id}`);
+      if(el) {
+        el.classList.toggle('hidden');
+        flecha.style.transform = el.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+      }
+    }
+
+    function eliminarCorteArchivado(id) {
+      cortesArchivados = cortesArchivados.filter(c => c.id !== id);
+      const { keyCortes } = obtenerClavesStorage();
+      localStorage.setItem(keyCortes, JSON.stringify(cortesArchivados));
+      renderizarMóduloPro();
+    }
+
+    function renderizarMóduloPro() {
+      const totalTurnoUSD = carrerasTurnoActual.reduce((acc, c) => acc + c.monto, 0);
+      const totalTurnoBS = totalTurnoUSD * tasaBCV;
+      document.getElementById('pro-total-turno').innerHTML = `$${totalTurnoUSD.toFixed(2)} <span class="text-xs text-slate-400 font-normal">(Bs. ${totalTurnoBS.toFixed(2)})</span>`;
+
+      const contTurno = document.getElementById('contenedor-carreras-turno');
+      contTurno.innerHTML = '';
+      if(carrerasTurnoActual.length === 0) {
+        contTurno.innerHTML = '<p class="text-center text-slate-500 py-2 text-[11px]">Sin carreras en este turno.</p>';
       } else {
-        historialCarreras.forEach(c => {
+        carrerasTurnoActual.forEach(c => {
           const item = document.createElement('div');
-          item.className = 'p-2.5 bg-slate-950/80 rounded-xl border border-slate-800 flex items-center justify-between gap-2';
+          item.className = 'p-2 bg-slate-950/60 rounded-lg border border-slate-800 flex items-center justify-between text-xs';
           item.innerHTML = `
             <div>
-              <p class="font-bold text-white text-xs">${c.nota}</p>
-              <p class="text-[10px] text-slate-500">🕒 ${c.fecha} • Gasolina: -$${(c.descuento || 0).toFixed(2)}</p>
+              <span class="font-bold text-white">${c.nota}</span>
+              <span class="text-[10px] text-slate-500 ml-2">🕒 ${c.hora}</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="font-black text-emerald-400 text-xs">+$${c.monto.toFixed(2)} <span class="text-[9px] text-slate-500 font-normal">neto</span></span>
-              <button onclick="eliminarCarrera(${c.id})" class="text-rose-400 hover:text-rose-300 p-1 text-xs cursor-pointer" title="Eliminar">✕</button>
+              <span class="font-black text-emerald-400">$${c.monto.toFixed(2)}</span>
+              <button onclick="eliminarCarreraTurno(${c.id})" class="text-rose-400 hover:text-rose-300 text-xs cursor-pointer">✕</button>
             </div>
           `;
-          contenedor.appendChild(item);
+          contTurno.appendChild(item);
         });
       }
-      actualizarTotalesPro();
-    }
 
-    function actualizarTotalesPro() {
-      const totalBruto = historialCarreras.reduce((acc, c) => acc + (c.bruto || c.monto), 0);
-      const totalNetoUSD = historialCarreras.reduce((acc, c) => acc + c.monto, 0);
-      const totalBS = totalNetoUSD * tasaBCV;
-      document.getElementById('pro-total-bruto').innerText = `$${totalBruto.toFixed(2)}`;
-      document.getElementById('pro-total-usd').innerText = `$${totalNetoUSD.toFixed(2)}`;
-      document.getElementById('pro-total-bs').innerText = `Bs. ${totalBS.toFixed(2)}`;
+      const contCortes = document.getElementById('lista-cortes-acordeon');
+      contCortes.innerHTML = '';
+
+      if(cortesArchivados.length === 0) {
+        contCortes.innerHTML = '<p class="text-center text-slate-500 py-4 text-[11px]">No hay cortes diarios archivados aún.</p>';
+      } else {
+        cortesArchivados.forEach(corte => {
+          const item = document.createElement('div');
+          item.className = 'bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden';
+          
+          let htmlCarrerasSub = '';
+          corte.carreras.forEach(car => {
+            htmlCarrerasSub += `
+              <div class="flex justify-between items-center py-1 border-b border-slate-900/60 text-[10px] text-slate-400">
+                <span>• ${car.nota} (${car.hora})</span>
+                <span class="font-bold text-slate-200">$${car.monto.toFixed(2)}</span>
+              </div>
+            `;
+          });
+
+          const totalCorteBS = corte.totalNeto * tasaBCV;
+
+          item.innerHTML = `
+            <div onclick="toggleAcordeonCorte(${corte.id})" class="p-3 flex items-center justify-between cursor-pointer hover:bg-slate-900/50 transition">
+              <div class="space-y-0.5">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-white text-xs">📅 ${corte.fecha}</span>
+                  <span class="text-[9px] text-slate-500">🕒 ${corte.horaCorte}</span>
+                </div>
+                <p class="text-[10px] text-slate-400">Bruto: $${corte.totalBruto.toFixed(2)} | ⛽ Gasolina: -$${corte.gastoGas.toFixed(2)}</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="text-right">
+                  <p class="font-black text-emerald-400 text-xs">+$${corte.totalNeto.toFixed(2)} <span class="text-[9px] text-slate-500 font-normal">neto</span></p>
+                  <p class="text-[9px] text-slate-400">Bs. ${totalCorteBS.toFixed(2)}</p>
+                </div>
+                <span id="flecha-corte-${corte.id}" class="text-slate-500 text-xs transition-transform duration-200">▼</span>
+              </div>
+            </div>
+
+            <div id="detalle-corte-${corte.id}" class="hidden p-3 bg-slate-900/90 border-t border-slate-800/60 space-y-2">
+              <p class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">📋 Carrera(s) de la Jornada (${corte.carreras.length}):</p>
+              <div class="pl-2 space-y-1">
+                ${htmlCarrerasSub}
+              </div>
+              <div class="pt-2 text-right">
+                <button onclick="eliminarCorteArchivado(${corte.id})" class="text-[10px] text-rose-400 hover:text-rose-300 underline cursor-pointer">🗑️ Eliminar este corte</button>
+              </div>
+            </div>
+          `;
+          contCortes.appendChild(item);
+        });
+      }
     }
 
     function descargarReportePDF() {
-      if (historialCarreras.length === 0) {
-        mostrarAlertaPro("No tienes registros en el historial para exportar.");
+      if (cortesArchivados.length === 0) {
+        mostrarAlertaPro("No tienes cortes diarios archivados para exportar.");
         return;
       }
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
       const user = auth.currentUser;
       const usuarioNombre = user ? (user.displayName || user.email) : 'Usuario Pro';
+
       doc.setFont("helvetica", "bold");
       doc.setFontSize(16);
-      doc.text("COTIZADOR DELIVERY - REPORTE PRO", 20, 20);
+      doc.text("COTIZADOR DELIVERY - REPORTE DE CORTES DIARIOS", 20, 20);
+
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
       doc.text(`Usuario: ${usuarioNombre}`, 20, 28);
       doc.text(`Fecha de emisión: ${new Date().toLocaleDateString('es-VE')}`, 20, 34);
       doc.text(`Tasa Oficial BCV: Bs. ${tasaBCV.toFixed(2)} / USD`, 20, 40);
+
       doc.setLineWidth(0.5);
       doc.line(20, 44, 190, 44);
+
       let y = 52;
       doc.setFont("helvetica", "bold");
-      doc.text("Fecha / Hora", 20, y);
-      doc.text("Detalle / Cliente", 70, y);
-      doc.text("Bruto ($)", 135, y);
-      doc.text("Neto ($)", 165, y);
+      doc.text("Fecha Corte", 20, y);
+      doc.text("Bruto ($)", 70, y);
+      doc.text("Gasolina ($)", 110, y);
+      doc.text("Ganancia Neta ($)", 150, y);
+      
       y += 4;
       doc.line(20, y, 190, y);
       y += 6;
+
       doc.setFont("helvetica", "normal");
-      historialCarreras.forEach((c) => {
+      cortesArchivados.forEach((c) => {
         if (y > 270) {
           doc.addPage();
           y = 20;
         }
         doc.text(c.fecha, 20, y);
-        doc.text(c.nota.substring(0, 28), 70, y);
-        doc.text(`$${(c.bruto || c.monto).toFixed(2)}`, 135, y);
-        doc.text(`$${c.monto.toFixed(2)}`, 165, y);
+        doc.text(`$${c.totalBruto.toFixed(2)}`, 70, y);
+        doc.text(`-$${c.gastoGas.toFixed(2)}`, 110, y);
+        doc.text(`$${c.totalNeto.toFixed(2)}`, 150, y);
         y += 7;
       });
+
       y += 4;
       doc.line(20, y, 190, y);
       y += 8;
-      const totalBruto = historialCarreras.reduce((acc, c) => acc + (c.bruto || c.monto), 0);
-      const totalNetoUSD = historialCarreras.reduce((acc, c) => c.monto, 0);
-      const totalBS = totalNetoUSD * tasaBCV;
+
+      const totalBrutoAcum = cortesArchivados.reduce((acc, c) => acc + c.totalBruto, 0);
+      const totalGasAcum = cortesArchivados.reduce((acc, c) => acc + c.gastoGas, 0);
+      const totalNetoAcum = cortesArchivados.reduce((acc, c) => acc + c.totalNeto, 0);
+      const totalBS = totalNetoAcum * tasaBCV;
+
       doc.setFont("helvetica", "bold");
-      doc.text(`TOTAL BRUTO ACUMULADO: $${totalBruto.toFixed(2)}`, 20, y);
+      doc.text(`TOTAL BRUTO ACUMULADO: $${totalBrutoAcum.toFixed(2)}`, 20, y);
       y += 6;
-      doc.text(`GANANCIA NETA REAL (USD): $${totalNetoUSD.toFixed(2)}`, 20, y);
+      doc.text(`TOTAL GASTO GASOLINA: -$${totalGasAcum.toFixed(2)}`, 20, y);
+      y += 6;
+      doc.text(`GANANCIA NETA REAL (USD): $${totalNetoAcum.toFixed(2)}`, 20, y);
       y += 6;
       doc.text(`TOTAL NETO EN BOLÍVARES: Bs. ${totalBS.toFixed(2)}`, 20, y);
-      doc.save(`Reporte_Ganancias_Delivery_${Date.now()}.pdf`);
+
+      doc.save(`Reporte_Cortes_Delivery_${Date.now()}.pdf`);
       mostrarAlertaPro("📄 ¡Reporte PDF generado y descargado!");
     }
 
@@ -980,7 +1130,7 @@
         } else {
           revertirAvatarUI();
         }
-        cargarHistorialGuardado();
+        cargarDatosProGuardados();
       } else {
         btnTexto.innerText = `👤 Mi Cuenta / Acceso Pro`;
         if(btnProLabel) btnProLabel.innerText = "Activar Registro de Ganancias Pro";
