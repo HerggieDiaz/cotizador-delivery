@@ -108,10 +108,15 @@
     <div class="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 space-y-4 shadow-xl">
       <div>
         <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-          🔗 Link de Ruta (Google Maps) - Opcional:
+          🔗 Link de Ruta (Google Maps):
         </label>
-        <input type="text" id="link-maps" placeholder="Pega aquí el enlace de Google Maps..." 
-               class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition text-sm">
+        <div class="flex gap-2">
+          <input type="text" id="link-maps" placeholder="Pega aquí el enlace de Google Maps..." 
+                 class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition text-sm">
+          <button type="button" onclick="extraerDistanciaDeMaps()" class="px-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs transition cursor-pointer" title="Extraer distancia">
+            🔍 Leer
+          </button>
+        </div>
       </div>
 
       <div>
@@ -291,14 +296,14 @@
     <p class="font-medium text-slate-400">Desarrollado con dedicación por <span class="text-emerald-400">Herggie Díaz</span></p>
   </footer>
 
-  <!-- MODAL PERFIL DE USUARIO PRO / CONFIGURACIÓN DE MARCA Y FOTO -->
+  <!-- MODAL PERFIL DE USUARIO PRO -->
   <div id="modal-perfil" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative text-center">
       <button onclick="cerrarPerfil()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold cursor-pointer">
         ✕
       </button>
 
-      <!-- Avatar con Foto de Perfil -->
+      <!-- Avatar -->
       <div class="relative w-20 h-20 mx-auto">
         <div id="perfil-avatar-preview" class="w-20 h-20 bg-gradient-to-tr from-emerald-500 to-cyan-500 rounded-full flex items-center justify-center text-slate-950 text-2xl font-black shadow-lg shadow-emerald-500/20 overflow-hidden border-2 border-emerald-500">
           🛵
@@ -309,7 +314,6 @@
         <input type="file" id="input-foto-perfil" accept="image/*" class="hidden" onchange="cambiarFotoPerfil(event)">
       </div>
 
-      <!-- Botón para Eliminar Foto -->
       <div>
         <button type="button" onclick="eliminarFotoPerfil()" class="text-[11px] text-rose-400 hover:text-rose-300 underline font-medium cursor-pointer">
           🗑️ Eliminar foto de perfil
@@ -324,7 +328,7 @@
         </span>
       </div>
 
-      <!-- Configuración de Marca Personal, Cédula, Placa y Pago Móvil -->
+      <!-- Configuración Pro -->
       <div class="border-t border-slate-800 pt-3 text-left space-y-2">
         <p class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">⚙️ Credenciales y Marca Pro:</p>
         <div>
@@ -358,13 +362,10 @@
     </div>
   </div>
 
-  <!-- MODAL DE AUTENTICACIÓN (LOGIN / REGISTRO) -->
+  <!-- MODAL DE AUTENTICACIÓN -->
   <div id="modal-auth" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-5 shadow-2xl relative">
-      
-      <button onclick="cerrarAuth()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold cursor-pointer">
-        ✕
-      </button>
+      <button onclick="cerrarAuth()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold cursor-pointer">✕</button>
 
       <div class="text-center space-y-1">
         <h3 id="auth-titulo" class="text-lg font-bold text-white">Bienvenido de nuevo</h3>
@@ -372,21 +373,14 @@
       </div>
 
       <div id="selector-rol" class="hidden grid grid-cols-2 gap-2 pt-1">
-        <button type="button" id="btn-rol-repartidor" onclick="seleccionarRol('repartidor')" class="py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/10 text-white transition flex items-center justify-center gap-2 cursor-pointer">
-          🛵 Repartidor
-        </button>
-        <button type="button" id="btn-rol-comercio" onclick="seleccionarRol('comercio')" class="py-2.5 text-xs font-bold rounded-xl border border-slate-800 bg-slate-900/60 text-slate-400 transition hover:border-slate-700 flex items-center justify-center gap-2 cursor-pointer">
-          🏪 Comercio
-        </button>
+        <button type="button" id="btn-rol-repartidor" onclick="seleccionarRol('repartidor')" class="py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/10 text-white transition flex items-center justify-center gap-2 cursor-pointer">🛵 Repartidor</button>
+        <button type="button" id="btn-rol-comercio" onclick="seleccionarRol('comercio')" class="py-2.5 text-xs font-bold rounded-xl border border-slate-800 bg-slate-900/60 text-slate-400 transition hover:border-slate-700 flex items-center justify-center gap-2 cursor-pointer">🏪 Comercio</button>
       </div>
 
       <form id="form-auth" class="space-y-3">
         <input type="email" id="email-input" placeholder="Correo electrónico" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-xs focus:outline-none focus:border-emerald-500">
         <input type="password" id="password-input" placeholder="Contraseña" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-xs focus:outline-none focus:border-emerald-500">
-        
-        <button type="submit" id="btn-submit-auth" class="w-full py-3 bg-emerald-500 text-slate-950 font-bold rounded-xl text-xs hover:bg-emerald-400 transition cursor-pointer">
-          Iniciar Sesión
-        </button>
+        <button type="submit" id="btn-submit-auth" class="w-full py-3 bg-emerald-500 text-slate-950 font-bold rounded-xl text-xs hover:bg-emerald-400 transition cursor-pointer">Iniciar Sesión</button>
       </form>
 
       <div class="flex items-center my-3">
@@ -410,23 +404,18 @@
           <span id="texto-cambio-auth">¿No tienes cuenta?</span> <span id="link-cambio-auth" class="underline font-bold text-white">Regístrate</span>
         </button>
       </div>
-
     </div>
   </div>
 
-  <!-- MODAL DE ALERTA GENERAL ESTILIZADA -->
+  <!-- MODAL DE ALERTA -->
   <div id="modal-alerta" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
     <div class="bg-slate-900 border-t sm:border border-slate-800 rounded-t-3xl sm:rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl relative">
-      <div class="w-12 h-12 bg-amber-500/10 rounded-full border border-amber-500/20 flex items-center justify-center mx-auto text-xl">
-        ⚠️
-      </div>
+      <div class="w-12 h-12 bg-amber-500/10 rounded-full border border-amber-500/20 flex items-center justify-center mx-auto text-xl">⚠️</div>
       <div class="space-y-1">
         <h3 class="text-base font-bold text-white">Aviso</h3>
         <p id="mensaje-alerta-texto" class="text-xs text-slate-400">Mensaje de alerta</p>
       </div>
-      <button type="button" onclick="cerrarAlertaPro()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition shadow-lg cursor-pointer">
-        Entendido
-      </button>
+      <button type="button" onclick="cerrarAlertaPro()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition shadow-lg cursor-pointer">Entendido</button>
     </div>
   </div>
 
@@ -499,6 +488,57 @@
       el.innerText = `Bs. ${tasaBCV.toFixed(2)} / USD`;
       card.classList.remove('animate-pulse');
       actualizarTotalesPro();
+    }
+
+    // 🔍 NUEVA FUNCIÓN: Extraer Coordenadas o Parámetros del Link de Maps y Estimar Distancia
+    function extraerDistanciaDeMaps() {
+      const link = document.getElementById('link-maps').value.trim();
+      if(!link) {
+        mostrarAlertaPro("Pega un enlace de Google Maps primero.");
+        return;
+      }
+
+      // Buscar patrones comunes de coordenadas en URLs de Google Maps (ej: @10.18,-68.00 o q=10.18,-68.00)
+      const regexCoords = /@(-?\d+\.\d+),(-?\d+\.\d+)/.exec(link) || /q=(-?\d+\.\d+),(-?\d+\.\d+)/.exec(link);
+      
+      if (regexCoords) {
+        const latDestino = parseFloat(regexCoords[1]);
+        const lonDestino = parseFloat(regexCoords[2]);
+
+        // Intentar obtener la ubicación actual del dispositivo como punto de partida
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition((position) => {
+            const latOrigen = position.coords.latitude;
+            const lonOrigen = position.coords.longitude;
+
+            // Fórmula de Haversine para calcular distancia en línea recta
+            const R = 6371; // Radio de la tierra en km
+            const dLat = (latDestino - latOrigen) * Math.PI / 180;
+            const dLon = (lonDestino - lonOrigen) * Math.PI / 180;
+            const a = 
+              Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(latOrigen * Math.PI / 180) * Math.cos(latDestino * Math.PI / 180) * 
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const distanciaLineaRecta = R * c;
+
+            // Factor de ajuste para calles urbanas en Venezuela (~1.3x la línea recta)
+            const distanciaEstimadaVial = distanciaLineaRecta * 1.3;
+
+            document.getElementById('distancia').value = distanciaEstimadaVial.toFixed(1);
+            mostrarAlertaPro(`📍 ¡Distancia calculada: ~${distanciaEstimadaVial.toFixed(1)} km (ajustada para ruta urbana)!`);
+          }, (error) => {
+            // Si el GPS está apagado, colocamos un estimado estándar o pedimos ingresar manual
+            document.getElementById('distancia').value = "4.5";
+            mostrarAlertaPro("Coordenadas leídas del link. Activa tu GPS para mayor precisión o ajusta los km manualmente.");
+          });
+        } else {
+          mostrarAlertaPro("Tu navegador no soporta geolocalización automática.");
+        }
+      } else {
+        // Si es un enlace corto tipo maps.app.goo.gl y el navegador no puede expandirlo directamente por seguridad CORS:
+        mostrarAlertaPro("💡 Enlace corto detectado. Ingresa los kilómetros aproximados o usa el botón de Google Maps.");
+      }
     }
 
     function calcularTarifa() {
@@ -642,14 +682,11 @@
             const ctx = canvas.getContext('2d');
             canvas.width = 300;
             canvas.height = 300;
-
             let minDim = Math.min(img.width, img.height);
             let sx = (img.width - minDim) / 2;
             let sy = (img.height - minDim) / 2;
-
             ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, 300, 300);
             const compressedBase64 = canvas.toDataURL('image/jpeg', 0.9);
-
             const user = auth.currentUser;
             if (user) {
               localStorage.setItem(`avatar_${user.uid}`, compressedBase64);
@@ -675,7 +712,6 @@
     function actualizarAvatarUI(imgSrc) {
       const headerAvatar = document.getElementById('header-avatar');
       const perfilPreview = document.getElementById('perfil-avatar-preview');
-      
       const contenido = `<img src="${imgSrc}" style="width: 100%; height: 100%; object-fit: cover;">`;
       if(headerAvatar) {
         headerAvatar.innerHTML = contenido;
@@ -690,7 +726,6 @@
     function revertirAvatarUI() {
       const headerAvatar = document.getElementById('header-avatar');
       const perfilPreview = document.getElementById('perfil-avatar-preview');
-
       if(headerAvatar) {
         headerAvatar.innerHTML = '🛵';
         headerAvatar.className = "w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-emerald-500/20 overflow-hidden";
@@ -708,12 +743,10 @@
         const cedula = document.getElementById('cfg-cedula').value.trim();
         const placa = document.getElementById('cfg-placa').value.trim();
         const pago = document.getElementById('cfg-pago-movil').value.trim();
-
         localStorage.setItem(`marca_${user.uid}`, marca);
         localStorage.setItem(`cedula_${user.uid}`, cedula);
         localStorage.setItem(`placa_${user.uid}`, placa);
         localStorage.setItem(`pagomovil_${user.uid}`, pago);
-
         mostrarAlertaPro("¡Datos Pro guardados correctamente!");
         cerrarPerfil();
       }
@@ -739,7 +772,6 @@
       const textoCambio = document.getElementById('texto-cambio-auth');
       const linkCambio = document.getElementById('link-cambio-auth');
       const btnSubmit = document.getElementById('btn-submit-auth');
-
       if (esRegistro) {
         titulo.innerText = "Crea tu cuenta y gana 14 días Pro";
         selectorRol.classList.remove('hidden');
@@ -759,7 +791,6 @@
       rolSeleccionado = rol;
       const btnRepartidor = document.getElementById('btn-rol-repartidor');
       const btnComercio = document.getElementById('btn-rol-comercio');
-
       if (rol === 'repartidor') {
         btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/10 text-white transition flex items-center justify-center gap-2 cursor-pointer";
         btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-800 bg-slate-900/60 text-slate-400 transition hover:border-slate-700 cursor-pointer";
@@ -777,11 +808,9 @@
       } else {
         const mod = document.getElementById('modulo-ganancias-pro');
         const flecha = document.getElementById('flecha-pro');
-        
         mod.classList.toggle('hidden');
         const estaAbierto = !mod.classList.contains('hidden');
         flecha.style.transform = estaAbierto ? 'rotate(180deg)' : 'rotate(0deg)';
-
         if (estaAbierto) {
           cargarHistorialGuardado();
           mod.scrollIntoView({ behavior: 'smooth' });
@@ -805,14 +834,11 @@
       const montoBruto = parseFloat(document.getElementById('pro-monto-usd').value);
       const nota = document.getElementById('pro-cliente-nota').value.trim() || 'Carrera estándar';
       const descuentoGas = parseFloat(document.getElementById('pro-descuento-gasolina').value) || 0;
-
       if(!montoBruto || montoBruto <= 0) {
         mostrarAlertaPro("Ingresa un monto válido en USD.");
         return;
       }
-
       const montoNeto = Math.max(0, montoBruto - descuentoGas);
-
       const nuevaCarrera = {
         id: Date.now(),
         bruto: montoBruto,
@@ -821,13 +847,10 @@
         nota: nota,
         fecha: new Date().toLocaleString('es-VE', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true })
       };
-
       historialCarreras.unshift(nuevaCarrera);
       localStorage.setItem(obtenerClaveStorage(), JSON.stringify(historialCarreras));
-
       document.getElementById('pro-monto-usd').value = '';
       document.getElementById('pro-cliente-nota').value = '';
-      
       renderizarHistorial();
       mostrarAlertaPro("¡Carrera y ganancia neta registrada!");
     }
@@ -841,7 +864,6 @@
     function renderizarHistorial() {
       const contenedor = document.getElementById('lista-carreras-pro');
       contenedor.innerHTML = '';
-
       if (historialCarreras.length === 0) {
         contenedor.innerHTML = '<p class="text-center text-slate-500 py-4 text-[11px]">No hay registros guardados aún.</p>';
       } else {
@@ -861,7 +883,6 @@
           contenedor.appendChild(item);
         });
       }
-
       actualizarTotalesPro();
     }
 
@@ -869,7 +890,6 @@
       const totalBruto = historialCarreras.reduce((acc, c) => acc + (c.bruto || c.monto), 0);
       const totalNetoUSD = historialCarreras.reduce((acc, c) => acc + c.monto, 0);
       const totalBS = totalNetoUSD * tasaBCV;
-
       document.getElementById('pro-total-bruto').innerText = `$${totalBruto.toFixed(2)}`;
       document.getElementById('pro-total-usd').innerText = `$${totalNetoUSD.toFixed(2)}`;
       document.getElementById('pro-total-bs').innerText = `Bs. ${totalBS.toFixed(2)}`;
@@ -880,36 +900,29 @@
         mostrarAlertaPro("No tienes registros en el historial para exportar.");
         return;
       }
-
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
       const user = auth.currentUser;
       const usuarioNombre = user ? (user.displayName || user.email) : 'Usuario Pro';
-
       doc.setFont("helvetica", "bold");
       doc.setFontSize(16);
       doc.text("COTIZADOR DELIVERY - REPORTE PRO", 20, 20);
-
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
       doc.text(`Usuario: ${usuarioNombre}`, 20, 28);
       doc.text(`Fecha de emisión: ${new Date().toLocaleDateString('es-VE')}`, 20, 34);
       doc.text(`Tasa Oficial BCV: Bs. ${tasaBCV.toFixed(2)} / USD`, 20, 40);
-
       doc.setLineWidth(0.5);
       doc.line(20, 44, 190, 44);
-
       let y = 52;
       doc.setFont("helvetica", "bold");
       doc.text("Fecha / Hora", 20, y);
       doc.text("Detalle / Cliente", 70, y);
       doc.text("Bruto ($)", 135, y);
       doc.text("Neto ($)", 165, y);
-      
       y += 4;
       doc.line(20, y, 190, y);
       y += 6;
-
       doc.setFont("helvetica", "normal");
       historialCarreras.forEach((c) => {
         if (y > 270) {
@@ -922,22 +935,18 @@
         doc.text(`$${c.monto.toFixed(2)}`, 165, y);
         y += 7;
       });
-
       y += 4;
       doc.line(20, y, 190, y);
       y += 8;
-
       const totalBruto = historialCarreras.reduce((acc, c) => acc + (c.bruto || c.monto), 0);
-      const totalNetoUSD = historialCarreras.reduce((acc, c) => acc + c.monto, 0);
+      const totalNetoUSD = historialCarreras.reduce((acc, c) => c.monto, 0);
       const totalBS = totalNetoUSD * tasaBCV;
-
       doc.setFont("helvetica", "bold");
       doc.text(`TOTAL BRUTO ACUMULADO: $${totalBruto.toFixed(2)}`, 20, y);
       y += 6;
       doc.text(`GANANCIA NETA REAL (USD): $${totalNetoUSD.toFixed(2)}`, 20, y);
       y += 6;
       doc.text(`TOTAL NETO EN BOLÍVARES: Bs. ${totalBS.toFixed(2)}`, 20, y);
-
       doc.save(`Reporte_Ganancias_Delivery_${Date.now()}.pdf`);
       mostrarAlertaPro("📄 ¡Reporte PDF generado y descargado!");
     }
@@ -945,7 +954,6 @@
     async function iniciarConGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
       const esIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
       try {
         if (esIOS) {
           await auth.signInWithPopup(provider);
@@ -972,7 +980,6 @@
         e.preventDefault();
         const email = document.getElementById('email-input').value;
         const password = document.getElementById('password-input').value;
-
         try {
           if (esRegistro) {
             await auth.createUserWithEmailAndPassword(email, password);
@@ -1000,19 +1007,16 @@
     auth.onAuthStateChanged((user) => {
       const btnTexto = document.getElementById('btn-mi-cuenta-texto');
       const btnProLabel = document.getElementById('btn-pro-label');
-      
       if (user) {
         const nombre = user.displayName || user.email.split('@')[0];
         btnTexto.innerText = `👤 ${nombre}`;
         if(btnProLabel) btnProLabel.innerText = "Registro de Ganancias Pro";
-        
         const avatarGuardado = localStorage.getItem(`avatar_${user.uid}`);
         if(avatarGuardado) {
           actualizarAvatarUI(avatarGuardado);
         } else {
           revertirAvatarUI();
         }
-
         cargarHistorialGuardado();
       } else {
         btnTexto.innerText = `👤 Mi Cuenta / Acceso Pro`;
