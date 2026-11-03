@@ -309,6 +309,13 @@
         <input type="file" id="input-foto-perfil" accept="image/*" class="hidden" onchange="cambiarFotoPerfil(event)">
       </div>
 
+      <!-- Botón para Eliminar Foto -->
+      <div>
+        <button type="button" onclick="eliminarFotoPerfil()" class="text-[11px] text-rose-400 hover:text-rose-300 underline font-medium cursor-pointer">
+          🗑️ Eliminar foto de perfil
+        </button>
+      </div>
+
       <div>
         <h3 id="perfil-nombre" class="text-base font-bold text-white">Cargando...</h3>
         <p id="perfil-email" class="text-xs text-slate-400">correo@ejemplo.com</p>
@@ -598,6 +605,8 @@
         const avatarGuardado = localStorage.getItem(`avatar_${user.uid}`);
         if(avatarGuardado) {
           actualizarAvatarUI(avatarGuardado);
+        } else {
+          revertirAvatarUI();
         }
       }
       document.getElementById('modal-perfil').classList.remove('hidden'); 
@@ -622,7 +631,6 @@
       }
     }
 
-    // Procesa y comprime la imagen a 200x200 px para evitar exceder localStorage
     function cambiarFotoPerfil(event) {
       const file = event.target.files[0];
       if (file) {
@@ -632,16 +640,15 @@
           img.onload = function() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            canvas.width = 200;
-            canvas.height = 200;
+            canvas.width = 300;
+            canvas.height = 300;
 
-            // Recorte al centro
             let minDim = Math.min(img.width, img.height);
             let sx = (img.width - minDim) / 2;
             let sy = (img.height - minDim) / 2;
 
-            ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, 200, 200);
-            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.85);
+            ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, 300, 300);
+            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.9);
 
             const user = auth.currentUser;
             if (user) {
@@ -656,15 +663,41 @@
       }
     }
 
+    function eliminarFotoPerfil() {
+      const user = auth.currentUser;
+      if (user) {
+        localStorage.removeItem(`avatar_${user.uid}`);
+        revertirAvatarUI();
+        mostrarAlertaPro("Foto de perfil eliminada.");
+      }
+    }
+
     function actualizarAvatarUI(imgSrc) {
       const headerAvatar = document.getElementById('header-avatar');
       const perfilPreview = document.getElementById('perfil-avatar-preview');
       
+      const contenido = `<img src="${imgSrc}" style="width: 100%; height: 100%; object-fit: cover;">`;
       if(headerAvatar) {
-        headerAvatar.innerHTML = `<img src="${imgSrc}" class="w-full h-full object-cover">`;
+        headerAvatar.innerHTML = contenido;
+        headerAvatar.className = "w-9 h-9 rounded-xl overflow-hidden shadow-lg shadow-emerald-500/20";
       }
       if(perfilPreview) {
-        perfilPreview.innerHTML = `<img src="${imgSrc}" class="w-full h-full object-cover">`;
+        perfilPreview.innerHTML = contenido;
+        perfilPreview.className = "w-20 h-20 rounded-full overflow-hidden border-2 border-emerald-500 shadow-lg shadow-emerald-500/20";
+      }
+    }
+
+    function revertirAvatarUI() {
+      const headerAvatar = document.getElementById('header-avatar');
+      const perfilPreview = document.getElementById('perfil-avatar-preview');
+
+      if(headerAvatar) {
+        headerAvatar.innerHTML = '🛵';
+        headerAvatar.className = "w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-emerald-500/20 overflow-hidden";
+      }
+      if(perfilPreview) {
+        perfilPreview.innerHTML = '🛵';
+        perfilPreview.className = "w-20 h-20 bg-gradient-to-tr from-emerald-500 to-cyan-500 rounded-full flex items-center justify-center text-slate-950 text-2xl font-black shadow-lg shadow-emerald-500/20 overflow-hidden border-2 border-emerald-500";
       }
     }
 
@@ -692,14 +725,7 @@
         cerrarPerfil();
         document.getElementById('modulo-ganancias-pro').classList.add('hidden');
         document.getElementById('flecha-pro').style.transform = 'rotate(0deg)';
-        const headerAvatar = document.getElementById('header-avatar');
-        if(headerAvatar) {
-          headerAvatar.innerHTML = '🛵';
-        }
-        const perfilPreview = document.getElementById('perfil-avatar-preview');
-        if(perfilPreview) {
-          perfilPreview.innerHTML = '🛵';
-        }
+        revertirAvatarUI();
         mostrarAlertaPro("Sesión cerrada correctamente.");
       } catch (e) {
         mostrarAlertaPro("Error al cerrar sesión.");
@@ -983,6 +1009,8 @@
         const avatarGuardado = localStorage.getItem(`avatar_${user.uid}`);
         if(avatarGuardado) {
           actualizarAvatarUI(avatarGuardado);
+        } else {
+          revertirAvatarUI();
         }
 
         cargarHistorialGuardado();
@@ -991,15 +1019,7 @@
         if(btnProLabel) btnProLabel.innerText = "Activar Registro de Ganancias Pro";
         document.getElementById('modulo-ganancias-pro').classList.add('hidden');
         document.getElementById('flecha-pro').style.transform = 'rotate(0deg)';
-        
-        const headerAvatar = document.getElementById('header-avatar');
-        if(headerAvatar) {
-          headerAvatar.innerHTML = '🛵';
-        }
-        const perfilPreview = document.getElementById('perfil-avatar-preview');
-        if(perfilPreview) {
-          perfilPreview.innerHTML = '🛵';
-        }
+        revertirAvatarUI();
       }
     });
 
