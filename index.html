@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cotizador de Delivery y Mototaxi</title>
+  <title>Cotizador de Delivery</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -65,7 +65,7 @@
           🛵
         </div>
         <div>
-          <h1 class="font-bold text-slate-900 dark:text-white text-base tracking-wide leading-none">Cotizador Pro</h1>
+          <h1 class="font-bold text-slate-900 dark:text-white text-base tracking-wide leading-none">Cotizador Delivery</h1>
           <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">Venezuela • Tasa BCV</span>
         </div>
       </div>
@@ -106,22 +106,6 @@
 
     <!-- Formulario de Cotización -->
     <div class="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 space-y-4 shadow-xl">
-      
-      <!-- Selector de Servicio (Delivery vs Mototaxi) -->
-      <div>
-        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-          🛵 Tipo de Servicio:
-        </label>
-        <div class="grid grid-cols-2 gap-2">
-          <button type="button" id="modo-delivery" onclick="cambiarModoServicio('delivery')" class="py-2.5 px-3 rounded-xl border border-emerald-500 bg-emerald-500/10 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
-            📦 Delivery
-          </button>
-          <button type="button" id="modo-mototaxi" onclick="cambiarModoServicio('mototaxi')" class="py-2.5 px-3 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
-            👤 Mototaxi
-          </button>
-        </div>
-      </div>
-
       <div>
         <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
           🔗 Link de Ruta (Google Maps) - Opcional:
@@ -138,7 +122,7 @@
                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
       </div>
 
-      <!-- Opciones adicionales: Recargo por Lluvia -->
+      <!-- Opcionales: Recargo por Lluvia -->
       <div class="pt-1">
         <label class="flex items-center justify-between p-3 rounded-xl border border-slate-800 bg-slate-950/60 cursor-pointer hover:border-cyan-500/40 transition">
           <div class="flex items-center gap-2.5">
@@ -152,10 +136,10 @@
         </label>
       </div>
 
-      <!-- Tipo de Envío (Solo visible si está en modo Delivery) -->
-      <div id="contenedor-tipo-envio" class="space-y-2 relative">
+      <!-- Tipo de Envío -->
+      <div class="space-y-2 relative">
         <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
-          Tipo de Carga / Paquete:
+          Tipo de Envío / Carga:
         </label>
         <input type="hidden" id="tipo-envio" value="estandar">
 
@@ -173,7 +157,7 @@
 
         <div id="opciones-desplegable-envio" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-slate-900 border border-slate-800 rounded-2xl p-2 shadow-2xl z-40 space-y-1 backdrop-blur-md">
           <button type="button" onclick="seleccionarOpcionEnvio('estandar', '📦', 'Estándar', 'Documentos, Comida, Ropa')" 
-            class="w-full p-2.5 rounded-xl hover:bg-emerald-500/15 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
+            class="w-full p-2.5 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
             <div class="flex items-center gap-2.5">
               <span class="text-base">📦</span>
               <div>
@@ -183,7 +167,7 @@
             </div>
           </button>
           <button type="button" onclick="seleccionarOpcionEnvio('pesado', '🏋️', 'Carga Pesada / Voluminosa', 'Recargo del +25%')" 
-            class="w-full p-2.5 rounded-xl hover:bg-emerald-500/15 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
+            class="w-full p-2.5 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
             <div class="flex items-center gap-2.5">
               <span class="text-base">🏋️</span>
               <div>
@@ -193,7 +177,7 @@
             </div>
           </button>
           <button type="button" onclick="seleccionarOpcionEnvio('fragil', '💎', 'Objeto Frágil / Delicado', 'Recargo del +15%')" 
-            class="w-full p-2.5 rounded-xl hover:bg-emerald-500/15 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
+            class="w-full p-2.5 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
             <div class="flex items-center gap-2.5">
               <span class="text-base">💎</span>
               <div>
@@ -214,7 +198,7 @@
     <!-- Resultado -->
     <div id="resultado-box" class="hidden p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-500/30 space-y-4">
       <div class="flex justify-between items-center">
-        <h3 id="titulo-resultado-header" class="text-xs uppercase font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">Resumen de Cotización (Delivery):</h3>
+        <h3 class="text-xs uppercase font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">Resumen de Cotización:</h3>
         <button onclick="reiniciarCotizacion()" class="text-xs px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-600 dark:text-emerald-300 font-semibold rounded-lg transition flex items-center gap-1 cursor-pointer">
           🔄 Nueva Cotización
         </button>
@@ -263,7 +247,7 @@
 
       <!-- Formulario de Ingreso de Carrera -->
       <div class="space-y-3 pt-1">
-        <p class="text-xs text-slate-400">Registra de forma ética cada servicio realizado:</p>
+        <p class="text-xs text-slate-400">Registra de forma ética cada carrera realizada:</p>
         <div class="grid grid-cols-2 gap-2">
           <input type="number" id="pro-monto-usd" placeholder="Monto ($ USD)" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white text-xs focus:border-emerald-500 focus:outline-none">
           <input type="text" id="pro-cliente-nota" placeholder="Cliente / Zona / Descripción" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white text-xs focus:border-emerald-500 focus:outline-none">
@@ -317,7 +301,7 @@
 
   <!-- Footer -->
   <footer class="text-center space-y-1 pt-8 pb-6 text-xs text-slate-500 border-t border-slate-800/80 mt-8">
-    <p>© 2026 Cotizador Pro. Todos los derechos reservados.</p>
+    <p>© 2026 Cotizador Delivery. Todos los derechos reservados.</p>
     <p class="font-medium text-slate-400">Desarrollado con dedicación por <span class="text-emerald-400">Herggie Díaz</span></p>
   </footer>
 
@@ -445,14 +429,9 @@
   <!-- SCRIPT GENERAL Y LÓGICA DE LA APLICACIÓN -->
   <script>
     let tasaBCV = 88.47; 
-    let tipoServicioActual = 'delivery'; // 'delivery' o 'mototaxi'
-
-    // Tarifas base y parámetros
-    const TARIFA_BASE_DELIVERY = 2.00;       
-    const TARIFA_BASE_MOTOTAXI = 1.20;       
+    const TARIFA_BASE = 2.00;       
     const KM_BASE = 2.0;            
     const PRECIO_KM_EXTRA = 0.40;   
-
     let esHorarioNocturno = false;
     let esRegistro = false;
     let rolSeleccionado = 'repartidor';
@@ -518,23 +497,6 @@
       actualizarTotalesPro();
     }
 
-    function cambiarModoServicio(modo) {
-      tipoServicioActual = modo;
-      const btnDel = document.getElementById('modo-delivery');
-      const btnMoto = document.getElementById('modo-mototaxi');
-      const contenedorEnvio = document.getElementById('contenedor-tipo-envio');
-
-      if (modo === 'delivery') {
-        btnDel.className = "py-2.5 px-3 rounded-xl border border-emerald-500 bg-emerald-500/10 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer";
-        btnMoto.className = "py-2.5 px-3 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer";
-        contenedorEnvio.classList.remove('hidden');
-      } else {
-        btnMoto.className = "py-2.5 px-3 rounded-xl border border-emerald-500 bg-emerald-500/10 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer";
-        btnDel.className = "py-2.5 px-3 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer";
-        contenedorEnvio.classList.add('hidden');
-      }
-    }
-
     function calcularTarifa() {
       const dist = parseFloat(document.getElementById('distancia').value);
       if(!dist || dist <= 0) {
@@ -542,21 +504,15 @@
         return;
       }
 
-      // Definir base según el tipo de servicio seleccionado
-      let subtotalUSD = (tipoServicioActual === 'delivery') ? TARIFA_BASE_DELIVERY : TARIFA_BASE_MOTOTAXI;
-
+      let subtotalUSD = TARIFA_BASE;
       if (dist > KM_BASE) {
         subtotalUSD += (dist - KM_BASE) * PRECIO_KM_EXTRA;
       }
 
-      // Si es delivery, aplicar recargo de carga
-      if (tipoServicioActual === 'delivery') {
-        const tipoCarga = document.getElementById('tipo-envio').value;
-        if(tipoCarga === 'pesado') subtotalUSD *= 1.25; 
-        else if(tipoCarga === 'fragil') subtotalUSD *= 1.15; 
-      }
+      const tipo = document.getElementById('tipo-envio').value;
+      if(tipo === 'pesado') subtotalUSD *= 1.25; 
+      else if(tipo === 'fragil') subtotalUSD *= 1.15; 
 
-      // Recargo Nocturno
       if(esHorarioNocturno) subtotalUSD *= 1.30;
 
       // Recargo por Lluvia
@@ -565,9 +521,6 @@
 
       const totalUSD = subtotalUSD.toFixed(2);
       const totalBS = (totalUSD * tasaBCV).toFixed(2);
-
-      const tituloHeader = (tipoServicioActual === 'delivery') ? 'Resumen de Cotización (Delivery):' : 'Resumen de Cotización (Mototaxi):';
-      document.getElementById('titulo-resultado-header').innerText = tituloHeader;
 
       document.getElementById('res-usd').innerText = `$${totalUSD}`;
       document.getElementById('res-bs').innerText = `Bs. ${totalBS}`;
@@ -591,14 +544,14 @@
       const hayLluvia = document.getElementById('check-lluvia').checked;
 
       const user = auth.currentUser;
-      const nombreMarca = (user && localStorage.getItem(`marca_${user.uid}`)) || (tipoServicioActual === 'delivery' ? 'COTIZACIÓN DE DELIVERY' : 'SERVICIO DE MOTOTAXI');
+      const nombreMarca = (user && localStorage.getItem(`marca_${user.uid}`)) || 'COTIZACIÓN DE DELIVERY';
       const cedula = (user && localStorage.getItem(`cedula_${user.uid}`)) || '';
       const placa = (user && localStorage.getItem(`placa_${user.uid}`)) || '';
       const pagoMovil = (user && localStorage.getItem(`pagomovil_${user.uid}`)) || '';
 
       let texto = `🛵 *${nombreMarca.toUpperCase()}*\n\n`;
       if(cedula || placa) {
-        texto += `🛡️ *Conductor:* ${user ? (user.displayName || 'Verificado') : ''} ${cedula ? '('+cedula+')' : ''}\n`;
+        texto += `🛡️ *Repartidor:* ${user ? (user.displayName || 'Verificado') : ''} ${cedula ? '('+cedula+')' : ''}\n`;
         if(placa) texto += `🏍️ *Moto Placa:* ${placa}\n`;
         texto += `\n`;
       }
@@ -842,7 +795,7 @@
 
     function registrarCarreraPro() {
       const montoBruto = parseFloat(document.getElementById('pro-monto-usd').value);
-      const nota = document.getElementById('pro-cliente-nota').value.trim() || 'Servicio estándar';
+      const nota = document.getElementById('pro-cliente-nota').value.trim() || 'Carrera estándar';
       const descuentoGas = parseFloat(document.getElementById('pro-descuento-gasolina').value) || 0;
       if(!montoBruto || montoBruto <= 0) {
         mostrarAlertaPro("Ingresa un monto válido en USD.");
@@ -862,7 +815,7 @@
       document.getElementById('pro-monto-usd').value = '';
       document.getElementById('pro-cliente-nota').value = '';
       renderizarHistorial();
-      mostrarAlertaPro("¡Servicio y ganancia neta registrada!");
+      mostrarAlertaPro("¡Carrera y ganancia neta registrada!");
     }
 
     function eliminarCarrera(id) {
@@ -916,7 +869,7 @@
       const usuarioNombre = user ? (user.displayName || user.email) : 'Usuario Pro';
       doc.setFont("helvetica", "bold");
       doc.setFontSize(16);
-      doc.text("COTIZADOR PRO - REPORTE DE INGRESOS", 20, 20);
+      doc.text("COTIZADOR DELIVERY - REPORTE PRO", 20, 20);
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
       doc.text(`Usuario: ${usuarioNombre}`, 20, 28);
@@ -957,7 +910,7 @@
       doc.text(`GANANCIA NETA REAL (USD): $${totalNetoUSD.toFixed(2)}`, 20, y);
       y += 6;
       doc.text(`TOTAL NETO EN BOLÍVARES: Bs. ${totalBS.toFixed(2)}`, 20, y);
-      doc.save(`Reporte_Ingresos_${Date.now()}.pdf`);
+      doc.save(`Reporte_Ganancias_Delivery_${Date.now()}.pdf`);
       mostrarAlertaPro("📄 ¡Reporte PDF generado y descargado!");
     }
 
