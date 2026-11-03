@@ -303,7 +303,7 @@
         <div id="perfil-avatar-preview" class="w-20 h-20 bg-gradient-to-tr from-emerald-500 to-cyan-500 rounded-full flex items-center justify-center text-slate-950 text-2xl font-black shadow-lg shadow-emerald-500/20 overflow-hidden border-2 border-emerald-500">
           🛵
         </div>
-        <label for="input-foto-perfil" class="absolute bottom-0 right-0 bg-emerald-500 hover:bg-emerald-400 text-slate-950 p-1.5 rounded-full cursor-pointer shadow-md text-xs" title="Cambiar foto">
+        <label for="input-foto-perfil" class="absolute bottom-0 right-0 bg-emerald-500 hover:bg-emerald-400 text-slate-950 p-1.5 rounded-full cursor-pointer shadow-md text-xs z-10" title="Cambiar foto">
           📷
         </label>
         <input type="file" id="input-foto-perfil" accept="image/*" class="hidden" onchange="cambiarFotoPerfil(event)">
@@ -622,20 +622,35 @@
       }
     }
 
+    // Procesa y comprime la imagen a 200x200 px para evitar exceder localStorage
     function cambiarFotoPerfil(event) {
       const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-          const base64Image = e.target.result;
-          const user = auth.currentUser;
-          if (user) {
-            localStorage.setItem(`avatar_${user.uid}`, base64Image);
-            actualizarAvatarUI(base64Image);
-            mostrarAlertaPro("¡Foto de perfil actualizada con éxito!");
-          } else {
-            mostrarAlertaPro("Debes iniciar sesión para guardar tu foto.");
-          }
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 200;
+            canvas.height = 200;
+
+            // Recorte al centro
+            let minDim = Math.min(img.width, img.height);
+            let sx = (img.width - minDim) / 2;
+            let sy = (img.height - minDim) / 2;
+
+            ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, 200, 200);
+            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.85);
+
+            const user = auth.currentUser;
+            if (user) {
+              localStorage.setItem(`avatar_${user.uid}`, compressedBase64);
+              actualizarAvatarUI(compressedBase64);
+              mostrarAlertaPro("¡Foto de perfil actualizada correctamente!");
+            }
+          };
+          img.src = e.target.result;
         };
         reader.readAsDataURL(file);
       }
@@ -645,15 +660,11 @@
       const headerAvatar = document.getElementById('header-avatar');
       const perfilPreview = document.getElementById('perfil-avatar-preview');
       
-      const contenidoImg = `<img src="${imgSrc}" class="w-full h-full object-cover rounded-full">`;
-      
       if(headerAvatar) {
-        headerAvatar.innerHTML = contenidoImg;
-        headerAvatar.className = "w-9 h-9 rounded-xl overflow-hidden shadow-lg shadow-emerald-500/20";
+        headerAvatar.innerHTML = `<img src="${imgSrc}" class="w-full h-full object-cover">`;
       }
       if(perfilPreview) {
-        perfilPreview.innerHTML = contenidoImg;
-        perfilPreview.className = "relative w-20 h-20 rounded-full overflow-hidden border-2 border-emerald-500";
+        perfilPreview.innerHTML = `<img src="${imgSrc}" class="w-full h-full object-cover">`;
       }
     }
 
@@ -684,7 +695,10 @@
         const headerAvatar = document.getElementById('header-avatar');
         if(headerAvatar) {
           headerAvatar.innerHTML = '🛵';
-          headerAvatar.className = "w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-emerald-500/20 overflow-hidden";
+        }
+        const perfilPreview = document.getElementById('perfil-avatar-preview');
+        if(perfilPreview) {
+          perfilPreview.innerHTML = '🛵';
         }
         mostrarAlertaPro("Sesión cerrada correctamente.");
       } catch (e) {
@@ -981,7 +995,10 @@
         const headerAvatar = document.getElementById('header-avatar');
         if(headerAvatar) {
           headerAvatar.innerHTML = '🛵';
-          headerAvatar.className = "w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-emerald-500/20 overflow-hidden";
+        }
+        const perfilPreview = document.getElementById('perfil-avatar-preview');
+        if(perfilPreview) {
+          perfilPreview.innerHTML = '🛵';
         }
       }
     });
