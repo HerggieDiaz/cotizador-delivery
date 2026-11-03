@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cotizador de Delivery</title>
+  <title>Cotizador Delivery Pro | Tu Control Financiero</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -33,6 +33,16 @@
     input[type=number] {
       -moz-appearance: textfield;
     }
+    /* Efectos de brillo ambiental y glassmorphism */
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(51, 65, 85, 0.4);
+    }
+    .glow-emerald {
+      box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.15);
+    }
   </style>
 
   <!-- SDKs de Firebase -->
@@ -55,78 +65,80 @@
     const auth = firebase.auth();
   </script>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen font-sans selection:bg-emerald-500 selection:text-white pb-10 transition-colors duration-300">
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans selection:bg-emerald-500 selection:text-slate-950 pb-12 transition-colors duration-300">
 
-  <!-- Header principal -->
-  <header class="border-b border-slate-200 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/60 backdrop-blur-md sticky top-0 z-50 px-4 py-3">
+  <!-- Header principal estilo SaaS -->
+  <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-xl sticky top-0 z-50 px-4 py-3.5">
     <div class="max-w-md mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div id="header-avatar" class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-emerald-500/20 overflow-hidden">
+        <div id="header-avatar" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-cyan-400 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-emerald-500/20 overflow-hidden ring-2 ring-emerald-500/30">
           🛵
         </div>
         <div>
-          <h1 class="font-bold text-slate-900 dark:text-white text-base tracking-wide leading-none">Cotizador Delivery</h1>
-          <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">Venezuela • Tasa BCV</span>
+          <h1 class="font-bold text-white text-base tracking-tight leading-none">Cotizador Delivery</h1>
+          <span class="text-[10px] text-emerald-400 font-semibold tracking-wide uppercase">Venezuela • Tasa BCV Oficial</span>
         </div>
       </div>
       
       <!-- Botón Modo Oscuro / Claro -->
-      <button onclick="toggleTheme()" class="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900" title="Cambiar Tema">
+      <button onclick="toggleTheme()" class="p-2.5 text-slate-300 hover:text-white transition rounded-xl border border-slate-800 bg-slate-900/90 shadow-sm" title="Cambiar Tema">
         <span id="theme-icon">☀️</span>
       </button>
     </div>
 
     <!-- Botón Dinámico de Cuenta / Perfil -->
-    <button onclick="gestionarClicCuenta()" class="w-full mt-2 px-3 py-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-emerald-500/20 transition cursor-pointer">
-      <span id="btn-mi-cuenta-texto">👤 Mi Cuenta / Acceso Pro</span>
-    </button>
+    <div class="max-w-md mx-auto mt-2.5">
+      <button onclick="gestionarClicCuenta()" class="w-full px-3.5 py-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-bold flex items-center justify-center gap-2 hover:bg-emerald-500/20 transition cursor-pointer shadow-inner">
+        <span id="btn-mi-cuenta-texto">👤 Mi Cuenta / Acceso Pro</span>
+      </button>
+    </div>
   </header>
 
   <!-- Contenedor App -->
-  <main class="max-w-md mx-auto px-4 pt-6 space-y-6">
+  <main class="max-w-md mx-auto px-4 pt-6 space-y-5">
 
     <!-- Tarjeta de Tasa BCV y Estado Nocturno -->
     <div class="grid grid-cols-2 gap-3">
-      <div id="card-bcv" class="p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-xl animate-pulse">
-        <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Tasa Oficial BCV</p>
-        <p id="tasa-bcv-txt" class="text-base font-bold text-emerald-600 dark:text-emerald-400">Actualizando...</p>
+      <div id="card-bcv" class="glass-card p-4 rounded-2xl flex flex-col justify-between glow-emerald animate-pulse">
+        <p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Tasa Oficial BCV</p>
+        <p id="tasa-bcv-txt" class="text-sm font-black text-emerald-400 mt-1">Actualizando...</p>
       </div>
       
-      <div id="badge-nocturno" class="p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-xl hidden">
-        <p class="text-[10px] text-indigo-600 dark:text-indigo-400 uppercase tracking-wider font-semibold">Modo Activo</p>
-        <p class="text-xs font-bold text-indigo-700 dark:text-indigo-300">🌙 Nocturno (9pm - 6am)</p>
+      <div id="badge-nocturno" class="glass-card p-4 rounded-2xl flex flex-col justify-between hidden border-indigo-500/30">
+        <p class="text-[10px] text-indigo-400 uppercase tracking-wider font-bold">Modo Activo</p>
+        <p class="text-xs font-bold text-indigo-200 mt-1">🌙 Nocturno (9pm - 6am)</p>
       </div>
     </div>
 
     <!-- Botón directo Google Maps -->
-    <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-xl text-center flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition-all active:scale-[0.98]">
+    <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 px-4 bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-bold rounded-2xl text-center flex items-center justify-center gap-2.5 shadow-lg shadow-rose-500/25 transition-all active:scale-[0.98]">
       <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
       Abrir Google Maps (Ver Ruta Real)
     </a>
 
-    <!-- Formulario de Cotización -->
-    <div class="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 space-y-4 shadow-xl">
+    <!-- Formulario de Cotización (Estilo Glassmorphic Card) -->
+    <div class="glass-card p-5 rounded-3xl space-y-4 glow-emerald">
       <div>
-        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+        <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">
           🔗 Link de Ruta (Google Maps) - Opcional:
         </label>
         <input type="text" id="link-maps" placeholder="Pega aquí el enlace de Google Maps..." 
-               class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition text-sm">
+               class="w-full px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-800 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition text-sm">
       </div>
 
       <div>
-        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+        <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">
           📐 Distancia Exacta (Kilómetros km):
         </label>
         <input type="number" id="distancia" placeholder="Ej. 4.6" step="0.1" 
-               class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
+               class="w-full px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-800 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition text-sm font-bold">
       </div>
 
       <!-- Recargo por Lluvia -->
       <div class="pt-1">
-        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-800 bg-slate-950/60 cursor-pointer hover:border-cyan-500/40 transition">
-          <div class="flex items-center gap-2.5">
-            <span class="text-lg">🌧️</span>
+        <label class="flex items-center justify-between p-3.5 rounded-2xl border border-slate-800 bg-slate-950/60 cursor-pointer hover:border-cyan-500/40 transition">
+          <div class="flex items-center gap-3">
+            <span class="text-xl">🌧️</span>
             <div>
               <p class="text-xs font-bold text-white">Recargo por Lluvia / Mal Tiempo</p>
               <p class="text-[10px] text-slate-400">Aplica un incremento del +30% por clima adverso</p>
@@ -138,15 +150,15 @@
 
       <!-- Tipo de Envío -->
       <div class="space-y-2 relative">
-        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
+        <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider">
           Tipo de Envío / Servicio:
         </label>
         <input type="hidden" id="tipo-envio" value="estandar">
 
         <button type="button" id="btn-desplegable-envio" onclick="toggleMenuEnvio()" 
-          class="w-full p-3 rounded-xl border border-slate-800 bg-slate-900/80 text-left flex items-center justify-between transition-all hover:border-emerald-500/40 cursor-pointer">
-          <div class="flex items-center gap-2.5">
-            <span id="icono-envio-actual" class="text-base">📦</span>
+          class="w-full p-3.5 rounded-2xl border border-slate-800 bg-slate-950/80 text-left flex items-center justify-between transition-all hover:border-emerald-500/40 cursor-pointer">
+          <div class="flex items-center gap-3">
+            <span id="icono-envio-actual" class="text-lg">📦</span>
             <div>
               <p id="titulo-envio-actual" class="text-xs font-bold text-white">Estándar</p>
               <p id="subtitulo-envio-actual" class="text-[10px] text-slate-400">Documentos, Comida, Ropa</p>
@@ -155,10 +167,10 @@
           <span id="flecha-desplegable" class="text-slate-400 text-xs transition-transform duration-200">▼</span>
         </button>
 
-        <div id="opciones-desplegable-envio" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-slate-900 border border-slate-800 rounded-2xl p-2 shadow-2xl z-40 space-y-1 backdrop-blur-md">
+        <div id="opciones-desplegable-envio" class="hidden absolute left-0 right-0 top-full mt-2 bg-slate-900 border border-slate-800 rounded-2xl p-2 shadow-2xl z-40 space-y-1.5 backdrop-blur-xl">
           <button type="button" onclick="seleccionarOpcionEnvio('estandar', '📦', 'Estándar', 'Documentos, Comida, Ropa')" 
-            class="w-full p-2.5 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
-            <div class="flex items-center gap-2.5">
+            class="w-full p-3 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
+            <div class="flex items-center gap-3">
               <span class="text-base">📦</span>
               <div>
                 <p class="text-xs font-bold text-white">Estándar</p>
@@ -167,8 +179,8 @@
             </div>
           </button>
           <button type="button" onclick="seleccionarOpcionEnvio('pesado', '🏋️', 'Carga Pesada / Voluminosa', 'Recargo del +25%')" 
-            class="w-full p-2.5 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
-            <div class="flex items-center gap-2.5">
+            class="w-full p-3 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
+            <div class="flex items-center gap-3">
               <span class="text-base">🏋️</span>
               <div>
                 <p class="text-xs font-bold text-white">Carga Pesada / Voluminosa</p>
@@ -177,8 +189,8 @@
             </div>
           </button>
           <button type="button" onclick="seleccionarOpcionEnvio('fragil', '💎', 'Objeto Frágil / Delicado', 'Recargo del +15%')" 
-            class="w-full p-2.5 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
-            <div class="flex items-center gap-2.5">
+            class="w-full p-3 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
+            <div class="flex items-center gap-3">
               <span class="text-base">💎</span>
               <div>
                 <p class="text-xs font-bold text-white">Objeto Frágil / Delicado</p>
@@ -187,8 +199,8 @@
             </div>
           </button>
           <button type="button" onclick="seleccionarOpcionEnvio('picking', '🛒', 'Picking / Compras en Tienda', 'Recargo del +30% (Supermercado / Farmacia)')" 
-            class="w-full p-2.5 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
-            <div class="flex items-center gap-2.5">
+            class="w-full p-3 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
+            <div class="flex items-center gap-3">
               <span class="text-base">🛒</span>
               <div>
                 <p class="text-xs font-bold text-white">Picking / Compras en Tienda</p>
@@ -200,58 +212,58 @@
       </div>
 
       <!-- Botón Calcular -->
-      <button onclick="calcularTarifa()" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-slate-950 font-bold rounded-xl shadow-lg shadow-emerald-500/10 transition active:scale-[0.98] cursor-pointer">
+      <button onclick="calcularTarifa()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-cyan-400 hover:from-emerald-400 hover:to-cyan-300 text-slate-950 font-black rounded-2xl shadow-lg shadow-emerald-500/20 transition active:scale-[0.98] cursor-pointer tracking-wide text-sm">
         ⚡ Calcular Tarifa Exacta
       </button>
     </div>
 
     <!-- Resultado -->
-    <div id="resultado-box" class="hidden p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-500/30 space-y-4">
+    <div id="resultado-box" class="hidden p-5 rounded-3xl bg-emerald-950/40 border border-emerald-500/40 space-y-4 backdrop-blur-xl shadow-2xl">
       <div class="flex justify-between items-center">
-        <h3 class="text-xs uppercase font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">Resumen de Cotización:</h3>
-        <button onclick="reiniciarCotizacion()" class="text-xs px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-600 dark:text-emerald-300 font-semibold rounded-lg transition flex items-center gap-1 cursor-pointer">
+        <h3 class="text-xs uppercase font-bold text-emerald-400 tracking-wider">Resumen de Cotización</h3>
+        <button onclick="reiniciarCotizacion()" class="text-xs px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-semibold rounded-xl transition flex items-center gap-1.5 cursor-pointer">
           🔄 Nueva Cotización
         </button>
       </div>
       <div class="flex justify-between items-baseline">
-        <span class="text-slate-700 dark:text-slate-300 text-sm">Monto Ref. (USD):</span>
-        <span id="res-usd" class="text-2xl font-black text-slate-900 dark:text-white">$0.00</span>
+        <span class="text-slate-300 text-sm">Monto Ref. (USD):</span>
+        <span id="res-usd" class="text-3xl font-black text-white">$0.00</span>
       </div>
-      <div class="flex justify-between items-baseline border-t border-slate-200 dark:border-slate-800 pt-2">
-        <span class="text-slate-700 dark:text-slate-300 text-sm">Total en Bolívares:</span>
-        <span id="res-bs" class="text-xl font-bold text-emerald-600 dark:text-emerald-400">Bs. 0.00</span>
+      <div class="flex justify-between items-baseline border-t border-emerald-500/20 pt-3">
+        <span class="text-slate-300 text-sm">Total en Bolívares:</span>
+        <span id="res-bs" class="text-xl font-bold text-emerald-400">Bs. 0.00</span>
       </div>
     </div>
 
     <!-- Botones de Acción (WhatsApp y Copiar) -->
-    <div class="grid grid-cols-2 gap-3 pt-2">
-      <button onclick="enviarWhatsApp()" class="py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.98] cursor-pointer">
+    <div class="grid grid-cols-2 gap-3 pt-1">
+      <button onclick="enviarWhatsApp()" class="py-3.5 px-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.98] cursor-pointer text-xs">
         💬 WhatsApp
       </button>
-      <button onclick="copiarAlPortapapeles()" id="btn-copiar" class="py-3 px-4 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-semibold rounded-xl flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-700 transition active:scale-[0.98] cursor-pointer">
+      <button onclick="copiarAlPortapapeles()" id="btn-copiar" class="py-3.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-2xl flex items-center justify-center gap-2 border border-slate-800 transition active:scale-[0.98] cursor-pointer text-xs">
         📋 Copiar Texto
       </button>
     </div>
 
     <!-- BOTÓN DESPLEGABLE GANANCIAS PRO -->
-    <div class="pt-4 ml-2 border-t border-slate-800/60">
+    <div class="pt-2">
       <button type="button" onclick="intentarAccesoPro()" 
-        class="w-full py-2.5 bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 font-medium text-xs rounded-xl border border-slate-800 flex items-center justify-between px-4 transition cursor-pointer">
-        <div class="flex items-center gap-2">
+        class="w-full py-3 bg-slate-900/90 hover:bg-slate-900 text-slate-300 hover:text-emerald-400 font-semibold text-xs rounded-2xl border border-slate-800 flex items-center justify-between px-4 transition cursor-pointer shadow-lg">
+        <div class="flex items-center gap-2.5">
           <span>⚡</span>
           <span id="btn-pro-label">Registro de Ganancias Pro</span>
-          <span class="bg-emerald-500/10 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/20 font-bold">PRO</span>
+          <span class="bg-emerald-500/15 text-emerald-400 text-[10px] px-2 py-0.5 rounded-md border border-emerald-500/30 font-black tracking-wider">PRO</span>
         </div>
         <span id="flecha-pro" class="text-slate-400 text-xs transition-transform duration-200">▼</span>
       </button>
     </div>
 
     <!-- MÓDULO DE REGISTRO DE GANANCIAS PRO -->
-    <div id="modulo-ganancias-pro" class="hidden p-5 rounded-2xl bg-slate-900 border border-emerald-500/30 space-y-4 shadow-2xl transition-all">
+    <div id="modulo-ganancias-pro" class="hidden p-5 rounded-3xl bg-slate-900/90 border border-emerald-500/30 space-y-4 shadow-2xl backdrop-blur-xl transition-all">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2.5">
           <span class="text-xl">📊</span>
-          <h2 class="text-sm font-bold text-white uppercase tracking-wider">Turno Activo del Día</h2>
+          <h2 class="text-xs font-bold text-white uppercase tracking-wider">Turno Activo del Día</h2>
         </div>
       </div>
 
@@ -259,36 +271,36 @@
       <div class="space-y-3 pt-1">
         <p class="text-xs text-slate-400">Registra tus servicios del turno actual:</p>
         <div class="grid grid-cols-2 gap-2">
-          <input type="number" id="pro-monto-usd" placeholder="Monto ($ USD)" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white text-xs focus:border-emerald-500 focus:outline-none">
-          <input type="text" id="pro-cliente-nota" placeholder="Descripción / Cliente" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white text-xs focus:border-emerald-500 focus:outline-none">
+          <input type="number" id="pro-monto-usd" placeholder="Monto ($ USD)" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-3 text-white text-xs focus:border-emerald-500 focus:outline-none font-bold">
+          <input type="text" id="pro-cliente-nota" placeholder="Descripción / Cliente" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-3 text-white text-xs focus:border-emerald-500 focus:outline-none">
         </div>
 
-        <button type="button" onclick="registrarCarreraPro()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition cursor-pointer flex items-center justify-center gap-2">
+        <button type="button" onclick="registrarCarreraPro()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl transition cursor-pointer flex items-center justify-center gap-2 shadow-md">
           <span>+ Añadir Carrera</span>
         </button>
       </div>
 
       <!-- Resumen Acumulado del Turno Actual -->
-      <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800 flex items-center justify-between">
+      <div class="p-3.5 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-between shadow-inner">
         <div>
-          <p class="text-[10px] text-slate-400 uppercase font-semibold">Total Bruto Turno:</p>
-          <p id="pro-total-turno" class="text-base font-black text-emerald-400">$0.00 <span id="pro-total-turno-bs" class="text-xs text-slate-400 font-normal">(Bs. 0.00)</span></p>
+          <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Total Bruto Turno:</p>
+          <p id="pro-total-turno" class="text-base font-black text-emerald-400 mt-0.5">$0.00 <span id="pro-total-turno-bs" class="text-xs text-slate-400 font-normal">(Bs. 0.00)</span></p>
         </div>
-        <button type="button" onclick="abrirModalCorte()" class="py-2 px-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl transition cursor-pointer flex items-center gap-1 shadow-md">
-          ✂️ Realizar Corte Diario
+        <button type="button" onclick="abrirModalCorte()" class="py-2.5 px-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-lg shadow-amber-500/20">
+          ✂️ Realizar Corte
         </button>
       </div>
 
       <!-- Carreras Pendientes del Turno -->
-      <div id="contenedor-carreras-turno" class="space-y-1 max-h-40 overflow-y-auto pr-1 text-xs">
-        <p class="text-center text-slate-500 py-2 text-[11px]" id="msg-turno-vacio">Sin carreras registradas en este turno.</p>
+      <div id="contenedor-carreras-turno" class="space-y-1.5 max-h-40 overflow-y-auto pr-1 text-xs">
+        <p class="text-center text-slate-500 py-3 text-[11px]" id="msg-turno-vacio">Sin carreras registradas en este turno.</p>
       </div>
 
       <!-- HISTORIAL ARCHIVADO DE CORTES DIARIOS (ACORDEÓN) -->
-      <div class="space-y-3 pt-3 border-t border-slate-800">
+      <div class="space-y-3 pt-4 border-t border-slate-800">
         <div class="flex items-center justify-between">
           <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">📁 Cortes Diarios Archivados</h3>
-          <button onclick="descargarReportePDF()" class="text-[11px] px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-bold rounded-lg transition border border-emerald-500/30 flex items-center gap-1 cursor-pointer">
+          <button onclick="descargarReportePDF()" class="text-[11px] px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-bold rounded-xl transition border border-emerald-500/30 flex items-center gap-1.5 cursor-pointer">
             📄 Reporte PDF
           </button>
         </div>
@@ -302,14 +314,14 @@
   </main>
 
   <!-- Footer -->
-  <footer class="text-center space-y-1 pt-8 pb-6 text-xs text-slate-500 border-t border-slate-800/80 mt-8">
-    <p>© 2026 Cotizador Delivery. Todos los derechos reservados.</p>
-    <p class="font-medium text-slate-400">Desarrollado con dedicación por <span class="text-emerald-400">Herggie Díaz</span></p>
+  <footer class="text-center space-y-1.5 pt-10 pb-6 text-xs text-slate-500 border-t border-slate-900 mt-10">
+    <p>© 2026 Cotizador Delivery Pro. Todos los derechos reservados.</p>
+    <p class="font-medium text-slate-400">Diseñado con elegancia por <span class="text-emerald-400 font-bold">Herggie Díaz</span></p>
   </footer>
 
   <!-- MODAL REALIZAR CORTE DIARIO -->
-  <div id="modal-corte" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative">
+  <div id="modal-corte" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative">
       <button onclick="cerrarModalCorte()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold cursor-pointer">✕</button>
 
       <div class="text-center space-y-1">
@@ -318,30 +330,30 @@
         <p class="text-xs text-slate-400">Ingresa el gasto total de gasolina o mantenimiento de la jornada.</p>
       </div>
 
-      <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 text-center space-y-1">
-        <p class="text-[10px] text-slate-500 uppercase font-bold">Total Bruto Acumulado:</p>
-        <p id="corte-monto-bruto" class="text-lg font-black text-emerald-400">$0.00</p>
+      <div class="p-3.5 bg-slate-950 rounded-2xl border border-slate-800 text-center space-y-1">
+        <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Total Bruto Acumulado:</p>
+        <p id="corte-monto-bruto" class="text-xl font-black text-emerald-400">$0.00</p>
       </div>
 
       <div>
-        <label class="block text-xs font-semibold text-slate-300 mb-1">⛽ Gastos de Gasolina / Mantenimiento ($ USD):</label>
-        <input type="number" id="corte-gasto-gasolina" placeholder="Ej. 0.00" step="0.50" value="0.00" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-xs font-bold text-center focus:border-amber-500 focus:outline-none">
+        <label class="block text-xs font-semibold text-slate-300 mb-1.5">⛽ Gastos de Gasolina / Mantenimiento ($ USD):</label>
+        <input type="number" id="corte-gasto-gasolina" placeholder="Ej. 0.00" step="0.50" value="0.00" class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-white text-xs font-bold text-center focus:border-amber-500 focus:outline-none">
       </div>
 
-      <button type="button" onclick="confirmarCorteDiario()" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs transition cursor-pointer">
+      <button type="button" onclick="confirmarCorteDiario()" class="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-2xl text-xs transition cursor-pointer shadow-lg shadow-amber-500/20">
         ✅ Guardar y Archivar Corte
       </button>
     </div>
   </div>
 
   <!-- MODAL PERFIL DE USUARIO PRO -->
-  <div id="modal-perfil" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative text-center">
+  <div id="modal-perfil" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative text-center">
       <button onclick="cerrarPerfil()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold cursor-pointer">✕</button>
 
       <!-- Avatar -->
       <div class="relative w-20 h-20 mx-auto">
-        <div id="perfil-avatar-preview" class="w-20 h-20 bg-gradient-to-tr from-emerald-500 to-cyan-500 rounded-full flex items-center justify-center text-slate-950 text-2xl font-black shadow-lg shadow-emerald-500/20 overflow-hidden border-2 border-emerald-500">
+        <div id="perfil-avatar-preview" class="w-20 h-20 bg-gradient-to-tr from-emerald-500 to-cyan-400 rounded-full flex items-center justify-center text-slate-950 text-2xl font-black shadow-lg shadow-emerald-500/20 overflow-hidden border-2 border-emerald-500">
           🛵
         </div>
         <label for="input-foto-perfil" class="absolute bottom-0 right-0 bg-emerald-500 hover:bg-emerald-400 text-slate-950 p-1.5 rounded-full cursor-pointer shadow-md text-xs z-10" title="Cambiar foto">
@@ -359,38 +371,38 @@
       <div>
         <h3 id="perfil-nombre" class="text-base font-bold text-white">Cargando...</h3>
         <p id="perfil-email" class="text-xs text-slate-400">correo@ejemplo.com</p>
-        <span id="perfil-badge-rol" class="inline-block mt-2 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">
+        <span id="perfil-badge-rol" class="inline-block mt-2 text-[10px] font-bold px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 uppercase tracking-wider">
           Repartidor Pro
         </span>
       </div>
 
       <!-- Configuración Pro -->
-      <div class="border-t border-slate-800 pt-3 text-left space-y-2">
+      <div class="border-t border-slate-800 pt-4 text-left space-y-2.5">
         <p class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">⚙️ Credenciales y Marca Pro:</p>
         <div>
-          <label class="text-[10px] text-slate-400">Nombre de tu Servicio / Marca:</label>
-          <input type="text" id="cfg-nombre-marca" placeholder="Ej. Express Valencia" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
+          <label class="text-[10px] text-slate-400 font-semibold">Nombre de tu Servicio / Marca:</label>
+          <input type="text" id="cfg-nombre-marca" placeholder="Ej. Express Valencia" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="text-[10px] text-slate-400">Cédula (V- / E-):</label>
-            <input type="text" id="cfg-cedula" placeholder="V-28123456" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
+            <label class="text-[10px] text-slate-400 font-semibold">Cédula (V- / E-):</label>
+            <input type="text" id="cfg-cedula" placeholder="V-28123456" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
           </div>
           <div>
-            <label class="text-[10px] text-slate-400">Placa de Moto:</label>
-            <input type="text" id="cfg-placa" placeholder="AB1C23D" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
+            <label class="text-[10px] text-slate-400 font-semibold">Placa de Moto:</label>
+            <input type="text" id="cfg-placa" placeholder="AB1C23D" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
           </div>
         </div>
         <div>
-          <label class="text-[10px] text-slate-400">Datos Pago Móvil:</label>
-          <input type="text" id="cfg-pago-movil" placeholder="0414-1234567 / BDV" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
+          <label class="text-[10px] text-slate-400 font-semibold">Datos Pago Móvil:</label>
+          <input type="text" id="cfg-pago-movil" placeholder="0414-1234567 / BDV" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
         </div>
-        <button onclick="guardarConfiguracionMarca()" class="w-full py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition cursor-pointer">
+        <button onclick="guardarConfiguracionMarca()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl transition cursor-pointer shadow-md">
           💾 Guardar Datos Pro
         </button>
       </div>
 
-      <div class="border-t border-slate-800 pt-3 space-y-2">
+      <div class="border-t border-slate-800 pt-3">
         <button type="button" onclick="cerrarSesion()" class="w-full py-2.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 font-bold text-xs rounded-xl transition cursor-pointer">
           🚪 Cerrar Sesión
         </button>
@@ -399,8 +411,8 @@
   </div>
 
   <!-- MODAL DE AUTENTICACIÓN -->
-  <div id="modal-auth" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-5 shadow-2xl relative">
+  <div id="modal-auth" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-5 shadow-2xl relative">
       <button onclick="cerrarAuth()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold cursor-pointer">✕</button>
 
       <div class="text-center space-y-1">
@@ -409,23 +421,23 @@
       </div>
 
       <div id="selector-rol" class="hidden grid grid-cols-2 gap-2 pt-1">
-        <button type="button" id="btn-rol-repartidor" onclick="seleccionarRol('repartidor')" class="py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/10 text-white transition flex items-center justify-center gap-2 cursor-pointer">🛵 Repartidor</button>
-        <button type="button" id="btn-rol-comercio" onclick="seleccionarRol('comercio')" class="py-2.5 text-xs font-bold rounded-xl border border-slate-800 bg-slate-900/60 text-slate-400 transition hover:border-slate-700 flex items-center justify-center gap-2 cursor-pointer">🏪 Comercio</button>
+        <button type="button" id="btn-rol-repartidor" onclick="seleccionarRol('repartidor')" class="py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/15 text-white transition flex items-center justify-center gap-2 cursor-pointer">🛵 Repartidor</button>
+        <button type="button" id="btn-rol-comercio" onclick="seleccionarRol('comercio')" class="py-2.5 text-xs font-bold rounded-xl border border-slate-800 bg-slate-950 text-slate-400 transition hover:border-slate-700 cursor-pointer">🏪 Comercio</button>
       </div>
 
       <form id="form-auth" class="space-y-3">
-        <input type="email" id="email-input" placeholder="Correo electrónico" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-xs focus:outline-none focus:border-emerald-500">
-        <input type="password" id="password-input" placeholder="Contraseña" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-xs focus:outline-none focus:border-emerald-500">
-        <button type="submit" id="btn-submit-auth" class="w-full py-3 bg-emerald-500 text-slate-950 font-bold rounded-xl text-xs hover:bg-emerald-400 transition cursor-pointer">Iniciar Sesión</button>
+        <input type="email" id="email-input" placeholder="Correo electrónico" required class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-white text-xs focus:outline-none focus:border-emerald-500">
+        <input type="password" id="password-input" placeholder="Contraseña" required class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-white text-xs focus:outline-none focus:border-emerald-500">
+        <button type="submit" id="btn-submit-auth" class="w-full py-3.5 bg-emerald-500 text-slate-950 font-black rounded-2xl text-xs hover:bg-emerald-400 transition cursor-pointer shadow-lg shadow-emerald-500/20">Iniciar Sesión</button>
       </form>
 
-      <div class="flex items-center my-3">
+      <div class="flex items-center my-2">
         <div class="flex-grow border-t border-slate-800"></div>
-        <span class="px-3 text-[10px] text-slate-500 uppercase tracking-wider">o continúa con</span>
+        <span class="px-3 text-[10px] text-slate-500 uppercase tracking-wider font-semibold">o continúa con</span>
         <div class="flex-grow border-t border-slate-800"></div>
       </div>
 
-      <button type="button" onclick="iniciarConGoogle()" class="w-full py-3 px-4 rounded-xl border border-slate-700 bg-slate-800 text-white font-semibold text-xs flex items-center justify-center gap-3 hover:bg-slate-700 transition cursor-pointer active:scale-95">
+      <button type="button" onclick="iniciarConGoogle()" class="w-full py-3 px-4 rounded-2xl border border-slate-700 bg-slate-800/80 text-white font-semibold text-xs flex items-center justify-center gap-3 hover:bg-slate-800 transition cursor-pointer active:scale-95 shadow-md">
         <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
           <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -444,14 +456,14 @@
   </div>
 
   <!-- MODAL DE ALERTA -->
-  <div id="modal-alerta" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
-    <div class="bg-slate-900 border-t sm:border border-slate-800 rounded-t-3xl sm:rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl relative">
+  <div id="modal-alerta" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
+    <div class="bg-slate-900 border-t sm:border border-slate-800 rounded-t-3xl sm:rounded-3xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl relative">
       <div class="w-12 h-12 bg-amber-500/10 rounded-full border border-amber-500/20 flex items-center justify-center mx-auto text-xl">⚠️</div>
       <div class="space-y-1">
         <h3 class="text-base font-bold text-white">Aviso</h3>
         <p id="mensaje-alerta-texto" class="text-xs text-slate-400">Mensaje de alerta</p>
       </div>
-      <button type="button" onclick="cerrarAlertaPro()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition shadow-lg cursor-pointer">Entendido</button>
+      <button type="button" onclick="cerrarAlertaPro()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-2xl transition shadow-lg cursor-pointer">Entendido</button>
     </div>
   </div>
 
@@ -543,7 +555,7 @@
       const tipo = document.getElementById('tipo-envio').value;
       if(tipo === 'pesado') subtotalUSD *= 1.25; 
       else if(tipo === 'fragil') subtotalUSD *= 1.15; 
-      else if(tipo === 'picking') subtotalUSD *= 1.30; // +30% para Picking / Compras
+      else if(tipo === 'picking') subtotalUSD *= 1.30; 
 
       if(esHorarioNocturno) subtotalUSD *= 1.30;
 
@@ -713,7 +725,7 @@
       const contenido = `<img src="${imgSrc}" style="width: 100%; height: 100%; object-fit: cover;">`;
       if(headerAvatar) {
         headerAvatar.innerHTML = contenido;
-        headerAvatar.className = "w-9 h-9 rounded-xl overflow-hidden shadow-lg shadow-emerald-500/20";
+        headerAvatar.className = "w-10 h-10 rounded-2xl overflow-hidden shadow-lg shadow-emerald-500/20 ring-2 ring-emerald-500/30";
       }
       if(perfilPreview) {
         perfilPreview.innerHTML = contenido;
@@ -726,11 +738,11 @@
       const perfilPreview = document.getElementById('perfil-avatar-preview');
       if(headerAvatar) {
         headerAvatar.innerHTML = '🛵';
-        headerAvatar.className = "w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-emerald-500/20 overflow-hidden";
+        headerAvatar.className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-cyan-400 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-emerald-500/20 overflow-hidden ring-2 ring-emerald-500/30";
       }
       if(perfilPreview) {
         perfilPreview.innerHTML = '🛵';
-        perfilPreview.className = "w-20 h-20 bg-gradient-to-tr from-emerald-500 to-cyan-500 rounded-full flex items-center justify-center text-slate-950 text-2xl font-black shadow-lg shadow-emerald-500/20 overflow-hidden border-2 border-emerald-500";
+        perfilPreview.className = "w-20 h-20 bg-gradient-to-tr from-emerald-500 to-cyan-400 rounded-full flex items-center justify-center text-slate-950 text-2xl font-black shadow-lg shadow-emerald-500/20 overflow-hidden border-2 border-emerald-500";
       }
     }
 
@@ -790,11 +802,11 @@
       const btnRepartidor = document.getElementById('btn-rol-repartidor');
       const btnComercio = document.getElementById('btn-rol-comercio');
       if (rol === 'repartidor') {
-        btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/10 text-white transition flex items-center justify-center gap-2 cursor-pointer";
-        btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-800 bg-slate-900/60 text-slate-400 transition hover:border-slate-700 cursor-pointer";
+        btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/15 text-white transition flex items-center justify-center gap-2 cursor-pointer";
+        btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-800 bg-slate-950 text-slate-400 transition hover:border-slate-700 cursor-pointer";
       } else {
-        btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/10 text-white transition flex items-center justify-center gap-2 cursor-pointer";
-        btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-800 bg-slate-900/60 text-slate-400 transition hover:border-slate-700 cursor-pointer";
+        btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/15 text-white transition flex items-center justify-center gap-2 cursor-pointer";
+        btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-800 bg-slate-950 text-slate-400 transition hover:border-slate-700 cursor-pointer";
       }
     }
 
@@ -940,15 +952,15 @@
       } else {
         carrerasTurnoActual.forEach(c => {
           const item = document.createElement('div');
-          item.className = 'p-2 bg-slate-950/60 rounded-lg border border-slate-800 flex items-center justify-between text-xs';
+          item.className = 'p-2.5 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between text-xs';
           item.innerHTML = `
             <div>
               <span class="font-bold text-white">${c.nota}</span>
               <span class="text-[10px] text-slate-500 ml-2">🕒 ${c.hora}</span>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2.5">
               <span class="font-black text-emerald-400">$${c.monto.toFixed(2)}</span>
-              <button onclick="eliminarCarreraTurno(${c.id})" class="text-rose-400 hover:text-rose-300 text-xs cursor-pointer">✕</button>
+              <button onclick="eliminarCarreraTurno(${c.id})" class="text-rose-400 hover:text-rose-300 text-xs cursor-pointer font-bold">✕</button>
             </div>
           `;
           contTurno.appendChild(item);
@@ -963,12 +975,12 @@
       } else {
         cortesArchivados.forEach(corte => {
           const item = document.createElement('div');
-          item.className = 'bg-slate-950/80 rounded-xl border border-slate-800 overflow-hidden';
+          item.className = 'bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden';
           
           let htmlCarrerasSub = '';
           corte.carreras.forEach(car => {
             htmlCarrerasSub += `
-              <div class="flex justify-between items-center py-1 border-b border-slate-900/60 text-[10px] text-slate-400">
+              <div class="flex justify-between items-center py-1 border-b border-slate-900/65 text-[10px] text-slate-400">
                 <span>• ${car.nota} (${car.hora})</span>
                 <span class="font-bold text-slate-200">$${car.monto.toFixed(2)}</span>
               </div>
@@ -978,7 +990,7 @@
           const totalCorteBS = corte.totalNeto * tasaBCV;
 
           item.innerHTML = `
-            <div onclick="toggleAcordeonCorte(${corte.id})" class="p-3 flex items-center justify-between cursor-pointer hover:bg-slate-900/50 transition">
+            <div onclick="toggleAcordeonCorte(${corte.id})" class="p-3.5 flex items-center justify-between cursor-pointer hover:bg-slate-900/60 transition">
               <div class="space-y-0.5">
                 <div class="flex items-center gap-2">
                   <span class="font-bold text-white text-xs">📅 ${corte.fecha}</span>
@@ -995,13 +1007,13 @@
               </div>
             </div>
 
-            <div id="detalle-corte-${corte.id}" class="hidden p-3 bg-slate-900/90 border-t border-slate-800/60 space-y-2">
+            <div id="detalle-corte-${corte.id}" class="hidden p-3.5 bg-slate-900/90 border-t border-slate-800/80 space-y-2">
               <p class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">📋 Carrera(s) de la Jornada (${corte.carreras.length}):</p>
               <div class="pl-2 space-y-1">
                 ${htmlCarrerasSub}
               </div>
               <div class="pt-2 text-right">
-                <button onclick="eliminarCorteArchivado(${corte.id})" class="text-[10px] text-rose-400 hover:text-rose-300 underline cursor-pointer">🗑️ Eliminar este corte</button>
+                <button onclick="eliminarCorteArchivado(${corte.id})" class="text-[10px] text-rose-400 hover:text-rose-300 underline cursor-pointer font-bold">🗑️ Eliminar este corte</button>
               </div>
             </div>
           `;
