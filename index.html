@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cotizador Delivery</title>
+  <title>Cotizador Delivery Pro | Tu Control Financiero</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -79,7 +79,7 @@
         </div>
       </div>
       
-      <!-- Botón Modo Oscuro / Claro corregido y sincronizado -->
+      <!-- Botón Modo Oscuro / Claro -->
       <button onclick="toggleTheme()" class="p-2.5 text-slate-300 hover:text-white transition rounded-xl border border-slate-800 bg-slate-900/90 shadow-sm cursor-pointer" title="Cambiar Tema">
         <span id="theme-icon">☀️</span>
       </button>
@@ -312,10 +312,10 @@
 
   </main>
 
-  <!-- Footer restaurado exactamente con tu firma -->
+  <!-- Footer -->
   <footer class="text-center space-y-1.5 pt-10 pb-6 text-xs text-slate-500 border-t border-slate-900 mt-10">
-    <p>© 2026 Cotizador Delivery. Todos los derechos reservados.</p>
-    <p class="font-medium text-slate-400">Diseñado con elegancia por <span class="text-emerald-400 font-bold">RGDS</span></p>
+    <p>© 2026 Cotizador Delivery Pro. Todos los derechos reservados.</p>
+    <p class="font-medium text-slate-400">Diseñado con elegancia por <span class="text-emerald-400 font-bold">Herggie Díaz</span></p>
   </footer>
 
   <!-- MODAL REALIZAR CORTE DIARIO -->
@@ -479,32 +479,29 @@
     let carrerasTurnoActual = [];
     let cortesArchivados = [];
 
-    // Función definitiva y directa para el cambio de tema
     function toggleTheme() {
       const html = document.documentElement;
       const icon = document.getElementById('theme-icon');
-      
       if (html.classList.contains('dark')) {
         html.classList.remove('dark');
+        icon.innerText = '🌙';
         localStorage.setItem('theme', 'light');
-        if (icon) icon.innerText = '🌙';
       } else {
         html.classList.add('dark');
+        icon.innerText = '☀️';
         localStorage.setItem('theme', 'dark');
-        if (icon) icon.innerText = '☀️';
       }
     }
 
-    // Inicializador del tema al cargar la página
     (function() {
       const savedTheme = localStorage.getItem('theme');
       const icon = document.getElementById('theme-icon');
       if (savedTheme === 'light') {
         document.documentElement.classList.remove('dark');
-        if (icon) icon.innerText = '🌙';
+        if(icon) icon.innerText = '🌙';
       } else {
         document.documentElement.classList.add('dark');
-        if (icon) icon.innerText = '☀️';
+        if(icon) icon.innerText = '☀️';
       }
     })();
 
