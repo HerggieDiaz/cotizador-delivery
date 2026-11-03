@@ -252,7 +252,7 @@
         </button>
       </div>
 
-      <!-- Resumen Acumulado en Vivo (Bruto y Neto Real) -->
+      <!-- Resumen Acumulado en Vivo -->
       <div class="grid grid-cols-3 gap-2 pt-2">
         <div class="p-2.5 bg-slate-950/80 rounded-xl border border-slate-800 text-center">
           <p class="text-[9px] text-slate-500 uppercase font-semibold">Total Bruto</p>
@@ -596,9 +596,8 @@
         document.getElementById('cfg-pago-movil').value = localStorage.getItem(`pagomovil_${user.uid}`) || '';
         
         const avatarGuardado = localStorage.getItem(`avatar_${user.uid}`);
-        const preview = document.getElementById('perfil-avatar-preview');
         if(avatarGuardado) {
-          preview.innerHTML = `<img src="${avatarGuardado}" class="w-full h-full object-cover">`;
+          actualizarAvatarUI(avatarGuardado);
         }
       }
       document.getElementById('modal-perfil').classList.remove('hidden'); 
@@ -634,6 +633,8 @@
             localStorage.setItem(`avatar_${user.uid}`, base64Image);
             actualizarAvatarUI(base64Image);
             mostrarAlertaPro("¡Foto de perfil actualizada con éxito!");
+          } else {
+            mostrarAlertaPro("Debes iniciar sesión para guardar tu foto.");
           }
         };
         reader.readAsDataURL(file);
@@ -644,9 +645,16 @@
       const headerAvatar = document.getElementById('header-avatar');
       const perfilPreview = document.getElementById('perfil-avatar-preview');
       
-      const htmlImg = `<img src="${imgSrc}" class="w-full h-full object-cover">`;
-      if(headerAvatar) headerAvatar.innerHTML = htmlImg;
-      if(perfilPreview) perfilPreview.innerHTML = htmlImg;
+      const contenidoImg = `<img src="${imgSrc}" class="w-full h-full object-cover rounded-full">`;
+      
+      if(headerAvatar) {
+        headerAvatar.innerHTML = contenidoImg;
+        headerAvatar.className = "w-9 h-9 rounded-xl overflow-hidden shadow-lg shadow-emerald-500/20";
+      }
+      if(perfilPreview) {
+        perfilPreview.innerHTML = contenidoImg;
+        perfilPreview.className = "relative w-20 h-20 rounded-full overflow-hidden border-2 border-emerald-500";
+      }
     }
 
     function guardarConfiguracionMarca() {
@@ -673,7 +681,11 @@
         cerrarPerfil();
         document.getElementById('modulo-ganancias-pro').classList.add('hidden');
         document.getElementById('flecha-pro').style.transform = 'rotate(0deg)';
-        document.getElementById('header-avatar').innerHTML = '🛵';
+        const headerAvatar = document.getElementById('header-avatar');
+        if(headerAvatar) {
+          headerAvatar.innerHTML = '🛵';
+          headerAvatar.className = "w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-emerald-500/20 overflow-hidden";
+        }
         mostrarAlertaPro("Sesión cerrada correctamente.");
       } catch (e) {
         mostrarAlertaPro("Error al cerrar sesión.");
@@ -954,7 +966,6 @@
         btnTexto.innerText = `👤 ${nombre}`;
         if(btnProLabel) btnProLabel.innerText = "Registro de Ganancias Pro";
         
-        // Cargar foto de perfil guardada si existe
         const avatarGuardado = localStorage.getItem(`avatar_${user.uid}`);
         if(avatarGuardado) {
           actualizarAvatarUI(avatarGuardado);
@@ -966,7 +977,12 @@
         if(btnProLabel) btnProLabel.innerText = "Activar Registro de Ganancias Pro";
         document.getElementById('modulo-ganancias-pro').classList.add('hidden');
         document.getElementById('flecha-pro').style.transform = 'rotate(0deg)';
-        document.getElementById('header-avatar').innerHTML = '🛵';
+        
+        const headerAvatar = document.getElementById('header-avatar');
+        if(headerAvatar) {
+          headerAvatar.innerHTML = '🛵';
+          headerAvatar.className = "w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-emerald-500/20 overflow-hidden";
+        }
       }
     });
 
