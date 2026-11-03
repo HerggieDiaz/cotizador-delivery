@@ -33,7 +33,6 @@
     input[type=number] {
       -moz-appearance: textfield;
     }
-    /* Efectos de brillo ambiental y glassmorphism */
     .glass-card {
       background: rgba(15, 23, 42, 0.75);
       backdrop-filter: blur(16px);
@@ -65,23 +64,23 @@
     const auth = firebase.auth();
   </script>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen font-sans selection:bg-emerald-500 selection:text-slate-950 pb-12 transition-colors duration-300">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen font-sans selection:bg-emerald-500 selection:text-slate-950 pb-12 transition-colors duration-300">
 
   <!-- Header principal estilo SaaS -->
-  <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-xl sticky top-0 z-50 px-4 py-3.5">
+  <header class="border-b border-slate-200 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl sticky top-0 z-50 px-4 py-3.5">
     <div class="max-w-md mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div id="header-avatar" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-cyan-400 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-emerald-500/20 overflow-hidden ring-2 ring-emerald-500/30">
           🛵
         </div>
         <div>
-          <h1 class="font-bold text-white text-base tracking-tight leading-none">Cotizador Delivery</h1>
-          <span class="text-[10px] text-emerald-400 font-semibold tracking-wide uppercase">Venezuela • Tasa BCV Oficial</span>
+          <h1 class="font-bold text-slate-900 dark:text-white text-base tracking-tight leading-none">Cotizador Delivery</h1>
+          <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold tracking-wide uppercase">Venezuela • Tasa BCV Oficial</span>
         </div>
       </div>
       
-      <!-- Botón Modo Oscuro / Claro -->
-      <button onclick="toggleTheme()" class="p-2.5 text-slate-300 hover:text-white transition rounded-xl border border-slate-800 bg-slate-900/90 shadow-sm" title="Cambiar Tema">
+      <!-- Botón Modo Oscuro / Claro funcional -->
+      <button onclick="toggleTheme()" class="p-2.5 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/90 shadow-sm cursor-pointer" title="Cambiar Tema">
         <span id="theme-icon">☀️</span>
       </button>
     </div>
@@ -99,14 +98,14 @@
 
     <!-- Tarjeta de Tasa BCV y Estado Nocturno -->
     <div class="grid grid-cols-2 gap-3">
-      <div id="card-bcv" class="glass-card p-4 rounded-2xl flex flex-col justify-between glow-emerald animate-pulse">
-        <p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Tasa Oficial BCV</p>
-        <p id="tasa-bcv-txt" class="text-sm font-black text-emerald-400 mt-1">Actualizando...</p>
+      <div id="card-bcv" class="bg-white dark:glass-card p-4 rounded-2xl flex flex-col justify-between border border-slate-200 dark:border-slate-800 shadow-xl glow-emerald animate-pulse">
+        <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-bold">Tasa Oficial BCV</p>
+        <p id="tasa-bcv-txt" class="text-sm font-black text-emerald-600 dark:text-emerald-400 mt-1">Actualizando...</p>
       </div>
       
-      <div id="badge-nocturno" class="glass-card p-4 rounded-2xl flex flex-col justify-between hidden border-indigo-500/30">
-        <p class="text-[10px] text-indigo-400 uppercase tracking-wider font-bold">Modo Activo</p>
-        <p class="text-xs font-bold text-indigo-200 mt-1">🌙 Nocturno (9pm - 6am)</p>
+      <div id="badge-nocturno" class="bg-white dark:glass-card p-4 rounded-2xl flex flex-col justify-between hidden border border-slate-200 dark:border-indigo-500/30 shadow-xl">
+        <p class="text-[10px] text-indigo-600 dark:text-indigo-400 uppercase tracking-wider font-bold">Modo Activo</p>
+        <p class="text-xs font-bold text-indigo-700 dark:text-indigo-200 mt-1">🌙 Nocturno (9pm - 6am)</p>
       </div>
     </div>
 
@@ -116,32 +115,32 @@
       Abrir Google Maps (Ver Ruta Real)
     </a>
 
-    <!-- Formulario de Cotización (Estilo Glassmorphic Card) -->
-    <div class="glass-card p-5 rounded-3xl space-y-4 glow-emerald">
+    <!-- Formulario de Cotización -->
+    <div class="bg-white dark:glass-card p-5 rounded-3xl space-y-4 border border-slate-200 dark:border-slate-800 shadow-xl glow-emerald">
       <div>
-        <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">
+        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
           🔗 Link de Ruta (Google Maps) - Opcional:
         </label>
         <input type="text" id="link-maps" placeholder="Pega aquí el enlace de Google Maps..." 
-               class="w-full px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-800 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition text-sm">
+               class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition text-sm">
       </div>
 
       <div>
-        <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">
+        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
           📐 Distancia Exacta (Kilómetros km):
         </label>
         <input type="number" id="distancia" placeholder="Ej. 4.6" step="0.1" 
-               class="w-full px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-800 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition text-sm font-bold">
+               class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition text-sm font-bold">
       </div>
 
       <!-- Recargo por Lluvia -->
       <div class="pt-1">
-        <label class="flex items-center justify-between p-3.5 rounded-2xl border border-slate-800 bg-slate-950/60 cursor-pointer hover:border-cyan-500/40 transition">
+        <label class="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950/60 cursor-pointer hover:border-cyan-500/40 transition">
           <div class="flex items-center gap-3">
             <span class="text-xl">🌧️</span>
             <div>
-              <p class="text-xs font-bold text-white">Recargo por Lluvia / Mal Tiempo</p>
-              <p class="text-[10px] text-slate-400">Aplica un incremento del +30% por clima adverso</p>
+              <p class="text-xs font-bold text-slate-900 dark:text-white">Recargo por Lluvia / Mal Tiempo</p>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400">Aplica un incremento del +30% por clima adverso</p>
             </div>
           </div>
           <input type="checkbox" id="check-lluvia" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer">
@@ -150,31 +149,31 @@
 
       <!-- Tipo de Envío -->
       <div class="space-y-2 relative">
-        <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider">
+        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
           Tipo de Envío / Servicio:
         </label>
         <input type="hidden" id="tipo-envio" value="estandar">
 
         <button type="button" id="btn-desplegable-envio" onclick="toggleMenuEnvio()" 
-          class="w-full p-3.5 rounded-2xl border border-slate-800 bg-slate-950/80 text-left flex items-center justify-between transition-all hover:border-emerald-500/40 cursor-pointer">
+          class="w-full p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950/80 text-left flex items-center justify-between transition-all hover:border-emerald-500/40 cursor-pointer">
           <div class="flex items-center gap-3">
             <span id="icono-envio-actual" class="text-lg">📦</span>
             <div>
-              <p id="titulo-envio-actual" class="text-xs font-bold text-white">Estándar</p>
-              <p id="subtitulo-envio-actual" class="text-[10px] text-slate-400">Documentos, Comida, Ropa</p>
+              <p id="titulo-envio-actual" class="text-xs font-bold text-slate-900 dark:text-white">Estándar</p>
+              <p id="subtitulo-envio-actual" class="text-[10px] text-slate-500 dark:text-slate-400">Documentos, Comida, Ropa</p>
             </div>
           </div>
-          <span id="flecha-desplegable" class="text-slate-400 text-xs transition-transform duration-200">▼</span>
+          <span id="flecha-desplegable" class="text-slate-500 dark:text-slate-400 text-xs transition-transform duration-200">▼</span>
         </button>
 
-        <div id="opciones-desplegable-envio" class="hidden absolute left-0 right-0 top-full mt-2 bg-slate-900 border border-slate-800 rounded-2xl p-2 shadow-2xl z-40 space-y-1.5 backdrop-blur-xl">
+        <div id="opciones-desplegable-envio" class="hidden absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-2 shadow-2xl z-40 space-y-1.5 backdrop-blur-xl">
           <button type="button" onclick="seleccionarOpcionEnvio('estandar', '📦', 'Estándar', 'Documentos, Comida, Ropa')" 
             class="w-full p-3 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
             <div class="flex items-center gap-3">
               <span class="text-base">📦</span>
               <div>
-                <p class="text-xs font-bold text-white">Estándar</p>
-                <p class="text-[10px] text-slate-400">Documentos, Comida, Ropa</p>
+                <p class="text-xs font-bold text-slate-900 dark:text-white">Estándar</p>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400">Documentos, Comida, Ropa</p>
               </div>
             </div>
           </button>
@@ -183,8 +182,8 @@
             <div class="flex items-center gap-3">
               <span class="text-base">🏋️</span>
               <div>
-                <p class="text-xs font-bold text-white">Carga Pesada / Voluminosa</p>
-                <p class="text-[10px] text-slate-400">Recargo del +25%</p>
+                <p class="text-xs font-bold text-slate-900 dark:text-white">Carga Pesada / Voluminosa</p>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400">Recargo del +25%</p>
               </div>
             </div>
           </button>
@@ -193,8 +192,8 @@
             <div class="flex items-center gap-3">
               <span class="text-base">💎</span>
               <div>
-                <p class="text-xs font-bold text-white">Objeto Frágil / Delicado</p>
-                <p class="text-[10px] text-slate-400">Recargo del +15%</p>
+                <p class="text-xs font-bold text-slate-900 dark:text-white">Objeto Frágil / Delicado</p>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400">Recargo del +15%</p>
               </div>
             </div>
           </button>
@@ -203,8 +202,8 @@
             <div class="flex items-center gap-3">
               <span class="text-base">🛒</span>
               <div>
-                <p class="text-xs font-bold text-white">Picking / Compras en Tienda</p>
-                <p class="text-[10px] text-slate-400">Recargo del +30% (Supermercado / Farmacia)</p>
+                <p class="text-xs font-bold text-slate-900 dark:text-white">Picking / Compras en Tienda</p>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400">Recargo del +30% (Supermercado / Farmacia)</p>
               </div>
             </div>
           </button>
@@ -218,29 +217,29 @@
     </div>
 
     <!-- Resultado -->
-    <div id="resultado-box" class="hidden p-5 rounded-3xl bg-emerald-950/40 border border-emerald-500/40 space-y-4 backdrop-blur-xl shadow-2xl">
+    <div id="resultado-box" class="hidden p-5 rounded-3xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500/40 space-y-4 backdrop-blur-xl shadow-2xl">
       <div class="flex justify-between items-center">
-        <h3 class="text-xs uppercase font-bold text-emerald-400 tracking-wider">Resumen de Cotización</h3>
-        <button onclick="reiniciarCotizacion()" class="text-xs px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-semibold rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+        <h3 class="text-xs uppercase font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">Resumen de Cotización</h3>
+        <button onclick="reiniciarCotizacion()" class="text-xs px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-700 dark:text-emerald-300 font-semibold rounded-xl transition flex items-center gap-1.5 cursor-pointer">
           🔄 Nueva Cotización
         </button>
       </div>
       <div class="flex justify-between items-baseline">
-        <span class="text-slate-300 text-sm">Monto Ref. (USD):</span>
-        <span id="res-usd" class="text-3xl font-black text-white">$0.00</span>
+        <span class="text-slate-700 dark:text-slate-300 text-sm">Monto Ref. (USD):</span>
+        <span id="res-usd" class="text-3xl font-black text-slate-900 dark:text-white">$0.00</span>
       </div>
       <div class="flex justify-between items-baseline border-t border-emerald-500/20 pt-3">
-        <span class="text-slate-300 text-sm">Total en Bolívares:</span>
-        <span id="res-bs" class="text-xl font-bold text-emerald-400">Bs. 0.00</span>
+        <span class="text-slate-700 dark:text-slate-300 text-sm">Total en Bolívares:</span>
+        <span id="res-bs" class="text-xl font-bold text-emerald-600 dark:text-emerald-400">Bs. 0.00</span>
       </div>
     </div>
 
-    <!-- Botones de Acción (WhatsApp y Copiar) -->
+    <!-- Botones de Acción (WhatsApp y Copiar con validación) -->
     <div class="grid grid-cols-2 gap-3 pt-1">
       <button onclick="enviarWhatsApp()" class="py-3.5 px-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.98] cursor-pointer text-xs">
         💬 WhatsApp
       </button>
-      <button onclick="copiarAlPortapapeles()" id="btn-copiar" class="py-3.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-2xl flex items-center justify-center gap-2 border border-slate-800 transition active:scale-[0.98] cursor-pointer text-xs">
+      <button onclick="copiarAlPortapapeles()" id="btn-copiar" class="py-3.5 px-4 bg-slate-200 dark:bg-slate-900 hover:bg-slate-300 dark:hover:bg-slate-800 text-slate-900 dark:text-white font-semibold rounded-2xl flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-800 transition active:scale-[0.98] cursor-pointer text-xs">
         📋 Copiar Texto
       </button>
     </div>
@@ -248,31 +247,31 @@
     <!-- BOTÓN DESPLEGABLE GANANCIAS PRO -->
     <div class="pt-2">
       <button type="button" onclick="intentarAccesoPro()" 
-        class="w-full py-3 bg-slate-900/90 hover:bg-slate-900 text-slate-300 hover:text-emerald-400 font-semibold text-xs rounded-2xl border border-slate-800 flex items-center justify-between px-4 transition cursor-pointer shadow-lg">
+        class="w-full py-3 bg-white dark:bg-slate-900/90 hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 font-semibold text-xs rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 transition cursor-pointer shadow-lg">
         <div class="flex items-center gap-2.5">
           <span>⚡</span>
           <span id="btn-pro-label">Registro de Ganancias Pro</span>
-          <span class="bg-emerald-500/15 text-emerald-400 text-[10px] px-2 py-0.5 rounded-md border border-emerald-500/30 font-black tracking-wider">PRO</span>
+          <span class="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] px-2 py-0.5 rounded-md border border-emerald-500/30 font-black tracking-wider">PRO</span>
         </div>
-        <span id="flecha-pro" class="text-slate-400 text-xs transition-transform duration-200">▼</span>
+        <span id="flecha-pro" class="text-slate-500 dark:text-slate-400 text-xs transition-transform duration-200">▼</span>
       </button>
     </div>
 
     <!-- MÓDULO DE REGISTRO DE GANANCIAS PRO -->
-    <div id="modulo-ganancias-pro" class="hidden p-5 rounded-3xl bg-slate-900/90 border border-emerald-500/30 space-y-4 shadow-2xl backdrop-blur-xl transition-all">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+    <div id="modulo-ganancias-pro" class="hidden p-5 rounded-3xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-emerald-500/30 space-y-4 shadow-2xl backdrop-blur-xl transition-all">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
         <div class="flex items-center gap-2.5">
           <span class="text-xl">📊</span>
-          <h2 class="text-xs font-bold text-white uppercase tracking-wider">Turno Activo del Día</h2>
+          <h2 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Turno Activo del Día</h2>
         </div>
       </div>
 
       <!-- Formulario Ágil de Registro de Carrera Bruta -->
       <div class="space-y-3 pt-1">
-        <p class="text-xs text-slate-400">Registra tus servicios del turno actual:</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Registra tus servicios del turno actual:</p>
         <div class="grid grid-cols-2 gap-2">
-          <input type="number" id="pro-monto-usd" placeholder="Monto ($ USD)" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-3 text-white text-xs focus:border-emerald-500 focus:outline-none font-bold">
-          <input type="text" id="pro-cliente-nota" placeholder="Descripción / Cliente" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-3 text-white text-xs focus:border-emerald-500 focus:outline-none">
+          <input type="number" id="pro-monto-usd" placeholder="Monto ($ USD)" step="0.01" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-3 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none font-bold">
+          <input type="text" id="pro-cliente-nota" placeholder="Descripción / Cliente" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-3 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none">
         </div>
 
         <button type="button" onclick="registrarCarreraPro()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl transition cursor-pointer flex items-center justify-center gap-2 shadow-md">
@@ -281,10 +280,10 @@
       </div>
 
       <!-- Resumen Acumulado del Turno Actual -->
-      <div class="p-3.5 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-between shadow-inner">
+      <div class="p-3.5 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-inner">
         <div>
-          <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Total Bruto Turno:</p>
-          <p id="pro-total-turno" class="text-base font-black text-emerald-400 mt-0.5">$0.00 <span id="pro-total-turno-bs" class="text-xs text-slate-400 font-normal">(Bs. 0.00)</span></p>
+          <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Total Bruto Turno:</p>
+          <p id="pro-total-turno" class="text-base font-black text-emerald-600 dark:text-emerald-400 mt-0.5">$0.00 <span id="pro-total-turno-bs" class="text-xs text-slate-500 dark:text-slate-400 font-normal">(Bs. 0.00)</span></p>
         </div>
         <button type="button" onclick="abrirModalCorte()" class="py-2.5 px-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-lg shadow-amber-500/20">
           ✂️ Realizar Corte
@@ -293,20 +292,20 @@
 
       <!-- Carreras Pendientes del Turno -->
       <div id="contenedor-carreras-turno" class="space-y-1.5 max-h-40 overflow-y-auto pr-1 text-xs">
-        <p class="text-center text-slate-500 py-3 text-[11px]" id="msg-turno-vacio">Sin carreras registradas en este turno.</p>
+        <p class="text-center text-slate-400 dark:text-slate-500 py-3 text-[11px]" id="msg-turno-vacio">Sin carreras registradas en este turno.</p>
       </div>
 
       <!-- HISTORIAL ARCHIVADO DE CORTES DIARIOS (ACORDEÓN) -->
-      <div class="space-y-3 pt-4 border-t border-slate-800">
+      <div class="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-800">
         <div class="flex items-center justify-between">
-          <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">📁 Cortes Diarios Archivados</h3>
-          <button onclick="descargarReportePDF()" class="text-[11px] px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-bold rounded-xl transition border border-emerald-500/30 flex items-center gap-1.5 cursor-pointer">
+          <h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">📁 Cortes Diarios Archivados</h3>
+          <button onclick="descargarReportePDF()" class="text-[11px] px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-700 dark:text-emerald-400 font-bold rounded-xl transition border border-emerald-500/30 flex items-center gap-1.5 cursor-pointer">
             📄 Reporte PDF
           </button>
         </div>
 
         <div id="lista-cortes-acordeon" class="space-y-2 max-h-72 overflow-y-auto pr-1 text-xs">
-          <p class="text-center text-slate-500 py-4 text-[11px]" id="msg-cortes-vacio">No hay cortes diarios archivados aún.</p>
+          <p class="text-center text-slate-400 dark:text-slate-500 py-4 text-[11px]" id="msg-cortes-vacio">No hay cortes diarios archivados aún.</p>
         </div>
       </div>
     </div>
@@ -314,30 +313,30 @@
   </main>
 
   <!-- Footer -->
-  <footer class="text-center space-y-1.5 pt-10 pb-6 text-xs text-slate-500 border-t border-slate-900 mt-10">
+  <footer class="text-center space-y-1.5 pt-10 pb-6 text-xs text-slate-500 border-t border-slate-200 dark:border-slate-900 mt-10">
     <p>© 2026 Cotizador Delivery Pro. Todos los derechos reservados.</p>
-    <p class="font-medium text-slate-400">Diseñado con elegancia por <span class="text-emerald-400 font-bold">Herggie Díaz</span></p>
+    <p class="font-medium text-slate-600 dark:text-slate-400">Diseñado con elegancia por <span class="text-emerald-600 dark:text-emerald-400 font-bold">Herggie Díaz</span></p>
   </footer>
 
   <!-- MODAL REALIZAR CORTE DIARIO -->
   <div id="modal-corte" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative">
-      <button onclick="cerrarModalCorte()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold cursor-pointer">✕</button>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative">
+      <button onclick="cerrarModalCorte()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-bold cursor-pointer">✕</button>
 
       <div class="text-center space-y-1">
         <span class="text-3xl">✂️</span>
-        <h3 class="text-base font-bold text-white">Cierre y Corte Diario</h3>
-        <p class="text-xs text-slate-400">Ingresa el gasto total de gasolina o mantenimiento de la jornada.</p>
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Cierre y Corte Diario</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Ingresa el gasto total de gasolina o mantenimiento de la jornada.</p>
       </div>
 
-      <div class="p-3.5 bg-slate-950 rounded-2xl border border-slate-800 text-center space-y-1">
-        <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Total Bruto Acumulado:</p>
-        <p id="corte-monto-bruto" class="text-xl font-black text-emerald-400">$0.00</p>
+      <div class="p-3.5 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-1">
+        <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Total Bruto Acumulado:</p>
+        <p id="corte-monto-bruto" class="text-xl font-black text-emerald-600 dark:text-emerald-400">$0.00</p>
       </div>
 
       <div>
-        <label class="block text-xs font-semibold text-slate-300 mb-1.5">⛽ Gastos de Gasolina / Mantenimiento ($ USD):</label>
-        <input type="number" id="corte-gasto-gasolina" placeholder="Ej. 0.00" step="0.50" value="0.00" class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-white text-xs font-bold text-center focus:border-amber-500 focus:outline-none">
+        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">⛽ Gastos de Gasolina / Mantenimiento ($ USD):</label>
+        <input type="number" id="corte-gasto-gasolina" placeholder="Ej. 0.00" step="0.50" value="0.00" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3 text-slate-900 dark:text-white text-xs font-bold text-center focus:border-amber-500 focus:outline-none">
       </div>
 
       <button type="button" onclick="confirmarCorteDiario()" class="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-2xl text-xs transition cursor-pointer shadow-lg shadow-amber-500/20">
@@ -348,8 +347,8 @@
 
   <!-- MODAL PERFIL DE USUARIO PRO -->
   <div id="modal-perfil" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative text-center">
-      <button onclick="cerrarPerfil()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold cursor-pointer">✕</button>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative text-center">
+      <button onclick="cerrarPerfil()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-bold cursor-pointer">✕</button>
 
       <!-- Avatar -->
       <div class="relative w-20 h-20 mx-auto">
@@ -363,47 +362,47 @@
       </div>
 
       <div>
-        <button type="button" onclick="eliminarFotoPerfil()" class="text-[11px] text-rose-400 hover:text-rose-300 underline font-medium cursor-pointer">
+        <button type="button" onclick="eliminarFotoPerfil()" class="text-[11px] text-rose-500 dark:text-rose-400 hover:underline font-medium cursor-pointer">
           🗑️ Eliminar foto de perfil
         </button>
       </div>
 
       <div>
-        <h3 id="perfil-nombre" class="text-base font-bold text-white">Cargando...</h3>
-        <p id="perfil-email" class="text-xs text-slate-400">correo@ejemplo.com</p>
-        <span id="perfil-badge-rol" class="inline-block mt-2 text-[10px] font-bold px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 uppercase tracking-wider">
+        <h3 id="perfil-nombre" class="text-base font-bold text-slate-900 dark:text-white">Cargando...</h3>
+        <p id="perfil-email" class="text-xs text-slate-500 dark:text-slate-400">correo@ejemplo.com</p>
+        <span id="perfil-badge-rol" class="inline-block mt-2 text-[10px] font-bold px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 uppercase tracking-wider">
           Repartidor Pro
         </span>
       </div>
 
       <!-- Configuración Pro -->
-      <div class="border-t border-slate-800 pt-4 text-left space-y-2.5">
-        <p class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">⚙️ Credenciales y Marca Pro:</p>
+      <div class="border-t border-slate-200 dark:border-slate-800 pt-4 text-left space-y-2.5">
+        <p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">⚙️ Credenciales y Marca Pro:</p>
         <div>
-          <label class="text-[10px] text-slate-400 font-semibold">Nombre de tu Servicio / Marca:</label>
-          <input type="text" id="cfg-nombre-marca" placeholder="Ej. Express Valencia" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
+          <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Nombre de tu Servicio / Marca:</label>
+          <input type="text" id="cfg-nombre-marca" placeholder="Ej. Express Valencia" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none">
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="text-[10px] text-slate-400 font-semibold">Cédula (V- / E-):</label>
-            <input type="text" id="cfg-cedula" placeholder="V-28123456" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
+            <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Cédula (V- / E-):</label>
+            <input type="text" id="cfg-cedula" placeholder="V-28123456" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none">
           </div>
           <div>
-            <label class="text-[10px] text-slate-400 font-semibold">Placa de Moto:</label>
-            <input type="text" id="cfg-placa" placeholder="AB1C23D" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
+            <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Placa de Moto:</label>
+            <input type="text" id="cfg-placa" placeholder="AB1C23D" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none">
           </div>
         </div>
         <div>
-          <label class="text-[10px] text-slate-400 font-semibold">Datos Pago Móvil:</label>
-          <input type="text" id="cfg-pago-movil" placeholder="0414-1234567 / BDV" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
+          <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Datos Pago Móvil:</label>
+          <input type="text" id="cfg-pago-movil" placeholder="0414-1234567 / BDV" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none">
         </div>
         <button onclick="guardarConfiguracionMarca()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl transition cursor-pointer shadow-md">
           💾 Guardar Datos Pro
         </button>
       </div>
 
-      <div class="border-t border-slate-800 pt-3">
-        <button type="button" onclick="cerrarSesion()" class="w-full py-2.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 font-bold text-xs rounded-xl transition cursor-pointer">
+      <div class="border-t border-slate-200 dark:border-slate-800 pt-3">
+        <button type="button" onclick="cerrarSesion()" class="w-full py-2.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 dark:text-rose-400 border border-rose-500/30 font-bold text-xs rounded-xl transition cursor-pointer">
           🚪 Cerrar Sesión
         </button>
       </div>
@@ -412,32 +411,32 @@
 
   <!-- MODAL DE AUTENTICACIÓN -->
   <div id="modal-auth" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-5 shadow-2xl relative">
-      <button onclick="cerrarAuth()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold cursor-pointer">✕</button>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-5 shadow-2xl relative">
+      <button onclick="cerrarAuth()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-bold cursor-pointer">✕</button>
 
       <div class="text-center space-y-1">
-        <h3 id="auth-titulo" class="text-lg font-bold text-white">Bienvenido de nuevo</h3>
-        <p class="text-xs text-slate-400">Accede para gestionar tus cotizaciones y rutas</p>
+        <h3 id="auth-titulo" class="text-lg font-bold text-slate-900 dark:text-white">Bienvenido de nuevo</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Accede para gestionar tus cotizaciones y rutas</p>
       </div>
 
       <div id="selector-rol" class="hidden grid grid-cols-2 gap-2 pt-1">
-        <button type="button" id="btn-rol-repartidor" onclick="seleccionarRol('repartidor')" class="py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/15 text-white transition flex items-center justify-center gap-2 cursor-pointer">🛵 Repartidor</button>
-        <button type="button" id="btn-rol-comercio" onclick="seleccionarRol('comercio')" class="py-2.5 text-xs font-bold rounded-xl border border-slate-800 bg-slate-950 text-slate-400 transition hover:border-slate-700 cursor-pointer">🏪 Comercio</button>
+        <button type="button" id="btn-rol-repartidor" onclick="seleccionarRol('repartidor')" class="py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/15 text-slate-900 dark:text-white transition flex items-center justify-center gap-2 cursor-pointer">🛵 Repartidor</button>
+        <button type="button" id="btn-rol-comercio" onclick="seleccionarRol('comercio')" class="py-2.5 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 transition hover:border-slate-400 dark:hover:border-slate-700 cursor-pointer">🏪 Comercio</button>
       </div>
 
       <form id="form-auth" class="space-y-3">
-        <input type="email" id="email-input" placeholder="Correo electrónico" required class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-white text-xs focus:outline-none focus:border-emerald-500">
-        <input type="password" id="password-input" placeholder="Contraseña" required class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-white text-xs focus:outline-none focus:border-emerald-500">
+        <input type="email" id="email-input" placeholder="Correo electrónico" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-emerald-500">
+        <input type="password" id="password-input" placeholder="Contraseña" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-emerald-500">
         <button type="submit" id="btn-submit-auth" class="w-full py-3.5 bg-emerald-500 text-slate-950 font-black rounded-2xl text-xs hover:bg-emerald-400 transition cursor-pointer shadow-lg shadow-emerald-500/20">Iniciar Sesión</button>
       </form>
 
       <div class="flex items-center my-2">
-        <div class="flex-grow border-t border-slate-800"></div>
+        <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
         <span class="px-3 text-[10px] text-slate-500 uppercase tracking-wider font-semibold">o continúa con</span>
-        <div class="flex-grow border-t border-slate-800"></div>
+        <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
       </div>
 
-      <button type="button" onclick="iniciarConGoogle()" class="w-full py-3 px-4 rounded-2xl border border-slate-700 bg-slate-800/80 text-white font-semibold text-xs flex items-center justify-center gap-3 hover:bg-slate-800 transition cursor-pointer active:scale-95 shadow-md">
+      <button type="button" onclick="iniciarConGoogle()" class="w-full py-3 px-4 rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/80 text-slate-900 dark:text-white font-semibold text-xs flex items-center justify-center gap-3 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer active:scale-95 shadow-md">
         <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
           <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -448,8 +447,8 @@
       </button>
 
       <div class="text-center pt-2">
-        <button type="button" onclick="alternarModoAuth()" class="text-xs text-slate-400 hover:text-emerald-400 transition cursor-pointer">
-          <span id="texto-cambio-auth">¿No tienes cuenta?</span> <span id="link-cambio-auth" class="underline font-bold text-white">Regístrate</span>
+        <button type="button" onclick="alternarModoAuth()" class="text-xs text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition cursor-pointer">
+          <span id="texto-cambio-auth">¿No tienes cuenta?</span> <span id="link-cambio-auth" class="underline font-bold text-slate-900 dark:text-white">Regístrate</span>
         </button>
       </div>
     </div>
@@ -457,11 +456,11 @@
 
   <!-- MODAL DE ALERTA -->
   <div id="modal-alerta" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
-    <div class="bg-slate-900 border-t sm:border border-slate-800 rounded-t-3xl sm:rounded-3xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl relative">
+    <div class="bg-white dark:bg-slate-900 border-t sm:border border-slate-200 dark:border-slate-800 rounded-t-3xl sm:rounded-3xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl relative">
       <div class="w-12 h-12 bg-amber-500/10 rounded-full border border-amber-500/20 flex items-center justify-center mx-auto text-xl">⚠️</div>
       <div class="space-y-1">
-        <h3 class="text-base font-bold text-white">Aviso</h3>
-        <p id="mensaje-alerta-texto" class="text-xs text-slate-400">Mensaje de alerta</p>
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Aviso</h3>
+        <p id="mensaje-alerta-texto" class="text-xs text-slate-500 dark:text-slate-400">Mensaje de alerta</p>
       </div>
       <button type="button" onclick="cerrarAlertaPro()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-2xl transition shadow-lg cursor-pointer">Entendido</button>
     </div>
@@ -480,6 +479,7 @@
     let carrerasTurnoActual = [];
     let cortesArchivados = [];
 
+    // Función corregida y robusta para alternar Modo Claro / Oscuro
     function toggleTheme() {
       const html = document.documentElement;
       const icon = document.getElementById('theme-icon');
@@ -494,15 +494,16 @@
       }
     }
 
+    // Inicializador de Tema al cargar
     (function() {
       const savedTheme = localStorage.getItem('theme');
       const icon = document.getElementById('theme-icon');
       if (savedTheme === 'light') {
         document.documentElement.classList.remove('dark');
-        icon.innerText = '🌙';
+        if(icon) icon.innerText = '🌙';
       } else {
         document.documentElement.classList.add('dark');
-        icon.innerText = '☀️';
+        if(icon) icon.innerText = '☀️';
       }
     })();
 
@@ -543,7 +544,7 @@
     function calcularTarifa() {
       const dist = parseFloat(document.getElementById('distancia').value);
       if(!dist || dist <= 0) {
-        mostrarAlertaPro("Por favor ingresa una distancia válida en kilómetros.");
+        mostrarAlertaPro("Por favor ingresa una distancia válida en kilómetros antes de calcular.");
         return;
       }
 
@@ -577,6 +578,18 @@
       document.getElementById('check-lluvia').checked = false;
       document.getElementById('resultado-box').classList.add('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Validación estricta para asegurar que se haya calculado una tarifa antes de compartir
+    function validarCotizacionLista() {
+      const dist = document.getElementById('distancia').value;
+      const resBox = document.getElementById('resultado-box');
+      
+      if (!dist || dist <= 0 || resBox.classList.contains('hidden')) {
+        mostrarAlertaPro("⚠️ Debes ingresar la distancia en kilómetros y presionar 'Calcular Tarifa Exacta' antes de compartir.");
+        return false;
+      }
+      return true;
     }
 
     function generarTextoPlantilla() {
@@ -613,11 +626,13 @@
     }
 
     function enviarWhatsApp() {
+      if (!validarCotizacionLista()) return;
       const texto = generarTextoPlantilla();
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
     }
 
     function copiarAlPortapapeles() {
+      if (!validarCotizacionLista()) return;
       const texto = generarTextoPlantilla();
       navigator.clipboard.writeText(texto).then(() => {
         const btn = document.getElementById('btn-copiar');
@@ -802,11 +817,11 @@
       const btnRepartidor = document.getElementById('btn-rol-repartidor');
       const btnComercio = document.getElementById('btn-rol-comercio');
       if (rol === 'repartidor') {
-        btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/15 text-white transition flex items-center justify-center gap-2 cursor-pointer";
-        btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-800 bg-slate-950 text-slate-400 transition hover:border-slate-700 cursor-pointer";
+        btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/15 text-slate-900 dark:text-white transition flex items-center justify-center gap-2 cursor-pointer";
+        btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 transition hover:border-slate-400 dark:hover:border-slate-700 cursor-pointer";
       } else {
-        btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/15 text-white transition flex items-center justify-center gap-2 cursor-pointer";
-        btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-800 bg-slate-950 text-slate-400 transition hover:border-slate-700 cursor-pointer";
+        btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/15 text-slate-900 dark:text-white transition flex items-center justify-center gap-2 cursor-pointer";
+        btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 transition hover:border-slate-400 dark:hover:border-slate-700 cursor-pointer";
       }
     }
 
@@ -943,24 +958,24 @@
     function renderizarMóduloPro() {
       const totalTurnoUSD = carrerasTurnoActual.reduce((acc, c) => acc + c.monto, 0);
       const totalTurnoBS = totalTurnoUSD * tasaBCV;
-      document.getElementById('pro-total-turno').innerHTML = `$${totalTurnoUSD.toFixed(2)} <span class="text-xs text-slate-400 font-normal">(Bs. ${totalTurnoBS.toFixed(2)})</span>`;
+      document.getElementById('pro-total-turno').innerHTML = `$${totalTurnoUSD.toFixed(2)} <span class="text-xs text-slate-500 dark:text-slate-400 font-normal">(Bs. ${totalTurnoBS.toFixed(2)})</span>`;
 
       const contTurno = document.getElementById('contenedor-carreras-turno');
       contTurno.innerHTML = '';
       if(carrerasTurnoActual.length === 0) {
-        contTurno.innerHTML = '<p class="text-center text-slate-500 py-2 text-[11px]">Sin carreras en este turno.</p>';
+        contTurno.innerHTML = '<p class="text-center text-slate-400 dark:text-slate-500 py-2 text-[11px]">Sin carreras en este turno.</p>';
       } else {
         carrerasTurnoActual.forEach(c => {
           const item = document.createElement('div');
-          item.className = 'p-2.5 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between text-xs';
+          item.className = 'p-2.5 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs';
           item.innerHTML = `
             <div>
-              <span class="font-bold text-white">${c.nota}</span>
+              <span class="font-bold text-slate-900 dark:text-white">${c.nota}</span>
               <span class="text-[10px] text-slate-500 ml-2">🕒 ${c.hora}</span>
             </div>
             <div class="flex items-center gap-2.5">
-              <span class="font-black text-emerald-400">$${c.monto.toFixed(2)}</span>
-              <button onclick="eliminarCarreraTurno(${c.id})" class="text-rose-400 hover:text-rose-300 text-xs cursor-pointer font-bold">✕</button>
+              <span class="font-black text-emerald-600 dark:text-emerald-400">$${c.monto.toFixed(2)}</span>
+              <button onclick="eliminarCarreraTurno(${c.id})" class="text-rose-500 dark:text-rose-400 hover:text-rose-400 text-xs cursor-pointer font-bold">✕</button>
             </div>
           `;
           contTurno.appendChild(item);
@@ -971,18 +986,18 @@
       contCortes.innerHTML = '';
 
       if(cortesArchivados.length === 0) {
-        contCortes.innerHTML = '<p class="text-center text-slate-500 py-4 text-[11px]">No hay cortes diarios archivados aún.</p>';
+        contCortes.innerHTML = '<p class="text-center text-slate-400 dark:text-slate-500 py-4 text-[11px]">No hay cortes diarios archivados aún.</p>';
       } else {
         cortesArchivados.forEach(corte => {
           const item = document.createElement('div');
-          item.className = 'bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden';
+          item.className = 'bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden';
           
           let htmlCarrerasSub = '';
           corte.carreras.forEach(car => {
             htmlCarrerasSub += `
-              <div class="flex justify-between items-center py-1 border-b border-slate-900/65 text-[10px] text-slate-400">
+              <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-900/65 text-[10px] text-slate-500 dark:text-slate-400">
                 <span>• ${car.nota} (${car.hora})</span>
-                <span class="font-bold text-slate-200">$${car.monto.toFixed(2)}</span>
+                <span class="font-bold text-slate-700 dark:text-slate-200">$${car.monto.toFixed(2)}</span>
               </div>
             `;
           });
@@ -990,30 +1005,30 @@
           const totalCorteBS = corte.totalNeto * tasaBCV;
 
           item.innerHTML = `
-            <div onclick="toggleAcordeonCorte(${corte.id})" class="p-3.5 flex items-center justify-between cursor-pointer hover:bg-slate-900/60 transition">
+            <div onclick="toggleAcordeonCorte(${corte.id})" class="p-3.5 flex items-center justify-between cursor-pointer hover:bg-slate-200/50 dark:hover:bg-slate-900/60 transition">
               <div class="space-y-0.5">
                 <div class="flex items-center gap-2">
-                  <span class="font-bold text-white text-xs">📅 ${corte.fecha}</span>
+                  <span class="font-bold text-slate-900 dark:text-white text-xs">📅 ${corte.fecha}</span>
                   <span class="text-[9px] text-slate-500">🕒 ${corte.horaCorte}</span>
                 </div>
-                <p class="text-[10px] text-slate-400">Bruto: $${corte.totalBruto.toFixed(2)} | ⛽ Gasolina: -$${corte.gastoGas.toFixed(2)}</p>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400">Bruto: $${corte.totalBruto.toFixed(2)} | ⛽ Gasolina: -$${corte.gastoGas.toFixed(2)}</p>
               </div>
               <div class="flex items-center gap-3">
                 <div class="text-right">
-                  <p class="font-black text-emerald-400 text-xs">+$${corte.totalNeto.toFixed(2)} <span class="text-[9px] text-slate-500 font-normal">neto</span></p>
-                  <p class="text-[9px] text-slate-400">Bs. ${totalCorteBS.toFixed(2)}</p>
+                  <p class="font-black text-emerald-600 dark:text-emerald-400 text-xs">+$${corte.totalNeto.toFixed(2)} <span class="text-[9px] text-slate-500 font-normal">neto</span></p>
+                  <p class="text-[9px] text-slate-500 dark:text-slate-400">Bs. ${totalCorteBS.toFixed(2)}</p>
                 </div>
                 <span id="flecha-corte-${corte.id}" class="text-slate-500 text-xs transition-transform duration-200">▼</span>
               </div>
             </div>
 
-            <div id="detalle-corte-${corte.id}" class="hidden p-3.5 bg-slate-900/90 border-t border-slate-800/80 space-y-2">
-              <p class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">📋 Carrera(s) de la Jornada (${corte.carreras.length}):</p>
+            <div id="detalle-corte-${corte.id}" class="hidden p-3.5 bg-slate-50 dark:bg-slate-900/90 border-t border-slate-200 dark:border-slate-800/80 space-y-2">
+              <p class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">📋 Carrera(s) de la Jornada (${corte.carreras.length}):</p>
               <div class="pl-2 space-y-1">
                 ${htmlCarrerasSub}
               </div>
               <div class="pt-2 text-right">
-                <button onclick="eliminarCorteArchivado(${corte.id})" class="text-[10px] text-rose-400 hover:text-rose-300 underline cursor-pointer font-bold">🗑️ Eliminar este corte</button>
+                <button onclick="eliminarCorteArchivado(${corte.id})" class="text-[10px] text-rose-500 dark:text-rose-400 underline cursor-pointer font-bold">🗑️ Eliminar este corte</button>
               </div>
             </div>
           `;
