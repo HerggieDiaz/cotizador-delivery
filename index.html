@@ -79,7 +79,7 @@
         </div>
       </div>
       
-      <!-- Botón Modo Oscuro / Claro -->
+      <!-- Botón Modo Oscuro / Claro corregido -->
       <button onclick="toggleTheme()" class="p-2.5 text-slate-300 hover:text-white transition rounded-xl border border-slate-800 bg-slate-900/90 shadow-sm cursor-pointer" title="Cambiar Tema">
         <span id="theme-icon">☀️</span>
       </button>
@@ -479,29 +479,32 @@
     let carrerasTurnoActual = [];
     let cortesArchivados = [];
 
+    // Función de cambio de tema completamente optimizada y forzada
     function toggleTheme() {
       const html = document.documentElement;
       const icon = document.getElementById('theme-icon');
+      
       if (html.classList.contains('dark')) {
         html.classList.remove('dark');
-        icon.innerText = '🌙';
         localStorage.setItem('theme', 'light');
+        if (icon) icon.innerText = '🌙';
       } else {
         html.classList.add('dark');
-        icon.innerText = '☀️';
         localStorage.setItem('theme', 'dark');
+        if (icon) icon.innerText = '☀️';
       }
     }
 
+    // Inicializador del tema al cargar la página
     (function() {
       const savedTheme = localStorage.getItem('theme');
       const icon = document.getElementById('theme-icon');
       if (savedTheme === 'light') {
         document.documentElement.classList.remove('dark');
-        if(icon) icon.innerText = '🌙';
+        if (icon) icon.innerText = '🌙';
       } else {
         document.documentElement.classList.add('dark');
-        if(icon) icon.innerText = '☀️';
+        if (icon) icon.innerText = '☀️';
       }
     })();
 
