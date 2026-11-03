@@ -61,7 +61,7 @@
   <header class="border-b border-slate-200 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/60 backdrop-blur-md sticky top-0 z-50 px-4 py-3">
     <div class="max-w-md mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-emerald-500/20">
+        <div id="header-avatar" class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-emerald-500/20 overflow-hidden">
           🛵
         </div>
         <div>
@@ -291,15 +291,22 @@
     <p class="font-medium text-slate-400">Desarrollado con dedicación por <span class="text-emerald-400">Herggie Díaz</span></p>
   </footer>
 
-  <!-- MODAL PERFIL DE USUARIO PRO / CONFIGURACIÓN DE MARCA -->
+  <!-- MODAL PERFIL DE USUARIO PRO / CONFIGURACIÓN DE MARCA Y FOTO -->
   <div id="modal-perfil" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative text-center">
       <button onclick="cerrarPerfil()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold cursor-pointer">
         ✕
       </button>
 
-      <div class="w-16 h-16 bg-gradient-to-tr from-emerald-500 to-cyan-500 rounded-full flex items-center justify-center text-slate-950 text-2xl font-black mx-auto shadow-lg shadow-emerald-500/20">
-        🛵
+      <!-- Avatar con Foto de Perfil -->
+      <div class="relative w-20 h-20 mx-auto">
+        <div id="perfil-avatar-preview" class="w-20 h-20 bg-gradient-to-tr from-emerald-500 to-cyan-500 rounded-full flex items-center justify-center text-slate-950 text-2xl font-black shadow-lg shadow-emerald-500/20 overflow-hidden border-2 border-emerald-500">
+          🛵
+        </div>
+        <label for="input-foto-perfil" class="absolute bottom-0 right-0 bg-emerald-500 hover:bg-emerald-400 text-slate-950 p-1.5 rounded-full cursor-pointer shadow-md text-xs" title="Cambiar foto">
+          📷
+        </label>
+        <input type="file" id="input-foto-perfil" accept="image/*" class="hidden" onchange="cambiarFotoPerfil(event)">
       </div>
 
       <div>
@@ -310,16 +317,26 @@
         </span>
       </div>
 
-      <!-- Configuración de Marca Personal y Pago Móvil -->
+      <!-- Configuración de Marca Personal, Cédula, Placa y Pago Móvil -->
       <div class="border-t border-slate-800 pt-3 text-left space-y-2">
-        <p class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">⚙️ Configuración Marca Pro (WhatsApp):</p>
+        <p class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">⚙️ Credenciales y Marca Pro:</p>
         <div>
-          <label class="text-[10px] text-slate-400">Nombre de tu Marca / Servicio:</label>
+          <label class="text-[10px] text-slate-400">Nombre de tu Servicio / Marca:</label>
           <input type="text" id="cfg-nombre-marca" placeholder="Ej. Express Valencia" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
         </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-[10px] text-slate-400">Cédula (V- / E-):</label>
+            <input type="text" id="cfg-cedula" placeholder="V-28123456" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="text-[10px] text-slate-400">Placa de Moto:</label>
+            <input type="text" id="cfg-placa" placeholder="AB1C23D" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
+          </div>
+        </div>
         <div>
-          <label class="text-[10px] text-slate-400">Datos Pago Móvil (Opcional):</label>
-          <input type="text" id="cfg-pago-movil" placeholder="Ej. 0414-1234567 / BDV" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
+          <label class="text-[10px] text-slate-400">Datos Pago Móvil:</label>
+          <input type="text" id="cfg-pago-movil" placeholder="0414-1234567 / BDV" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white text-xs focus:border-emerald-500 focus:outline-none">
         </div>
         <button onclick="guardarConfiguracionMarca()" class="w-full py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition cursor-pointer">
           💾 Guardar Datos Pro
@@ -519,9 +536,17 @@
 
       const user = auth.currentUser;
       const nombreMarca = (user && localStorage.getItem(`marca_${user.uid}`)) || 'COTIZACIÓN DE DELIVERY';
+      const cedula = (user && localStorage.getItem(`cedula_${user.uid}`)) || '';
+      const placa = (user && localStorage.getItem(`placa_${user.uid}`)) || '';
       const pagoMovil = (user && localStorage.getItem(`pagomovil_${user.uid}`)) || '';
 
-      let texto = `🛵 *${nombreMarca.toUpperCase()}*\n\n` + `📍 *Distancia:* ${dist} km\n`;
+      let texto = `🛵 *${nombreMarca.toUpperCase()}*\n\n`;
+      if(cedula || placa) {
+        texto += `🛡️ *Repartidor:* ${user ? (user.displayName || 'Verificado') : ''} ${cedula ? '('+cedula+')' : ''}\n`;
+        if(placa) texto += `🏍️ *Moto Placa:* ${placa}\n`;
+        texto += `\n`;
+      }
+      texto += `📍 *Distancia:* ${dist} km\n`;
       if(linkMaps) texto += `🗺️ *Ruta Maps:* ${linkMaps}\n`;
       if(esHorarioNocturno) texto += `🌙 *Tarifa:* Nocturna (9pm - 6am)\n`;
       texto += `💵 *Monto USD:* ${usd}\n` + `💳 *Total a pagar:* ${bs}\n` + `🏛️ *Tasa BCV:* Bs. ${tasaBCV.toFixed(2)}\n`;
@@ -561,11 +586,20 @@
 
     function abrirAuth() { document.getElementById('modal-auth').classList.remove('hidden'); }
     function cerrarAuth() { document.getElementById('modal-auth').classList.add('hidden'); }
+    
     function abrirPerfil() { 
       const user = auth.currentUser;
       if (user) {
         document.getElementById('cfg-nombre-marca').value = localStorage.getItem(`marca_${user.uid}`) || '';
+        document.getElementById('cfg-cedula').value = localStorage.getItem(`cedula_${user.uid}`) || '';
+        document.getElementById('cfg-placa').value = localStorage.getItem(`placa_${user.uid}`) || '';
         document.getElementById('cfg-pago-movil').value = localStorage.getItem(`pagomovil_${user.uid}`) || '';
+        
+        const avatarGuardado = localStorage.getItem(`avatar_${user.uid}`);
+        const preview = document.getElementById('perfil-avatar-preview');
+        if(avatarGuardado) {
+          preview.innerHTML = `<img src="${avatarGuardado}" class="w-full h-full object-cover">`;
+        }
       }
       document.getElementById('modal-perfil').classList.remove('hidden'); 
     }
@@ -589,14 +623,46 @@
       }
     }
 
+    function cambiarFotoPerfil(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const base64Image = e.target.result;
+          const user = auth.currentUser;
+          if (user) {
+            localStorage.setItem(`avatar_${user.uid}`, base64Image);
+            actualizarAvatarUI(base64Image);
+            mostrarAlertaPro("¡Foto de perfil actualizada con éxito!");
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function actualizarAvatarUI(imgSrc) {
+      const headerAvatar = document.getElementById('header-avatar');
+      const perfilPreview = document.getElementById('perfil-avatar-preview');
+      
+      const htmlImg = `<img src="${imgSrc}" class="w-full h-full object-cover">`;
+      if(headerAvatar) headerAvatar.innerHTML = htmlImg;
+      if(perfilPreview) perfilPreview.innerHTML = htmlImg;
+    }
+
     function guardarConfiguracionMarca() {
       const user = auth.currentUser;
       if (user) {
         const marca = document.getElementById('cfg-nombre-marca').value.trim();
+        const cedula = document.getElementById('cfg-cedula').value.trim();
+        const placa = document.getElementById('cfg-placa').value.trim();
         const pago = document.getElementById('cfg-pago-movil').value.trim();
+
         localStorage.setItem(`marca_${user.uid}`, marca);
+        localStorage.setItem(`cedula_${user.uid}`, cedula);
+        localStorage.setItem(`placa_${user.uid}`, placa);
         localStorage.setItem(`pagomovil_${user.uid}`, pago);
-        mostrarAlertaPro("¡Datos de marca guardados! Ahora tus cotizaciones de WhatsApp saldrán personalizadas.");
+
+        mostrarAlertaPro("¡Datos Pro guardados correctamente!");
         cerrarPerfil();
       }
     }
@@ -607,6 +673,7 @@
         cerrarPerfil();
         document.getElementById('modulo-ganancias-pro').classList.add('hidden');
         document.getElementById('flecha-pro').style.transform = 'rotate(0deg)';
+        document.getElementById('header-avatar').innerHTML = '🛵';
         mostrarAlertaPro("Sesión cerrada correctamente.");
       } catch (e) {
         mostrarAlertaPro("Error al cerrar sesión.");
@@ -886,12 +953,20 @@
         const nombre = user.displayName || user.email.split('@')[0];
         btnTexto.innerText = `👤 ${nombre}`;
         if(btnProLabel) btnProLabel.innerText = "Registro de Ganancias Pro";
+        
+        // Cargar foto de perfil guardada si existe
+        const avatarGuardado = localStorage.getItem(`avatar_${user.uid}`);
+        if(avatarGuardado) {
+          actualizarAvatarUI(avatarGuardado);
+        }
+
         cargarHistorialGuardado();
       } else {
-        btnTexto.innerText = "👤 Mi Cuenta / Acceso Pro";
+        btnTexto.innerText = `👤 Mi Cuenta / Acceso Pro`;
         if(btnProLabel) btnProLabel.innerText = "Activar Registro de Ganancias Pro";
         document.getElementById('modulo-ganancias-pro').classList.add('hidden');
         document.getElementById('flecha-pro').style.transform = 'rotate(0deg)';
+        document.getElementById('header-avatar').innerHTML = '🛵';
       }
     });
 
