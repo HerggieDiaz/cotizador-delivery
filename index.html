@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cotizador Delivery</title>
+  <title>Cotizador Delivery & Fleet B2B</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -65,12 +65,12 @@
           🛵
         </div>
         <div>
-          <h1 class="font-bold text-slate-900 dark:text-white text-base tracking-tight leading-none">Cotizador Delivery</h1>
-          <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold tracking-wide uppercase">Venezuela • Tasa BCV Oficial</span>
+          <h1 class="font-bold text-slate-900 dark:text-white text-base tracking-tight leading-none" id="header-titulo-app">Cotizador Delivery</h1>
+          <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold tracking-wide uppercase" id="header-subtitulo-app">Venezuela • Tasa BCV Oficial</span>
         </div>
       </div>
       
-      <!-- Botón Modo Oscuro / Claro funcional -->
+      <!-- Botón Modo Oscuro / Claro -->
       <button onclick="toggleTheme()" class="p-2.5 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/90 shadow-sm cursor-pointer" title="Cambiar Tema">
         <span id="theme-icon">☀️</span>
       </button>
@@ -79,7 +79,7 @@
     <!-- Botón Dinámico de Cuenta / Perfil -->
     <div class="max-w-md mx-auto mt-2.5">
       <button onclick="gestionarClicCuenta()" class="w-full px-3.5 py-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex items-center justify-center gap-2 hover:bg-emerald-500/20 transition cursor-pointer shadow-inner">
-        <span id="btn-mi-cuenta-texto">👤 Mi Cuenta / Acceso Pro</span>
+        <span id="btn-mi-cuenta-texto">👤 Mi Cuenta / Acceso Pro & B2B</span>
       </button>
     </div>
   </header>
@@ -87,7 +87,19 @@
   <!-- Contenedor App -->
   <main class="max-w-md mx-auto px-4 pt-6 space-y-5">
 
-    <!-- Tarjeta de Tasa BCV y Estado Nocturno (Adaptables claro/oscuro) -->
+    <!-- Indicador de Modo B2B Comercio (Si aplica) -->
+    <div id="banner-modo-b2b" class="hidden p-3.5 bg-gradient-to-r from-blue-600/20 to-indigo-600/20 border border-blue-500/40 rounded-2xl flex items-center justify-between text-xs backdrop-blur-xl">
+      <div class="flex items-center gap-2.5">
+        <span class="text-xl">🏢</span>
+        <div>
+          <p class="font-bold text-blue-600 dark:text-blue-300" id="b2b-banner-nombre">Modo Flota B2B Activo</p>
+          <p class="text-[10px] text-slate-500 dark:text-slate-400">Tarifas y branding controlados por el negocio</p>
+        </div>
+      </div>
+      <span class="bg-blue-500/20 text-blue-600 dark:text-blue-300 text-[9px] px-2 py-0.5 rounded font-black tracking-wider uppercase border border-blue-500/30">FLEET</span>
+    </div>
+
+    <!-- Tarjeta de Tasa BCV y Estado Nocturno -->
     <div class="grid grid-cols-2 gap-3">
       <div id="card-bcv" class="bg-white dark:bg-slate-900/80 p-4 rounded-2xl flex flex-col justify-between border border-slate-200 dark:border-slate-800 shadow-xl animate-pulse">
         <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-bold">Tasa Oficial BCV</p>
@@ -106,7 +118,7 @@
       Abrir Google Maps (Ver Ruta Real)
     </a>
 
-    <!-- Formulario de Cotización (Fondo adaptable) -->
+    <!-- Formulario de Cotización -->
     <div class="bg-white dark:bg-slate-900/80 p-5 rounded-3xl space-y-4 border border-slate-200 dark:border-slate-800 shadow-xl">
       <div>
         <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
@@ -225,7 +237,7 @@
       </div>
     </div>
 
-    <!-- Botones de Acción (WhatsApp y Copiar con validación) -->
+    <!-- Botones de Acción -->
     <div class="grid grid-cols-2 gap-3 pt-1">
       <button onclick="enviarWhatsApp()" class="py-3.5 px-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.98] cursor-pointer text-xs">
         💬 WhatsApp
@@ -286,7 +298,7 @@
         <p class="text-center text-slate-400 dark:text-slate-500 py-3 text-[11px]" id="msg-turno-vacio">Sin carreras registradas en este turno.</p>
       </div>
 
-      <!-- HISTORIAL ARCHIVADO DE CORTES DIARIOS (ACORDEÓN) -->
+      <!-- HISTORIAL ARCHIVADO DE CORTES DIARIOS -->
       <div class="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-800">
         <div class="flex items-center justify-between">
           <h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">📁 Cortes Diarios Archivados</h3>
@@ -303,7 +315,7 @@
 
   </main>
 
-  <!-- Footer con el nombre correcto y tu firma -->
+  <!-- Footer -->
   <footer class="text-center space-y-1.5 pt-10 pb-6 text-xs text-slate-500 border-t border-slate-200 dark:border-slate-900 mt-10">
     <p>© 2026 Cotizador Delivery. Todos los derechos reservados.</p>
     <p class="font-medium text-slate-600 dark:text-slate-400">Diseñado con dedicación por <span class="text-emerald-600 dark:text-emerald-400 font-bold">Herggie Díaz</span></p>
@@ -336,9 +348,9 @@
     </div>
   </div>
 
-  <!-- MODAL PERFIL DE USUARIO PRO -->
+  <!-- MODAL PERFIL DE USUARIO PRO / CONFIGURACIÓN B2B COMERCIO -->
   <div id="modal-perfil" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative text-center">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative text-center max-h-[90vh] overflow-y-auto">
       <button onclick="cerrarPerfil()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-bold cursor-pointer">✕</button>
 
       <!-- Avatar -->
@@ -366,8 +378,8 @@
         </span>
       </div>
 
-      <!-- Configuración Pro -->
-      <div class="border-t border-slate-200 dark:border-slate-800 pt-4 text-left space-y-2.5">
+      <!-- Configuración Modo Repartidor Pro -->
+      <div id="cfg-seccion-repartidor" class="border-t border-slate-200 dark:border-slate-800 pt-4 text-left space-y-2.5">
         <p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">⚙️ Credenciales y Marca Pro:</p>
         <div>
           <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Nombre de tu Servicio / Marca:</label>
@@ -392,6 +404,40 @@
         </button>
       </div>
 
+      <!-- Configuración Módulo B2B Comercio / Flota -->
+      <div id="cfg-seccion-comercio" class="hidden border-t border-slate-200 dark:border-slate-800 pt-4 text-left space-y-2.5">
+        <p class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">🏢 Configuración de Flota B2B:</p>
+        <div>
+          <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Nombre del Comercio / Empresa:</label>
+          <input type="text" id="cfg-b2b-nombre" placeholder="Ej. Farmacia San Diego C.A." class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-blue-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">RIF Comercial:</label>
+          <input type="text" id="cfg-b2b-rif" placeholder="Ej. J-40123456-7" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-blue-500 focus:outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Tarifa Base ($ / Km):</label>
+            <input type="number" step="0.10" id="cfg-b2b-rate-km" placeholder="0.40" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-blue-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Tarifa Mínima ($):</label>
+            <input type="number" step="0.50" id="cfg-b2b-min-fare" placeholder="2.00" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-blue-500 focus:outline-none">
+          </div>
+        </div>
+        <div>
+          <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Datos Pago Móvil Corporativo:</label>
+          <input type="text" id="cfg-b2b-pago-movil" placeholder="0102 - 04141234567 - J401234567" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-blue-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Zelle / Correo Oficial (Opcional):</label>
+          <input type="text" id="cfg-b2b-zelle" placeholder="pagos@farmaciasandiego.com" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-blue-500 focus:outline-none">
+        </div>
+        <button onclick="guardarConfiguracionB2B()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs rounded-xl transition cursor-pointer shadow-md">
+          💾 Guardar Parámetros de Flota B2B
+        </button>
+      </div>
+
       <div class="border-t border-slate-200 dark:border-slate-800 pt-3">
         <button type="button" onclick="cerrarSesion()" class="w-full py-2.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 dark:text-rose-400 border border-rose-500/30 font-bold text-xs rounded-xl transition cursor-pointer">
           🚪 Cerrar Sesión
@@ -407,12 +453,13 @@
 
       <div class="text-center space-y-1">
         <h3 id="auth-titulo" class="text-lg font-bold text-slate-900 dark:text-white">Bienvenido de nuevo</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400">Accede para gestionar tus cotizaciones y rutas</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Accede para gestionar tus cotizaciones y flotas</p>
       </div>
 
-      <div id="selector-rol" class="hidden grid grid-cols-2 gap-2 pt-1">
+      <!-- Selector de Rol (Repartidor o Comercio B2B) -->
+      <div id="selector-rol" class="grid grid-cols-2 gap-2 pt-1">
         <button type="button" id="btn-rol-repartidor" onclick="seleccionarRol('repartidor')" class="py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/15 text-slate-900 dark:text-white transition flex items-center justify-center gap-2 cursor-pointer">🛵 Repartidor</button>
-        <button type="button" id="btn-rol-comercio" onclick="seleccionarRol('comercio')" class="py-2.5 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 transition hover:border-slate-400 dark:hover:border-slate-700 cursor-pointer">🏪 Comercio</button>
+        <button type="button" id="btn-rol-comercio" onclick="seleccionarRol('comercio')" class="py-2.5 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 transition hover:border-slate-400 dark:hover:border-slate-700 cursor-pointer">🏪 Comercio / Flota</button>
       </div>
 
       <form id="form-auth" class="space-y-3">
@@ -460,9 +507,9 @@
   <!-- SCRIPT GENERAL Y LÓGICA DE LA APLICACIÓN -->
   <script>
     let tasaBCV = 88.47; 
-    const TARIFA_BASE = 2.00;       
-    const KM_BASE = 2.0;            
-    const PRECIO_KM_EXTRA = 0.40;   
+    let TARIFA_BASE = 2.00;       
+    let KM_BASE = 2.0;            
+    let PRECIO_KM_EXTRA = 0.40;   
     let esHorarioNocturno = false;
     let esRegistro = false;
     let rolSeleccionado = 'repartidor';
@@ -552,6 +599,13 @@
       const hayLluvia = document.getElementById('check-lluvia').checked;
       if(hayLluvia) subtotalUSD *= 1.30;
 
+      // Si aplica tarifa mínima B2B
+      const user = auth.currentUser;
+      if (user && rolSeleccionado === 'comercio') {
+        const minFare = parseFloat(localStorage.getItem(`b2b_min_fare_${user.uid}`)) || 2.00;
+        if (subtotalUSD < minFare) subtotalUSD = minFare;
+      }
+
       const totalUSD = subtotalUSD.toFixed(2);
       const totalBS = (totalUSD * tasaBCV).toFixed(2);
 
@@ -589,6 +643,42 @@
       const tipoEnvioVal = document.getElementById('tipo-envio').value;
 
       const user = auth.currentUser;
+      
+      // PLANTILLA B2B SI EL ROL ES COMERCIO
+      if (user && rolSeleccionado === 'comercio') {
+        const b2bNombre = localStorage.getItem(`b2b_nombre_${user.uid}`) || 'FARMACIA / COMERCIO B2B';
+        const b2bRif = localStorage.getItem(`b2b_rif_${user.uid}`) || '';
+        const b2bPago = localStorage.getItem(`b2b_pagomovil_${user.uid}`) || '';
+        const b2bZelle = localStorage.getItem(`b2b_zelle_${user.uid}`) || '';
+        const cedula = localStorage.getItem(`cedula_${user.uid}`) || '';
+        const placa = localStorage.getItem(`placa_${user.uid}`) || '';
+
+        let texto = `🏢 *${b2bNombre.toUpperCase()}*\n`;
+        if (b2bRif) texto += `📄 RIF: ${b2bRif}\n`;
+        texto += `🛵 *DESPACHO DE FLOTA OFICIAL*\n--------------------------------\n`;
+        texto += `👤 *Unidad / Repartidor:* ${user.displayName || 'Verificado'} ${cedula ? '('+cedula+')' : ''}\n`;
+        if (placa) texto += `🏍️ *Moto Placa:* ${placa}\n`;
+        texto += `📍 *Distancia:* ${dist} km\n`;
+        if (linkMaps) texto += `🗺️ *Ruta Maps:* ${linkMaps}\n`;
+        texto += `💵 *Tasa Oficial BCV:* Bs. ${tasaBCV.toFixed(2)} / USD\n\n`;
+        texto += `💰 *DETALLE DEL SERVICIO:*\n`;
+        if (tipoEnvioVal === 'picking') texto += `• Picking / Compras en Tienda (+30%)\n`;
+        if (tipoEnvioVal === 'pesado') texto += `• Carga Pesada (+25%)\n`;
+        if (tipoEnvioVal === 'fragil') texto += `• Objeto Frágil (+15%)\n`;
+        if (esHorarioNocturno) texto += `• Horario Nocturno (9pm - 6am)\n`;
+        if (hayLluvia) texto += `• Recargo Climático (Lluvia): +30%\n`;
+        texto += `--------------------------------\n`;
+        texto += `TOTAL A PAGAR:\n👉 *${usd} USD*\n👉 *${bs}*\n\n`;
+        if (b2bPago || b2bZelle) {
+          texto += `💳 *MÉTODOS DE PAGO:*\n`;
+          if (b2bPago) texto += `• Pago Móvil: ${b2bPago}\n`;
+          if (b2bZelle) texto += `• Zelle: ${b2bZelle}\n`;
+        }
+        texto += `\n_Comprobante emitido por Cotizador Fleet®_`;
+        return texto;
+      }
+
+      // PLANTILLA REPARTIDOR INDEPENDIENTE (B2C)
       const nombreMarca = (user && localStorage.getItem(`marca_${user.uid}`)) || 'COTIZACIÓN DE DELIVERY';
       const cedula = (user && localStorage.getItem(`cedula_${user.uid}`)) || '';
       const placa = (user && localStorage.getItem(`placa_${user.uid}`)) || '';
@@ -655,11 +745,28 @@
         document.getElementById('cfg-placa').value = localStorage.getItem(`placa_${user.uid}`) || '';
         document.getElementById('cfg-pago-movil').value = localStorage.getItem(`pagomovil_${user.uid}`) || '';
         
+        // Datos B2B
+        document.getElementById('cfg-b2b-nombre').value = localStorage.getItem(`b2b_nombre_${user.uid}`) || '';
+        document.getElementById('cfg-b2b-rif').value = localStorage.getItem(`b2b_rif_${user.uid}`) || '';
+        document.getElementById('cfg-b2b-rate-km').value = localStorage.getItem(`b2b_rate_km_${user.uid}`) || '0.40';
+        document.getElementById('cfg-b2b-min-fare').value = localStorage.getItem(`b2b_min_fare_${user.uid}`) || '2.00';
+        document.getElementById('cfg-b2b-pago-movil').value = localStorage.getItem(`b2b_pagomovil_${user.uid}`) || '';
+        document.getElementById('cfg-b2b-zelle').value = localStorage.getItem(`b2b_zelle_${user.uid}`) || '';
+
         const avatarGuardado = localStorage.getItem(`avatar_${user.uid}`);
         if(avatarGuardado) {
           actualizarAvatarUI(avatarGuardado);
         } else {
           revertirAvatarUI();
+        }
+
+        // Mostrar sección según rol activo
+        if (rolSeleccionado === 'comercio') {
+          document.getElementById('cfg-seccion-comercio').classList.remove('hidden');
+          document.getElementById('cfg-seccion-repartidor').classList.add('hidden');
+        } else {
+          document.getElementById('cfg-seccion-repartidor').classList.remove('hidden');
+          document.getElementById('cfg-seccion-comercio').classList.add('hidden');
         }
       }
       document.getElementById('modal-perfil').classList.remove('hidden'); 
@@ -677,7 +784,7 @@
       if (user) {
         document.getElementById('perfil-nombre').innerText = user.displayName || user.email.split('@')[0];
         document.getElementById('perfil-email').innerText = user.email;
-        document.getElementById('perfil-badge-rol').innerText = rolSeleccionado.toUpperCase();
+        document.getElementById('perfil-badge-rol').innerText = rolSeleccionado === 'comercio' ? 'FLOTA B2B COMERCIO' : 'REPARTIDOR PRO';
         abrirPerfil();
       } else {
         abrirAuth();
@@ -740,11 +847,11 @@
       const headerAvatar = document.getElementById('header-avatar');
       const perfilPreview = document.getElementById('perfil-avatar-preview');
       if(headerAvatar) {
-        headerAvatar.innerHTML = '🛵';
+        headerAvatar.innerHTML = rolSeleccionado === 'comercio' ? '🏢' : '🛵';
         headerAvatar.className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-cyan-400 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-emerald-500/20 overflow-hidden ring-2 ring-emerald-500/30";
       }
       if(perfilPreview) {
-        perfilPreview.innerHTML = '🛵';
+        perfilPreview.innerHTML = rolSeleccionado === 'comercio' ? '🏢' : '🛵';
         perfilPreview.className = "w-20 h-20 bg-gradient-to-tr from-emerald-500 to-cyan-400 rounded-full flex items-center justify-center text-slate-950 text-2xl font-black shadow-lg shadow-emerald-500/20 overflow-hidden border-2 border-emerald-500";
       }
     }
@@ -765,12 +872,40 @@
       }
     }
 
+    function guardarConfiguracionB2B() {
+      const user = auth.currentUser;
+      if (user) {
+        const nombre = document.getElementById('cfg-b2b-nombre').value.trim();
+        const rif = document.getElementById('cfg-b2b-rif').value.trim();
+        const rateKm = parseFloat(document.getElementById('cfg-b2b-rate-km').value) || 0.40;
+        const minFare = parseFloat(document.getElementById('cfg-b2b-min-fare').value) || 2.00;
+        const pago = document.getElementById('cfg-b2b-pago-movil').value.trim();
+        const zelle = document.getElementById('cfg-b2b-zelle').value.trim();
+
+        localStorage.setItem(`b2b_nombre_${user.uid}`, nombre);
+        localStorage.setItem(`b2b_rif_${user.uid}`, rif);
+        localStorage.setItem(`b2b_rate_km_${user.uid}`, rateKm);
+        localStorage.setItem(`b2b_min_fare_${user.uid}`, minFare);
+        localStorage.setItem(`b2b_pagomovil_${user.uid}`, pago);
+        localStorage.setItem(`b2b_zelle_${user.uid}`, zelle);
+
+        // Actualizar parámetros globales de tarifa
+        PRECIO_KM_EXTRA = rateKm;
+
+        mostrarAlertaPro("🏢 ¡Parámetros de Flota B2B actualizados correctamente!");
+        aplicarConfiguracionSegunRol();
+        cerrarPerfil();
+      }
+    }
+
     async function cerrarSesion() {
       try {
         await auth.signOut();
         cerrarPerfil();
         document.getElementById('modulo-ganancias-pro').classList.add('hidden');
         document.getElementById('flecha-pro').style.transform = 'rotate(0deg)';
+        document.getElementById('banner-modo-b2b').classList.add('hidden');
+        rolSeleccionado = 'repartidor';
         revertirAvatarUI();
         mostrarAlertaPro("Sesión cerrada correctamente.");
       } catch (e) {
@@ -786,11 +921,11 @@
       const linkCambio = document.getElementById('link-cambio-auth');
       const btnSubmit = document.getElementById('btn-submit-auth');
       if (esRegistro) {
-        titulo.innerText = "Crea tu cuenta y gana 14 días Pro";
+        titulo.innerText = rolSeleccionado === 'comercio' ? "Crea la cuenta de tu Comercio / Flota B2B" : "Crea tu cuenta y gana 14 días Pro";
         selectorRol.classList.remove('hidden');
         textoCambio.innerText = "¿Ya tienes cuenta?";
         linkCambio.innerText = "Inicia Sesión";
-        btnSubmit.innerText = "Crear Cuenta Pro";
+        btnSubmit.innerText = rolSeleccionado === 'comercio' ? "Crear Cuenta B2B" : "Crear Cuenta Pro";
       } else {
         titulo.innerText = "Bienvenido de nuevo";
         selectorRol.classList.add('hidden');
@@ -808,7 +943,7 @@
         btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/15 text-slate-900 dark:text-white transition flex items-center justify-center gap-2 cursor-pointer";
         btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 transition hover:border-slate-400 dark:hover:border-slate-700 cursor-pointer";
       } else {
-        btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/15 text-slate-900 dark:text-white transition flex items-center justify-center gap-2 cursor-pointer";
+        btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-blue-500 bg-blue-500/15 text-slate-900 dark:text-white transition flex items-center justify-center gap-2 cursor-pointer";
         btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 transition hover:border-slate-400 dark:hover:border-slate-700 cursor-pointer";
       }
     }
@@ -816,7 +951,7 @@
     function intentarAccesoPro() {
       const usuarioActual = auth.currentUser;
       if (!usuarioActual) {
-        mostrarAlertaPro("🔒 Debes iniciar sesión o registrarte para acceder al Registro de Ganancias Pro.");
+        mostrarAlertaPro("🔒 Debes iniciar sesión o registrarte para acceder al Registro de Ganancias Pro / B2B.");
         abrirAuth();
       } else {
         const mod = document.getElementById('modulo-ganancias-pro');
@@ -1034,14 +1169,15 @@
       const doc = new jsPDF();
       const user = auth.currentUser;
       const usuarioNombre = user ? (user.displayName || user.email) : 'Usuario Pro';
+      const esComercio = user && rolSeleccionado === 'comercio';
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(16);
-      doc.text("COTIZADOR DELIVERY - REPORTE DE CORTES DIARIOS", 20, 20);
+      doc.text(esComercio ? "COTIZADOR FLEET - REPORTE DE LIQUIDACIÓN B2B" : "COTIZADOR DELIVERY - REPORTE DE CORTES DIARIOS", 20, 20);
 
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
-      doc.text(`Usuario: ${usuarioNombre}`, 20, 28);
+      doc.text(`Usuario/Cuenta: ${usuarioNombre}`, 20, 28);
       doc.text(`Fecha de emisión: ${new Date().toLocaleDateString('es-VE')}`, 20, 34);
       doc.text(`Tasa Oficial BCV: Bs. ${tasaBCV.toFixed(2)} / USD`, 20, 40);
 
@@ -1126,7 +1262,8 @@
         try {
           if (esRegistro) {
             await auth.createUserWithEmailAndPassword(email, password);
-            mostrarAlertaPro(`¡Bienvenido! Cuenta (${rolSeleccionado}) creada con 14 días Pro activos.`);
+            localStorage.setItem(`user_rol_${email}`, rolSeleccionado);
+            mostrarAlertaPro(rolSeleccionado === 'comercio' ? "¡Bienvenido! Cuenta B2B Comercio creada con éxito." : "¡Bienvenido! Cuenta creada con 14 días Pro activos.");
           } else {
             await auth.signInWithEmailAndPassword(email, password);
             mostrarAlertaPro('¡Inicio de sesión exitoso!');
@@ -1136,6 +1273,29 @@
           mostrarAlertaPro('Error: ' + error.message);
         }
       });
+    }
+
+    function aplicarConfiguracionSegunRol() {
+      const user = auth.currentUser;
+      const bannerB2B = document.getElementById('banner-modo-b2b');
+      const headerTitulo = document.getElementById('header-titulo-app');
+      const headerSub = document.getElementById('header-subtitulo-app');
+
+      if (user && rolSeleccionado === 'comercio') {
+        const b2bNombre = localStorage.getItem(`b2b_nombre_${user.uid}`) || 'Farmacia / Comercio B2B';
+        const rateKm = parseFloat(localStorage.getItem(`b2b_rate_km_${user.uid}`));
+        if (rateKm) PRECIO_KM_EXTRA = rateKm;
+
+        bannerB2B.classList.remove('hidden');
+        document.getElementById('b2b-banner-nombre').innerText = `Flota: ${b2bNombre}`;
+        headerTitulo.innerText = "Cotizador Fleet B2B";
+        headerSub.innerText = "Control Corporativo de Flotas";
+      } else {
+        bannerB2B.classList.add('hidden');
+        PRECIO_KM_EXTRA = 0.40;
+        headerTitulo.innerText = "Cotizador Delivery";
+        headerSub.innerText = "Venezuela • Tasa BCV Oficial";
+      }
     }
 
     auth.getRedirectResult().then((result) => {
@@ -1152,19 +1312,25 @@
       const btnProLabel = document.getElementById('btn-pro-label');
       if (user) {
         const nombre = user.displayName || user.email.split('@')[0];
-        btnTexto.innerText = `👤 ${nombre}`;
-        if(btnProLabel) btnProLabel.innerText = "Registro de Ganancias Pro";
+        const rolGuardado = localStorage.getItem(`user_rol_${user.email}`);
+        if (rolGuardado) rolSeleccionado = rolGuardado;
+
+        btnTexto.innerText = `👤 ${nombre} (${rolSeleccionado.toUpperCase()})`;
+        if(btnProLabel) btnProLabel.innerText = rolSeleccionado === 'comercio' ? "Panel de Flota B2B" : "Registro de Ganancias Pro";
+        
         const avatarGuardado = localStorage.getItem(`avatar_${user.uid}`);
         if(avatarGuardado) {
           actualizarAvatarUI(avatarGuardado);
         } else {
           revertirAvatarUI();
         }
+        aplicarConfiguracionSegunRol();
         cargarDatosProGuardados();
       } else {
-        btnTexto.innerText = `👤 Mi Cuenta / Acceso Pro`;
+        btnTexto.innerText = `👤 Mi Cuenta / Acceso Pro & B2B`;
         if(btnProLabel) btnProLabel.innerText = "Activar Registro de Ganancias Pro";
         document.getElementById('modulo-ganancias-pro').classList.add('hidden');
+        document.getElementById('banner-modo-b2b').classList.add('hidden');
         document.getElementById('flecha-pro').style.transform = 'rotate(0deg)';
         revertirAvatarUI();
       }
