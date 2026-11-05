@@ -93,7 +93,7 @@
         <span class="text-xl">🏢</span>
         <div>
           <p class="font-bold text-blue-600 dark:text-blue-300" id="b2b-banner-nombre">Modo Flota B2B Activo</p>
-          <p class="text-[10px] text-slate-500 dark:text-slate-400">Control corporativo de unidades y liquidaciones</p>
+          <p class="text-[10px] text-slate-500 dark:text-slate-400">Control corporativo y métricas de rendimiento</p>
         </div>
       </div>
       <span class="bg-blue-500/20 text-blue-600 dark:text-blue-300 text-[9px] px-2 py-0.5 rounded font-black tracking-wider uppercase border border-blue-500/30">FLEET</span>
@@ -112,7 +112,7 @@
       </div>
     </div>
 
-    <!-- Botón directo Google Maps (Corregido el estado de presión/foco) -->
+    <!-- Botón directo Google Maps -->
     <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 px-4 bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-bold rounded-2xl text-center flex items-center justify-center gap-2.5 shadow-lg shadow-rose-500/25 transition-all focus:outline-none">
       <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
       Abrir Google Maps (Ver Ruta Real)
@@ -213,7 +213,7 @@
         </div>
       </div>
 
-      <!-- Botón Calcular (Corregido el estado persistente de presión) -->
+      <!-- Botón Calcular -->
       <button onclick="calcularTarifa()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-cyan-400 hover:from-emerald-400 hover:to-cyan-300 text-slate-950 font-black rounded-2xl shadow-lg shadow-emerald-500/20 transition cursor-pointer tracking-wide text-sm focus:outline-none">
         ⚡ Calcular Tarifa Exacta
       </button>
@@ -247,7 +247,7 @@
       </button>
     </div>
 
-    <!-- BOTÓN DESPLEGABLE GANANCIAS PRO / PANEL B2B -->
+    <!-- BOTÓN DESPLEGABLE PANEL PRO / B2B -->
     <div class="pt-2">
       <button type="button" onclick="intentarAccesoPro()" 
         class="w-full py-3 bg-white dark:bg-slate-900/90 hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 font-semibold text-xs rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 transition cursor-pointer shadow-lg focus:outline-none">
@@ -269,9 +269,15 @@
         </div>
       </div>
 
-      <!-- Formulario de Registro -->
+      <!-- Formulario de Registro con selector de Repartidor para B2B -->
       <div class="space-y-3 pt-1">
         <p class="text-xs text-slate-500 dark:text-slate-400" id="label-subtitulo-carrera">Registra tus servicios del turno actual:</p>
+        
+        <!-- Campo específico para Nombre de Repartidor (Visible sólo en modo Comercio B2B) -->
+        <div id="campo-repartidor-b2b-container" class="hidden">
+          <input type="text" id="pro-repartidor-nombre" placeholder="Nombre del Repartidor / Motorizado (Ej. Carlos M-01)" class="w-full bg-slate-50 dark:bg-slate-950 border border-blue-500/40 rounded-xl px-3 py-3 text-slate-900 dark:text-white text-xs focus:border-blue-500 focus:outline-none font-semibold">
+        </div>
+
         <div class="grid grid-cols-2 gap-2">
           <input type="number" id="pro-monto-usd" placeholder="Monto ($ USD)" step="0.01" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-3 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none font-bold">
           <input type="text" id="pro-cliente-nota" placeholder="Descripción / Cliente" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-3 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none">
@@ -691,7 +697,7 @@
       if(tipoEnvioVal === 'picking') texto += `🛒 *Servicio:* Picking / Compras en Tienda (+30%)\n`;
       if(tipoEnvioVal === 'pesado') texto += `🏋️ *Tipo:* Carga Pesada (+25%)\n`;
       if(tipoEnvioVal === 'fragil') texto += `💎 *Tipo:* Objeto Frágil (+15%)\n`;
-      if(linkmaps) texto += `🗺️ *Ruta Maps:* ${linkMaps}\n`;
+      if(linkMaps) texto += `🗺️ *Ruta Maps:* ${linkMaps}\n`;
       if(esHorarioNocturno) texto += `🌙 *Tarifa:* Nocturna (9pm - 6am)\n`;
       if(hayLluvia) texto += `🌧️ *Recargo:* Lluvia / Mal Tiempo\n`;
       texto += `💵 *Monto USD:* ${usd}\n` + `💳 *Total a pagar:* ${bs}\n` + `🏛️ *Tasa BCV:* Bs. ${tasaBCV.toFixed(2)}\n`;
@@ -984,9 +990,10 @@
     function registrarCarreraPro() {
       const montoBruto = parseFloat(document.getElementById('pro-monto-usd').value);
       const notaInput = document.getElementById('pro-cliente-nota').value.trim();
+      const repartidorInput = document.getElementById('pro-repartidor-nombre').value.trim();
       
-      const notaPorDefecto = rolSeleccionado === 'comercio' ? 'Repartidor sin asignar' : 'Servicio estándar';
-      const nota = notaInput || notaPorDefecto;
+      const nota = notaInput || 'Servicio estándar';
+      const repartidor = repartidorInput || 'General / Sin asignar';
 
       if(!montoBruto || montoBruto <= 0) {
         mostrarAlertaPro("Ingresa un monto válido en USD.");
@@ -997,6 +1004,7 @@
         id: Date.now(),
         monto: montoBruto,
         nota: nota,
+        repartidor: repartidor,
         hora: new Date().toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', hour12: true })
       };
 
@@ -1006,9 +1014,12 @@
 
       document.getElementById('pro-monto-usd').value = '';
       document.getElementById('pro-cliente-nota').value = '';
+      if (rolSeleccionado === 'comercio') {
+        document.getElementById('pro-repartidor-nombre').value = '';
+      }
 
       renderizarMóduloPro();
-      mostrarAlertaPro(rolSeleccionado === 'comercio' ? "✅ ¡Servicio de flota registrado!" : "¡Carrera añadida al turno!");
+      mostrarAlertaPro(rolSeleccionado === 'comercio' ? "✅ ¡Servicio de flota y métrica registrada!" : "¡Carrera añadida al turno!");
     }
 
     function eliminarCarreraTurno(id) {
@@ -1057,7 +1068,7 @@
 
       cerrarModalCorte();
       renderizarMóduloPro();
-      mostrarAlertaPro(rolSeleccionado === 'comercio' ? "✂️ ¡Liquidación de flota archivada con éxito!" : "✂️ ¡Corte diario realizado y archivado correctamente!");
+      mostrarAlertaPro(rolSeleccionado === 'comercio' ? "✂️ ¡Liquidación de flota con métricas archivada!" : "✂️ ¡Corte diario realizado y archivado correctamente!");
     }
 
     function toggleAcordeonCorte(id) {
@@ -1089,10 +1100,16 @@
         carrerasTurnoActual.forEach(c => {
           const item = document.createElement('div');
           item.className = 'p-2.5 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs';
+          
+          let infoTexto = `<span>${c.nota}</span>`;
+          if (rolSeleccionado === 'comercio') {
+            infoTexto = `<span class="font-bold text-blue-600 dark:text-blue-400">🛵 ${c.repartidor}</span> <span class="text-slate-500">(${c.nota})</span>`;
+          }
+
           item.innerHTML = `
             <div>
-              <span class="font-bold text-slate-900 dark:text-white">${rolSeleccionado === 'comercio' ? '🛵 Repartidor: ' : ''}${c.nota}</span>
-              <span class="text-[10px] text-slate-500 ml-2">🕒 ${c.hora}</span>
+              ${infoTexto}
+              <span class="text-[10px] text-slate-400 ml-1">🕒 ${c.hora}</span>
             </div>
             <div class="flex items-center gap-2.5">
               <span class="font-black text-emerald-600 dark:text-emerald-400">$${c.monto.toFixed(2)}</span>
@@ -1113,15 +1130,38 @@
           const item = document.createElement('div');
           item.className = 'bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden';
           
-          let htmlCarrerasSub = '';
-          corte.carreras.forEach(car => {
-            htmlCarrerasSub += `
-              <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-900/65 text-[10px] text-slate-500 dark:text-slate-400">
-                <span>• ${rolSeleccionado === 'comercio' ? '👤 ' : ''}${car.nota} (${car.hora})</span>
-                <span class="font-bold text-slate-700 dark:text-slate-200">$${car.monto.toFixed(2)}</span>
-              </div>
-            `;
-          });
+          let htmlSubContenido = '';
+          
+          if (rolSeleccionado === 'comercio') {
+            // MÉTRICA DE RENDIMIENTO POR REPARTIDOR (Agrupando totales por cada motorizado)
+            let rendimientoRepartidores = {};
+            corte.carreras.forEach(car => {
+              let rep = car.repartidor || 'Sin asignar';
+              if (!rendimientoRepartidores[rep]) {
+                rendimientoRepartidores[rep] = { carreras: 0, total: 0 };
+              }
+              rendimientoRepartidores[rep].carreras += 1;
+              rendimientoRepartidores[rep].total += car.monto;
+            });
+
+            for (let [rep, datos] of Object.entries(rendimientoRepartidores)) {
+              htmlSubContenido += `
+                <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-900/65 text-[10px] text-slate-600 dark:text-slate-300">
+                  <span>👤 <b>${rep}</b> (${datos.carreras} servicios)</span>
+                  <span class="font-bold text-emerald-600 dark:text-emerald-400">$${datos.total.toFixed(2)}</span>
+                </div>
+              `;
+            }
+          } else {
+            corte.carreras.forEach(car => {
+              htmlSubContenido += `
+                <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-900/65 text-[10px] text-slate-500 dark:text-slate-400">
+                  <span>• 📦 ${car.nota} (${car.hora})</span>
+                  <span class="font-bold text-slate-700 dark:text-slate-200">$${car.monto.toFixed(2)}</span>
+                </div>
+              `;
+            });
+          }
 
           const totalCorteBS = corte.totalNeto * tasaBCV;
 
@@ -1144,9 +1184,9 @@
             </div>
 
             <div id="detalle-corte-${corte.id}" class="hidden p-3.5 bg-slate-50 dark:bg-slate-900/90 border-t border-slate-200 dark:border-slate-800/80 space-y-2">
-              <p class="text-[10px] font-bold ${rolSeleccionado === 'comercio' ? 'text-blue-600 dark:text-blue-400' : 'text-emerald-600 dark:text-emerald-400'} uppercase tracking-wider">${rolSeleccionado === 'comercio' ? '📋 Desglose por Repartidor / Unidad' : '📋 Detalle de Servicios'} (${corte.carreras.length}):</p>
+              <p class="text-[10px] font-bold ${rolSeleccionado === 'comercio' ? 'text-blue-600 dark:text-blue-400' : 'text-emerald-600 dark:text-emerald-400'} uppercase tracking-wider">${rolSeleccionado === 'comercio' ? '📊 Rendimiento por Motorizado / Flota' : '📋 Detalle de Servicios'} (${corte.carreras.length} total):</p>
               <div class="pl-2 space-y-1">
-                ${htmlCarrerasSub}
+                ${htmlSubContenido}
               </div>
               <div class="pt-2 text-right">
                 <button onclick="eliminarCorteArchivado(${corte.id})" class="text-[10px] text-rose-500 dark:text-rose-400 underline cursor-pointer font-bold focus:outline-none">🗑️ Eliminar este registro</button>
@@ -1171,7 +1211,7 @@
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(16);
-      doc.text(esComercio ? "COTIZADOR FLEET - REPORTE DE LIQUIDACIÓN B2B" : "COTIZADOR DELIVERY - REPORTE DE CORTES DIARIOS", 20, 20);
+      doc.text(esComercio ? "COTIZADOR FLEET - REPORTE DE RENDIMIENTO B2B" : "COTIZADOR DELIVERY - REPORTE DE CORTES DIARIOS", 20, 20);
 
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
@@ -1224,8 +1264,8 @@
       y += 6;
       doc.text(`TOTAL EN BOLÍVARES: Bs. ${totalBS.toFixed(2)}`, 20, y);
 
-      doc.save(`Reporte_Flota_Delivery_${Date.now()}.pdf`);
-      mostrarAlertaPro("📄 ¡Reporte PDF generado y descargado con éxito!");
+      doc.save(`Reporte_Rendimiento_Fleet_${Date.now()}.pdf`);
+      mostrarAlertaPro("📄 ¡Reporte PDF con métricas generado y descargado con éxito!");
     }
 
     async function iniciarConGoogle() {
@@ -1283,6 +1323,7 @@
       const iconoModo = document.getElementById('icono-modulo-titulo');
       const textoModo = document.getElementById('texto-modulo-titulo');
       const labelSubcarrera = document.getElementById('label-subtitulo-carrera');
+      const campoRepartidorB2B = document.getElementById('campo-repartidor-b2b-container');
       const inputNota = document.getElementById('pro-cliente-nota');
       const btnTextoRegistrar = document.getElementById('btn-texto-registrar');
       const tituloSeccionCortes = document.getElementById('titulo-seccion-cortes');
@@ -1299,17 +1340,18 @@
         document.getElementById('b2b-banner-nombre').innerText = `Flota: ${b2bNombre}`;
         headerTitulo.innerText = "Cotizador Fleet B2B";
         headerSub.innerText = "Control Corporativo de Flotas";
-        if(btnProLabel) btnProLabel.innerText = "Panel de Control de Flota";
+        if(btnProLabel) btnProLabel.innerText = "Panel de Control y Rendimiento";
         if(badgeProTipo) {
           badgeProTipo.innerText = "B2B";
           badgeProTipo.className = "bg-blue-500/15 text-blue-600 dark:text-blue-400 text-[10px] px-2 py-0.5 rounded-md border border-blue-500/30 font-black tracking-wider";
         }
         if(iconoModo) iconoModo.innerText = "🏢";
         if(textoModo) textoModo.innerText = "Control de Despachos de Flota";
-        if(labelSubcarrera) labelSubcarrera.innerText = "Registra los servicios ejecutados por tus motorizados:";
-        if(inputNota) inputNota.placeholder = "Repartidor / Unidad (Ej. Carlos M-01)";
+        if(labelSubcarrera) labelSubcarrera.innerText = "Registra el servicio y el motorizado asignado:";
+        if(campoRepartidorB2B) campoRepartidorB2B.classList.remove('hidden');
+        if(inputNota) inputNota.placeholder = "Cliente / Destino (Ej. Av. Bolívar)";
         if(btnTextoRegistrar) btnTextoRegistrar.innerText = "+ Registrar Servicio de Flota";
-        if(tituloSeccionCortes) tituloSeccionCortes.innerText = "📁 Liquidaciones Archivadas";
+        if(tituloSeccionCortes) tituloSeccionCortes.innerText = "📁 Liquidaciones y Rendimiento";
         if(modalCorteTit) modalCorteTit.innerText = "Cierre y Liquidación de Flota";
         if(modalCorteSub) modalCorteSub.innerText = "Ingresa el gasto total o viáticos de la jornada para calcular neto.";
         if(labelGasto) labelGasto.innerText = "⛽ Gastos de Flota / Viáticos ($ USD):";
@@ -1326,6 +1368,7 @@
         if(iconoModo) iconoModo.innerText = "📊";
         if(textoModo) textoModo.innerText = "Turno Activo del Día";
         if(labelSubcarrera) labelSubcarrera.innerText = "Registra tus servicios del turno actual:";
+        if(campoRepartidorB2B) campoRepartidorB2B.classList.add('hidden');
         if(inputNota) inputNota.placeholder = "Descripción / Cliente";
         if(btnTextoRegistrar) btnTextoRegistrar.innerText = "+ Añadir Carrera";
         if(tituloSeccionCortes) tituloSeccionCortes.innerText = "📁 Cortes Diarios Archivados";
