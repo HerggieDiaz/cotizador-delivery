@@ -706,29 +706,39 @@
         }
 
         let texto = `🏢 *${b2bNombre.toUpperCase()}*\n`;
-        if (b2bRif) texto += `📄 RIF: ${b2bRif}\n`;
-        texto += `--------------------------------\n`;
+        if (b2bRif) texto += `📄 RIF: ${b2bRif}\n\n`;
+        
         if (nombreMotorizadoAsignado) {
           texto += `🛵 *Motorizado Asignado:* ${nombreMotorizadoAsignado}\n`;
-          if (tlfMotorizado) texto += `📞 *Contacto:* ${tlfMotorizado}\n`;
+          if (tlfMotorizado) texto += `📞 *Contacto:* ${tlfMotorizado}\n\n`;
         }
+        
         texto += `📍 *Distancia:* ${dist} km\n`;
         if (linkMaps) texto += `🗺️ *Ruta Maps:* ${linkMaps}\n`;
         texto += `💵 *Tasa Oficial BCV:* Bs. ${tasaBCV.toFixed(2)} / USD\n\n`;
+        
         texto += `💰 *DETALLE DEL SERVICIO:*\n`;
         if (tipoEnvioVal === 'picking') texto += `• Picking / Compras en Tienda (+30%)\n`;
         if (tipoEnvioVal === 'pesado') texto += `• Carga Pesada (+25%)\n`;
         if (tipoEnvioVal === 'fragil') texto += `• Objeto Frágil (+15%)\n`;
         if (esHorarioNocturno) texto += `• Horario Nocturno (9pm - 6am)\n`;
-        if (hayLluvia) texto += `• Recargo Climático (Lluvia): +30%\n`;
-        texto += `--------------------------------\n`;
-        texto += `TOTAL A PAGAR:\n👉 *${usd} USD*\n👉 *${bs}*\n\n`;
+        if (hayLluvia) texto += `• Recargo Climático (Lluvia): +30%\n\n`;
+        
+        texto += `💳 *TOTAL A PAGAR:*\n`;
+        texto += `💵 *Monto USD:* ${usd}\n`;
+        texto += `🏛️ *Total en Bolívares:* ${bs}\n\n`;
+
         if (b2bPago || b2bZelle) {
-          texto += `💳 *MÉTODOS DE PAGO:*\n`;
+          texto += `🏦 *MÉTODOS DE PAGO:*\n`;
           if (b2bPago) texto += `• Pago Móvil: ${b2bPago}\n`;
-          if (b2bZelle) texto += `• Zelle: ${b2bZelle}\n`;
+          if (b2bZelle) texto += `• Zelle: ${b2bZelle}\n\n`;
         }
-        texto += `\n_¡Gracias por tu compra! Tu pedido va en camino._`;
+        
+        if (nombreMotorizadoAsignado) {
+          texto += `💬 *${nombreMotorizadoAsignado}* va a encargarse de tu pedido. Comunícate con él al *${tlfMotorizado}*.\n\n`;
+        }
+
+        texto += `_¡Gracias por tu preferencia! Tu pedido va en camino._`;
         return texto;
       }
 
