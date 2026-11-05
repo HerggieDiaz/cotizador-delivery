@@ -93,7 +93,7 @@
         <span class="text-xl">🏢</span>
         <div>
           <p class="font-bold text-blue-600 dark:text-blue-300" id="b2b-banner-nombre">Modo Flota B2B Activo</p>
-          <p class="text-[10px] text-slate-500 dark:text-slate-400">Tarifas y branding controlados por el negocio</p>
+          <p class="text-[10px] text-slate-500 dark:text-slate-400">Tarifas y control de repartidores activos</p>
         </div>
       </div>
       <span class="bg-blue-500/20 text-blue-600 dark:text-blue-300 text-[9px] px-2 py-0.5 rounded font-black tracking-wider uppercase border border-blue-500/30">FLEET</span>
@@ -247,38 +247,38 @@
       </button>
     </div>
 
-    <!-- BOTÓN DESPLEGABLE GANANCIAS PRO -->
+    <!-- BOTÓN DESPLEGABLE GANANCIAS PRO / PANEL B2B -->
     <div class="pt-2">
       <button type="button" onclick="intentarAccesoPro()" 
         class="w-full py-3 bg-white dark:bg-slate-900/90 hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 font-semibold text-xs rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 transition cursor-pointer shadow-lg">
         <div class="flex items-center gap-2.5">
           <span>⚡</span>
           <span id="btn-pro-label">Registro de Ganancias Pro</span>
-          <span class="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] px-2 py-0.5 rounded-md border border-emerald-500/30 font-black tracking-wider">PRO</span>
+          <span id="badge-pro-tipo" class="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] px-2 py-0.5 rounded-md border border-emerald-500/30 font-black tracking-wider">PRO</span>
         </div>
         <span id="flecha-pro" class="text-slate-500 dark:text-slate-400 text-xs transition-transform duration-200">▼</span>
       </button>
     </div>
 
-    <!-- MÓDULO DE REGISTRO DE GANANCIAS PRO -->
+    <!-- MÓDULO DE REGISTRO DE GANANCIAS PRO / FLOTA B2B -->
     <div id="modulo-ganancias-pro" class="hidden p-5 rounded-3xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-emerald-500/30 space-y-4 shadow-2xl backdrop-blur-xl transition-all">
       <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
         <div class="flex items-center gap-2.5">
-          <span class="text-xl">📊</span>
-          <h2 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Turno Activo del Día</h2>
+          <span class="text-xl" id="icono-modulo-titulo">📊</span>
+          <h2 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider" id="texto-modulo-titulo">Turno Activo del Día</h2>
         </div>
       </div>
 
-      <!-- Formulario Ágil de Registro de Carrera Bruta -->
+      <!-- Formulario Ágil de Registro de Carrera / Unidad -->
       <div class="space-y-3 pt-1">
-        <p class="text-xs text-slate-500 dark:text-slate-400">Registra tus servicios del turno actual:</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400" id="label-subtitulo-carrera">Registra tus servicios del turno actual:</p>
         <div class="grid grid-cols-2 gap-2">
           <input type="number" id="pro-monto-usd" placeholder="Monto ($ USD)" step="0.01" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-3 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none font-bold">
           <input type="text" id="pro-cliente-nota" placeholder="Descripción / Cliente" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-3 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none">
         </div>
 
         <button type="button" onclick="registrarCarreraPro()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl transition cursor-pointer flex items-center justify-center gap-2 shadow-md">
-          <span>+ Añadir Carrera</span>
+          <span id="btn-texto-registrar">+ Añadir Carrera</span>
         </button>
       </div>
 
@@ -298,17 +298,17 @@
         <p class="text-center text-slate-400 dark:text-slate-500 py-3 text-[11px]" id="msg-turno-vacio">Sin carreras registradas en este turno.</p>
       </div>
 
-      <!-- HISTORIAL ARCHIVADO DE CORTES DIARIOS -->
+      <!-- HISTORIAL ARCHIVADO DE CORTES DIARIOS / LIQUIDACIONES -->
       <div class="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-800">
         <div class="flex items-center justify-between">
-          <h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">📁 Cortes Diarios Archivados</h3>
+          <h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider" id="titulo-seccion-cortes">📁 Cortes Diarios Archivados</h3>
           <button onclick="descargarReportePDF()" class="text-[11px] px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-700 dark:text-emerald-400 font-bold rounded-xl transition border border-emerald-500/30 flex items-center gap-1.5 cursor-pointer">
             📄 Reporte PDF
           </button>
         </div>
 
         <div id="lista-cortes-acordeon" class="space-y-2 max-h-72 overflow-y-auto pr-1 text-xs">
-          <p class="text-center text-slate-400 dark:text-slate-500 py-4 text-[11px]" id="msg-cortes-vacio">No hay cortes diarios archivados aún.</p>
+          <p class="text-center text-slate-400 dark:text-slate-500 py-4 text-[11px]" id="msg-cortes-vacio">No hay cortes archivados aún.</p>
         </div>
       </div>
     </div>
@@ -329,7 +329,7 @@
       <div class="text-center space-y-1">
         <span class="text-3xl">✂️</span>
         <h3 class="text-base font-bold text-slate-900 dark:text-white">Cierre y Corte Diario</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400">Ingresa el gasto total de gasolina o mantenimiento de la jornada.</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Ingresa el gasto total de gasolina o viáticos de la jornada.</p>
       </div>
 
       <div class="p-3.5 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-1">
@@ -889,7 +889,6 @@
         localStorage.setItem(`b2b_pagomovil_${user.uid}`, pago);
         localStorage.setItem(`b2b_zelle_${user.uid}`, zelle);
 
-        // Actualizar parámetros globales de tarifa
         PRECIO_KM_EXTRA = rateKm;
 
         mostrarAlertaPro("🏢 ¡Parámetros de Flota B2B actualizados correctamente!");
@@ -906,6 +905,7 @@
         document.getElementById('flecha-pro').style.transform = 'rotate(0deg)';
         document.getElementById('banner-modo-b2b').classList.add('hidden');
         rolSeleccionado = 'repartidor';
+        aplicarConfiguracionSegunRol();
         revertirAvatarUI();
         mostrarAlertaPro("Sesión cerrada correctamente.");
       } catch (e) {
@@ -951,7 +951,7 @@
     function intentarAccesoPro() {
       const usuarioActual = auth.currentUser;
       if (!usuarioActual) {
-        mostrarAlertaPro("🔒 Debes iniciar sesión o registrarte para acceder al Registro de Ganancias Pro / B2B.");
+        mostrarAlertaPro("🔒 Debes iniciar sesión o registrarte para acceder al Registro de Ganancias / Panel B2B.");
         abrirAuth();
       } else {
         const mod = document.getElementById('modulo-ganancias-pro');
@@ -988,7 +988,10 @@
 
     function registrarCarreraPro() {
       const montoBruto = parseFloat(document.getElementById('pro-monto-usd').value);
-      const nota = document.getElementById('pro-cliente-nota').value.trim() || 'Servicio estándar';
+      const notaInput = document.getElementById('pro-cliente-nota').value.trim();
+      
+      const notaPorDefecto = rolSeleccionado === 'comercio' ? 'Repartidor sin asignar' : 'Servicio estándar';
+      const nota = notaInput || notaPorDefecto;
 
       if(!montoBruto || montoBruto <= 0) {
         mostrarAlertaPro("Ingresa un monto válido en USD.");
@@ -1010,7 +1013,7 @@
       document.getElementById('pro-cliente-nota').value = '';
 
       renderizarMóduloPro();
-      mostrarAlertaPro("¡Carrera añadida al turno!");
+      mostrarAlertaPro(rolSeleccionado === 'comercio' ? "✅ ¡Servicio de flota registrado!" : "¡Carrera añadida al turno!");
     }
 
     function eliminarCarreraTurno(id) {
@@ -1022,7 +1025,7 @@
 
     function abrirModalCorte() {
       if (carrerasTurnoActual.length === 0) {
-        mostrarAlertaPro("⚠️ No tienes carreras en el turno actual para hacer un corte.");
+        mostrarAlertaPro("⚠️ No tienes registros en el turno actual para hacer un cierre.");
         return;
       }
       const totalBruto = carrerasTurnoActual.reduce((acc, c) => acc + c.monto, 0);
@@ -1059,7 +1062,7 @@
 
       cerrarModalCorte();
       renderizarMóduloPro();
-      mostrarAlertaPro("✂️ ¡Corte diario realizado y archivado correctamente!");
+      mostrarAlertaPro(rolSeleccionado === 'comercio' ? "✂️ ¡Liquidación de flota archivada con éxito!" : "✂️ ¡Corte diario realizado y archivado correctamente!");
     }
 
     function toggleAcordeonCorte(id) {
@@ -1086,14 +1089,14 @@
       const contTurno = document.getElementById('contenedor-carreras-turno');
       contTurno.innerHTML = '';
       if(carrerasTurnoActual.length === 0) {
-        contTurno.innerHTML = '<p class="text-center text-slate-400 dark:text-slate-500 py-2 text-[11px]">Sin carreras en este turno.</p>';
+        contTurno.innerHTML = `<p class="text-center text-slate-400 dark:text-slate-500 py-2 text-[11px]">${rolSeleccionado === 'comercio' ? 'Sin despachos registrados en este turno de flota.' : 'Sin carreras en este turno.'}</p>`;
       } else {
         carrerasTurnoActual.forEach(c => {
           const item = document.createElement('div');
           item.className = 'p-2.5 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs';
           item.innerHTML = `
             <div>
-              <span class="font-bold text-slate-900 dark:text-white">${c.nota}</span>
+              <span class="font-bold text-slate-900 dark:text-white">🛵 ${c.nota}</span>
               <span class="text-[10px] text-slate-500 ml-2">🕒 ${c.hora}</span>
             </div>
             <div class="flex items-center gap-2.5">
@@ -1109,7 +1112,7 @@
       contCortes.innerHTML = '';
 
       if(cortesArchivados.length === 0) {
-        contCortes.innerHTML = '<p class="text-center text-slate-400 dark:text-slate-500 py-4 text-[11px]">No hay cortes diarios archivados aún.</p>';
+        contCortes.innerHTML = '<p class="text-center text-slate-400 dark:text-slate-500 py-4 text-[11px]">No hay registros archivados aún.</p>';
       } else {
         cortesArchivados.forEach(corte => {
           const item = document.createElement('div');
@@ -1119,7 +1122,7 @@
           corte.carreras.forEach(car => {
             htmlCarrerasSub += `
               <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-900/65 text-[10px] text-slate-500 dark:text-slate-400">
-                <span>• ${car.nota} (${car.hora})</span>
+                <span>• 👤 ${car.nota} (${car.hora})</span>
                 <span class="font-bold text-slate-700 dark:text-slate-200">$${car.monto.toFixed(2)}</span>
               </div>
             `;
@@ -1134,7 +1137,7 @@
                   <span class="font-bold text-slate-900 dark:text-white text-xs">📅 ${corte.fecha}</span>
                   <span class="text-[9px] text-slate-500">🕒 ${corte.horaCorte}</span>
                 </div>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400">Bruto: $${corte.totalBruto.toFixed(2)} | ⛽ Gasolina: -$${corte.gastoGas.toFixed(2)}</p>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400">Bruto: $${corte.totalBruto.toFixed(2)} | ⛽ Gastos: -$${corte.gastoGas.toFixed(2)}</p>
               </div>
               <div class="flex items-center gap-3">
                 <div class="text-right">
@@ -1146,12 +1149,12 @@
             </div>
 
             <div id="detalle-corte-${corte.id}" class="hidden p-3.5 bg-slate-50 dark:bg-slate-900/90 border-t border-slate-200 dark:border-slate-800/80 space-y-2">
-              <p class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">📋 Carrera(s) de la Jornada (${corte.carreras.length}):</p>
+              <p class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">📋 Desglose por Repartidor / Unidad (${corte.carreras.length}):</p>
               <div class="pl-2 space-y-1">
                 ${htmlCarrerasSub}
               </div>
               <div class="pt-2 text-right">
-                <button onclick="eliminarCorteArchivado(${corte.id})" class="text-[10px] text-rose-500 dark:text-rose-400 underline cursor-pointer font-bold">🗑️ Eliminar este corte</button>
+                <button onclick="eliminarCorteArchivado(${corte.id})" class="text-[10px] text-rose-500 dark:text-rose-400 underline cursor-pointer font-bold">🗑️ Eliminar este registro</button>
               </div>
             </div>
           `;
@@ -1162,13 +1165,13 @@
 
     function descargarReportePDF() {
       if (cortesArchivados.length === 0) {
-        mostrarAlertaPro("No tienes cortes diarios archivados para exportar.");
+        mostrarAlertaPro("No tienes registros archivados para exportar.");
         return;
       }
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
       const user = auth.currentUser;
-      const usuarioNombre = user ? (user.displayName || user.email) : 'Usuario Pro';
+      const usuarioNombre = user ? (user.displayName || user.email) : 'Usuario';
       const esComercio = user && rolSeleccionado === 'comercio';
 
       doc.setFont("helvetica", "bold");
@@ -1177,7 +1180,7 @@
 
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
-      doc.text(`Usuario/Cuenta: ${usuarioNombre}`, 20, 28);
+      doc.text(`Cuenta / Negocio: ${usuarioNombre}`, 20, 28);
       doc.text(`Fecha de emisión: ${new Date().toLocaleDateString('es-VE')}`, 20, 34);
       doc.text(`Tasa Oficial BCV: Bs. ${tasaBCV.toFixed(2)} / USD`, 20, 40);
 
@@ -1186,10 +1189,10 @@
 
       let y = 52;
       doc.setFont("helvetica", "bold");
-      doc.text("Fecha Corte", 20, y);
+      doc.text("Fecha", 20, y);
       doc.text("Bruto ($)", 70, y);
-      doc.text("Gasolina ($)", 110, y);
-      doc.text("Ganancia Neta ($)", 150, y);
+      doc.text("Gastos ($)", 110, y);
+      doc.text("Neto ($)", 150, y);
       
       y += 4;
       doc.line(20, y, 190, y);
@@ -1220,14 +1223,14 @@
       doc.setFont("helvetica", "bold");
       doc.text(`TOTAL BRUTO ACUMULADO: $${totalBrutoAcum.toFixed(2)}`, 20, y);
       y += 6;
-      doc.text(`TOTAL GASTO GASOLINA: -$${totalGasAcum.toFixed(2)}`, 20, y);
+      doc.text(`TOTAL GASTOS / VIÁTICOS: -$${totalGasAcum.toFixed(2)}`, 20, y);
       y += 6;
-      doc.text(`GANANCIA NETA REAL (USD): $${totalNetoAcum.toFixed(2)}`, 20, y);
+      doc.text(`TOTAL NETO REAL (USD): $${totalNetoAcum.toFixed(2)}`, 20, y);
       y += 6;
-      doc.text(`TOTAL NETO EN BOLÍVARES: Bs. ${totalBS.toFixed(2)}`, 20, y);
+      doc.text(`TOTAL EN BOLÍVARES: Bs. ${totalBS.toFixed(2)}`, 20, y);
 
-      doc.save(`Reporte_Cortes_Delivery_${Date.now()}.pdf`);
-      mostrarAlertaPro("📄 ¡Reporte PDF generado y descargado!");
+      doc.save(`Reporte_Flota_Delivery_${Date.now()}.pdf`);
+      mostrarAlertaPro("📄 ¡Reporte PDF generado y descargado con éxito!");
     }
 
     async function iniciarConGoogle() {
@@ -1280,9 +1283,17 @@
       const bannerB2B = document.getElementById('banner-modo-b2b');
       const headerTitulo = document.getElementById('header-titulo-app');
       const headerSub = document.getElementById('header-subtitulo-app');
+      const btnProLabel = document.getElementById('btn-pro-label');
+      const badgeProTipo = document.getElementById('badge-pro-tipo');
+      const iconoModo = document.getElementById('icono-modulo-titulo');
+      const textoModo = document.getElementById('texto-modulo-titulo');
+      const labelSubcarrera = document.getElementById('label-subtitulo-carrera');
+      const inputNota = document.getElementById('pro-cliente-nota');
+      const btnTextoRegistrar = document.getElementById('btn-texto-registrar');
+      const tituloSeccionCortes = document.getElementById('titulo-seccion-cortes');
 
       if (user && rolSeleccionado === 'comercio') {
-        const b2bNombre = localStorage.getItem(`b2b_nombre_${user.uid}`) || 'Farmacia / Comercio B2B';
+        const b2bNombre = localStorage.getItem(`b2b_nombre_${user.uid}`) || 'Comercio B2B';
         const rateKm = parseFloat(localStorage.getItem(`b2b_rate_km_${user.uid}`));
         if (rateKm) PRECIO_KM_EXTRA = rateKm;
 
@@ -1290,11 +1301,33 @@
         document.getElementById('b2b-banner-nombre').innerText = `Flota: ${b2bNombre}`;
         headerTitulo.innerText = "Cotizador Fleet B2B";
         headerSub.innerText = "Control Corporativo de Flotas";
+        if(btnProLabel) btnProLabel.innerText = "Panel de Control de Flota";
+        if(badgeProTipo) {
+          badgeProTipo.innerText = "B2B";
+          badgeProTipo.className = "bg-blue-500/15 text-blue-600 dark:text-blue-400 text-[10px] px-2 py-0.5 rounded-md border border-blue-500/30 font-black tracking-wider";
+        }
+        if(iconoModo) iconoModo.innerText = "🏢";
+        if(textoModo) textoModo.innerText = "Control de Despachos de Flota";
+        if(labelSubcarrera) labelSubcarrera.innerText = "Registra los servicios ejecutados por tus motorizados:";
+        if(inputNota) inputNota.placeholder = "Repartidor / Unidad (Ej. Carlos M-01)";
+        if(btnTextoRegistrar) btnTextoRegistrar.innerText = "+ Registrar Servicio de Flota";
+        if(tituloSeccionCortes) tituloSeccionCortes.innerText = "📁 Liquidaciones Archivadas";
       } else {
         bannerB2B.classList.add('hidden');
         PRECIO_KM_EXTRA = 0.40;
         headerTitulo.innerText = "Cotizador Delivery";
         headerSub.innerText = "Venezuela • Tasa BCV Oficial";
+        if(btnProLabel) btnProLabel.innerText = "Registro de Ganancias Pro";
+        if(badgeProTipo) {
+          badgeProTipo.innerText = "PRO";
+          badgeProTipo.className = "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] px-2 py-0.5 rounded-md border border-emerald-500/30 font-black tracking-wider";
+        }
+        if(iconoModo) iconoModo.innerText = "📊";
+        if(textoModo) textoModo.innerText = "Turno Activo del Día";
+        if(labelSubcarrera) labelSubcarrera.innerText = "Registra tus servicios del turno actual:";
+        if(inputNota) inputNota.placeholder = "Descripción / Cliente";
+        if(btnTextoRegistrar) btnTextoRegistrar.innerText = "+ Añadir Carrera";
+        if(tituloSeccionCortes) tituloSeccionCortes.innerText = "📁 Cortes Diarios Archivados";
       }
     }
 
@@ -1309,14 +1342,12 @@
 
     auth.onAuthStateChanged((user) => {
       const btnTexto = document.getElementById('btn-mi-cuenta-texto');
-      const btnProLabel = document.getElementById('btn-pro-label');
       if (user) {
         const nombre = user.displayName || user.email.split('@')[0];
         const rolGuardado = localStorage.getItem(`user_rol_${user.email}`);
         if (rolGuardado) rolSeleccionado = rolGuardado;
 
         btnTexto.innerText = `👤 ${nombre} (${rolSeleccionado.toUpperCase()})`;
-        if(btnProLabel) btnProLabel.innerText = rolSeleccionado === 'comercio' ? "Panel de Flota B2B" : "Registro de Ganancias Pro";
         
         const avatarGuardado = localStorage.getItem(`avatar_${user.uid}`);
         if(avatarGuardado) {
@@ -1328,10 +1359,11 @@
         cargarDatosProGuardados();
       } else {
         btnTexto.innerText = `👤 Mi Cuenta / Acceso Pro & B2B`;
-        if(btnProLabel) btnProLabel.innerText = "Activar Registro de Ganancias Pro";
         document.getElementById('modulo-ganancias-pro').classList.add('hidden');
         document.getElementById('banner-modo-b2b').classList.add('hidden');
         document.getElementById('flecha-pro').style.transform = 'rotate(0deg)';
+        rolSeleccionado = 'repartidor';
+        aplicarConfiguracionSegunRol();
         revertirAvatarUI();
       }
     });
