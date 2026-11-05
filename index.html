@@ -93,7 +93,7 @@
         <span class="text-xl">🏢</span>
         <div>
           <p class="font-bold text-blue-600 dark:text-blue-300" id="b2b-banner-nombre">Modo Flota B2B Activo</p>
-          <p class="text-[10px] text-slate-500 dark:text-slate-400">Control corporativo y métricas de rendimiento</p>
+          <p class="text-[10px] text-slate-500 dark:text-slate-400">Control corporativo y gestión de motorizados</p>
         </div>
       </div>
       <span class="bg-blue-500/20 text-blue-600 dark:text-blue-300 text-[9px] px-2 py-0.5 rounded font-black tracking-wider uppercase border border-blue-500/30">FLEET</span>
@@ -269,13 +269,18 @@
         </div>
       </div>
 
-      <!-- Formulario de Registro con selector de Repartidor para B2B -->
+      <!-- Formulario de Registro con selector desplegable de Motorizado -->
       <div class="space-y-3 pt-1">
         <p class="text-xs text-slate-500 dark:text-slate-400" id="label-subtitulo-carrera">Registra tus servicios del turno actual:</p>
         
-        <!-- Campo específico para Nombre de Repartidor (Visible sólo en modo Comercio B2B) -->
-        <div id="campo-repartidor-b2b-container" class="hidden">
-          <input type="text" id="pro-repartidor-nombre" placeholder="Nombre del Repartidor / Motorizado (Ej. Carlos M-01)" class="w-full bg-slate-50 dark:bg-slate-950 border border-blue-500/40 rounded-xl px-3 py-3 text-slate-900 dark:text-white text-xs focus:border-blue-500 focus:outline-none font-semibold">
+        <!-- Contenedor Selector de Motorizado (Modo B2B) -->
+        <div id="campo-repartidor-b2b-container" class="hidden space-y-2">
+          <div class="flex gap-2">
+            <select id="select-motorizado-activo" class="w-full bg-slate-50 dark:bg-slate-950 border border-blue-500/40 rounded-xl px-3 py-3 text-slate-900 dark:text-white text-xs focus:border-blue-500 focus:outline-none font-semibold cursor-pointer">
+              <option value="">Selecciona motorizado registrado...</option>
+            </select>
+            <button type="button" onclick="abrirModalMotorizados()" class="px-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs transition cursor-pointer" title="Gestionar Motorizados">➕</button>
+          </div>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
@@ -327,29 +332,52 @@
     <p class="font-medium text-slate-600 dark:text-slate-400">Diseñado con dedicación por <span class="text-emerald-600 dark:text-emerald-400 font-bold">Herggie Díaz</span></p>
   </footer>
 
-  <!-- MODAL REALIZAR CORTE DIARIO -->
+  <!-- MODAL GESTIÓN DE MOTORIZADOS (B2B) -->
+  <div id="modal-motorizados" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative">
+      <button onclick="cerrarModalMotorizados()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-bold cursor-pointer focus:outline-none">✕</button>
+
+      <div class="text-center space-y-1">
+        <span class="text-3xl">🛵</span>
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Gestión de Motorizados</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Registra el personal de reparto de tu flota.</p>
+      </div>
+
+      <div class="space-y-2 pt-2">
+        <input type="text" id="nuevo-motorizado-nombre" placeholder="Nombre y Apellido / Alias" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none">
+        <input type="text" id="nuevo-motorizado-tlf" placeholder="Teléfono de contacto (Ej. 04141234567)" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none">
+        <button type="button" onclick="guardarNuevoMotorizado()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs rounded-xl transition cursor-pointer shadow-md focus:outline-none">
+          + Agregar Motorizado a la Flota
+        </button>
+      </div>
+
+      <div class="border-t border-slate-200 dark:border-slate-800 pt-3">
+        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Motorizados Registrados:</p>
+        <div id="lista-motorizados-guardados" class="space-y-1.5 max-h-36 overflow-y-auto text-xs">
+          <p class="text-slate-400 text-center text-[11px]">No hay motorizados registrados.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL REALIZAR CORTE GENERAL (Sin gastos de gasolina) -->
   <div id="modal-corte" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative">
       <button onclick="cerrarModalCorte()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-bold cursor-pointer focus:outline-none">✕</button>
 
       <div class="text-center space-y-1">
         <span class="text-3xl">✂️</span>
-        <h3 class="text-base font-bold text-slate-900 dark:text-white" id="modal-corte-titulo">Cierre y Corte Diario</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400" id="modal-corte-sub">Ingresa el gasto total de gasolina o mantenimiento de la jornada.</p>
+        <h3 class="text-base font-bold text-slate-900 dark:text-white" id="modal-corte-titulo">Cierre General de Turno</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400" id="modal-corte-sub">Se consolidarán todos los servicios registrados en la jornada.</p>
       </div>
 
-      <div class="p-3.5 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-1">
+      <div class="p-4 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-1">
         <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Total Bruto Acumulado:</p>
-        <p id="corte-monto-bruto" class="text-xl font-black text-emerald-600 dark:text-emerald-400">$0.00</p>
-      </div>
-
-      <div>
-        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5" id="label-gasto-corte">⛽ Gastos de Gasolina / Mantenimiento ($ USD):</label>
-        <input type="number" id="corte-gasto-gasolina" placeholder="Ej. 0.00" step="0.50" value="0.00" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3 text-slate-900 dark:text-white text-xs font-bold text-center focus:border-amber-500 focus:outline-none">
+        <p id="corte-monto-bruto" class="text-2xl font-black text-emerald-600 dark:text-emerald-400">$0.00</p>
       </div>
 
       <button type="button" onclick="confirmarCorteDiario()" class="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-2xl text-xs transition cursor-pointer shadow-lg shadow-amber-500/20 focus:outline-none">
-        ✅ Guardar y Archivar Registro
+        ✅ Guardar y Archivar Cierre General
       </button>
     </div>
   </div>
@@ -522,6 +550,7 @@
     
     let carrerasTurnoActual = [];
     let cortesArchivados = [];
+    let motorizadosFlota = [];
 
     function toggleTheme() {
       const html = document.documentElement;
@@ -650,18 +679,27 @@
       const user = auth.currentUser;
       
       if (user && rolSeleccionado === 'comercio') {
-        const b2bNombre = localStorage.getItem(`b2b_nombre_${user.uid}`) || 'FARMACIA / COMERCIO B2B';
+        const b2bNombre = localStorage.getItem(`b2b_nombre_${user.uid}`) || 'COMERCIO';
         const b2bRif = localStorage.getItem(`b2b_rif_${user.uid}`) || '';
         const b2bPago = localStorage.getItem(`b2b_pagomovil_${user.uid}`) || '';
         const b2bZelle = localStorage.getItem(`b2b_zelle_${user.uid}`) || '';
-        const cedula = localStorage.getItem(`cedula_${user.uid}`) || '';
-        const placa = localStorage.getItem(`placa_${user.uid}`) || '';
+
+        // Obtener teléfono del motorizado seleccionado si aplica
+        const selectMotorizado = document.getElementById('select-motorizado-activo');
+        let nombreMotorizadoAsignado = selectMotorizado ? selectMotorizado.value : '';
+        let tlfMotorizado = '';
+        if (nombreMotorizadoAsignado) {
+          let found = motorizadosFlota.find(m => m.nombre === nombreMotorizadoAsignado);
+          if (found) tlfMotorizado = found.telefono;
+        }
 
         let texto = `🏢 *${b2bNombre.toUpperCase()}*\n`;
         if (b2bRif) texto += `📄 RIF: ${b2bRif}\n`;
-        texto += `🛵 *DESPACHO DE FLOTA OFICIAL*\n--------------------------------\n`;
-        texto += `👤 *Unidad / Repartidor:* ${user.displayName || 'Verificado'} ${cedula ? '('+cedula+')' : ''}\n`;
-        if (placa) texto += `🏍️ *Moto Placa:* ${placa}\n`;
+        texto += `--------------------------------\n`;
+        if (nombreMotorizadoAsignado) {
+          texto += `🛵 *Motorizado Asignado:* ${nombreMotorizadoAsignado}\n`;
+          if (tlfMotorizado) texto += `📞 *Contacto:* ${tlfMotorizado}\n`;
+        }
         texto += `📍 *Distancia:* ${dist} km\n`;
         if (linkMaps) texto += `🗺️ *Ruta Maps:* ${linkMaps}\n`;
         texto += `💵 *Tasa Oficial BCV:* Bs. ${tasaBCV.toFixed(2)} / USD\n\n`;
@@ -678,7 +716,7 @@
           if (b2bPago) texto += `• Pago Móvil: ${b2bPago}\n`;
           if (b2bZelle) texto += `• Zelle: ${b2bZelle}\n`;
         }
-        texto += `\n_Comprobante emitido por Cotizador Fleet®_`;
+        texto += `\n_¡Gracias por tu compra! Tu pedido va en camino._`;
         return texto;
       }
 
@@ -972,28 +1010,112 @@
       const uid = user ? user.uid : 'invitado';
       return {
         keyTurno: `carreras_turno_${uid}`,
-        keyCortes: `cortes_archivados_${uid}`
+        keyCortes: `cortes_archivados_${uid}`,
+        keyMotorizados: `motorizados_flota_${uid}`
       };
     }
 
     function cargarDatosProGuardados() {
-      const { keyTurno, keyCortes } = obtenerClavesStorage();
+      const { keyTurno, keyCortes, keyMotorizados } = obtenerClavesStorage();
       const rawTurno = localStorage.getItem(keyTurno);
       const rawCortes = localStorage.getItem(keyCortes);
+      const rawMoto = localStorage.getItem(keyMotorizados);
 
       carrerasTurnoActual = rawTurno ? JSON.parse(rawTurno) : [];
       cortesArchivados = rawCortes ? JSON.parse(rawCortes) : [];
+      motorizadosFlota = rawMoto ? JSON.parse(rawMoto) : [];
 
+      actualizarSelectMotorizados();
       renderizarMóduloPro();
+    }
+
+    function abrirModalMotorizados() {
+      document.getElementById('modal-motorizados').classList.remove('hidden');
+      renderizarListaMotorizadosModal();
+    }
+
+    function cerrarModalMotorizados() {
+      document.getElementById('modal-motorizados').classList.add('hidden');
+    }
+
+    function guardarNuevoMotorizado() {
+      const nombre = document.getElementById('nuevo-motorizado-nombre').value.trim();
+      const telefono = document.getElementById('nuevo-motorizado-tlf').value.trim();
+
+      if (!nombre) {
+        mostrarAlertaPro("Debes ingresar el nombre del motorizado.");
+        return;
+      }
+
+      motorizadosFlota.push({ id: Date.now(), nombre, telefono: telefono || 'N/A' });
+      const { keyMotorizados } = obtenerClavesStorage();
+      localStorage.setItem(keyMotorizados, JSON.stringify(motorizadosFlota));
+
+      document.getElementById('nuevo-motorizado-nombre').value = '';
+      document.getElementById('nuevo-motorizado-tlf').value = '';
+
+      actualizarSelectMotorizados();
+      renderizarListaMotorizadosModal();
+      mostrarAlertaPro("✅ Motorizado agregado correctamente.");
+    }
+
+    function eliminarMotorizado(id) {
+      motorizadosFlota = motorizadosFlota.filter(m => m.id !== id);
+      const { keyMotorizados } = obtenerClavesStorage();
+      localStorage.setItem(keyMotorizados, JSON.stringify(motorizadosFlota));
+
+      actualizarSelectMotorizados();
+      renderizarListaMotorizadosModal();
+    }
+
+    function renderizarListaMotorizadosModal() {
+      const contenedor = document.getElementById('lista-motorizados-guardados');
+      contenedor.innerHTML = '';
+      if (motorizadosFlota.length === 0) {
+        contenedor.innerHTML = '<p class="text-slate-400 text-center text-[11px]">No hay motorizados registrados.</p>';
+        return;
+      }
+      motorizadosFlota.forEach(m => {
+        const div = document.createElement('div');
+        div.className = 'flex items-center justify-between p-2 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800';
+        div.innerHTML = `
+          <div>
+            <p class="font-bold text-slate-900 dark:text-white">🛵 ${m.nombre}</p>
+            <p class="text-[10px] text-slate-500">📞 ${m.telefono}</p>
+          </div>
+          <button onclick="eliminarMotorizado(${m.id})" class="text-rose-500 hover:text-rose-400 text-xs font-bold cursor-pointer">✕</button>
+        `;
+        contenedor.appendChild(div);
+      });
+    }
+
+    function actualizarSelectMotorizados() {
+      const select = document.getElementById('select-motorizado-activo');
+      if (!select) return;
+      select.innerHTML = '<option value="">Selecciona motorizado registrado...</option>';
+      motorizadosFlota.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.nombre;
+        opt.textContent = `${m.nombre} (${m.telefono})`;
+        select.appendChild(opt);
+      });
     }
 
     function registrarCarreraPro() {
       const montoBruto = parseFloat(document.getElementById('pro-monto-usd').value);
       const notaInput = document.getElementById('pro-cliente-nota').value.trim();
-      const repartidorInput = document.getElementById('pro-repartidor-nombre').value.trim();
+      
+      let motorizado = 'Independiente / Personal';
+      if (rolSeleccionado === 'comercio') {
+        const selectMoto = document.getElementById('select-motorizado-activo');
+        motorizado = selectMoto ? selectMoto.value : '';
+        if (!motorizado) {
+          mostrarAlertaPro("⚠️ Por favor selecciona un motorizado del menú desplegable.");
+          return;
+        }
+      }
       
       const nota = notaInput || 'Servicio estándar';
-      const repartidor = repartidorInput || 'General / Sin asignar';
 
       if(!montoBruto || montoBruto <= 0) {
         mostrarAlertaPro("Ingresa un monto válido en USD.");
@@ -1004,7 +1126,7 @@
         id: Date.now(),
         monto: montoBruto,
         nota: nota,
-        repartidor: repartidor,
+        repartidor: motorizado,
         hora: new Date().toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', hour12: true })
       };
 
@@ -1014,12 +1136,9 @@
 
       document.getElementById('pro-monto-usd').value = '';
       document.getElementById('pro-cliente-nota').value = '';
-      if (rolSeleccionado === 'comercio') {
-        document.getElementById('pro-repartidor-nombre').value = '';
-      }
 
       renderizarMóduloPro();
-      mostrarAlertaPro(rolSeleccionado === 'comercio' ? "✅ ¡Servicio de flota y métrica registrada!" : "¡Carrera añadida al turno!");
+      mostrarAlertaPro(rolSeleccionado === 'comercio' ? "✅ ¡Servicio asignado correctamente!" : "¡Carrera añadida al turno!");
     }
 
     function eliminarCarreraTurno(id) {
@@ -1036,7 +1155,6 @@
       }
       const totalBruto = carrerasTurnoActual.reduce((acc, c) => acc + c.monto, 0);
       document.getElementById('corte-monto-bruto').innerText = `$${totalBruto.toFixed(2)}`;
-      document.getElementById('corte-gasto-gasolina').value = "0.00";
       document.getElementById('modal-corte').classList.remove('hidden');
     }
 
@@ -1045,17 +1163,14 @@
     }
 
     function confirmarCorteDiario() {
-      const gastoGas = parseFloat(document.getElementById('corte-gasto-gasolina').value) || 0;
       const totalBruto = carrerasTurnoActual.reduce((acc, c) => acc + c.monto, 0);
-      const totalNeto = Math.max(0, totalBruto - gastoGas);
 
       const nuevoCorte = {
         id: Date.now(),
         fecha: new Date().toLocaleDateString('es-VE', { day: '2-digit', month: 'short', year: 'numeric' }),
         horaCorte: new Date().toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', hour12: true }),
         totalBruto: totalBruto,
-        gastoGas: gastoGas,
-        totalNeto: totalNeto,
+        totalNeto: totalBruto, // Sin deducción de viáticos
         carreras: [...carrerasTurnoActual]
       };
 
@@ -1068,7 +1183,7 @@
 
       cerrarModalCorte();
       renderizarMóduloPro();
-      mostrarAlertaPro(rolSeleccionado === 'comercio' ? "✂️ ¡Liquidación de flota con métricas archivada!" : "✂️ ¡Corte diario realizado y archivado correctamente!");
+      mostrarAlertaPro("✂️ ¡Cierre general archivado con éxito!");
     }
 
     function toggleAcordeonCorte(id) {
@@ -1095,7 +1210,7 @@
       const contTurno = document.getElementById('contenedor-carreras-turno');
       contTurno.innerHTML = '';
       if(carrerasTurnoActual.length === 0) {
-        contTurno.innerHTML = `<p class="text-center text-slate-400 dark:text-slate-500 py-2 text-[11px]">${rolSeleccionado === 'comercio' ? 'Sin despachos registrados en este turno de flota.' : 'Sin carreras en este turno.'}</p>`;
+        contTurno.innerHTML = `<p class="text-center text-slate-400 dark:text-slate-500 py-2 text-[11px]">${rolSeleccionado === 'comercio' ? 'Sin despachos registrados en este turno.' : 'Sin carreras en este turno.'}</p>`;
       } else {
         carrerasTurnoActual.forEach(c => {
           const item = document.createElement('div');
@@ -1133,22 +1248,22 @@
           let htmlSubContenido = '';
           
           if (rolSeleccionado === 'comercio') {
-            // MÉTRICA DE RENDIMIENTO POR REPARTIDOR (Agrupando totales por cada motorizado)
-            let rendimientoRepartidores = {};
+            // CONTEO ACUMULADO POR MOTORIZADO (Sin repetir nombres)
+            let acumuladoMotorizados = {};
             corte.carreras.forEach(car => {
               let rep = car.repartidor || 'Sin asignar';
-              if (!rendimientoRepartidores[rep]) {
-                rendimientoRepartidores[rep] = { carreras: 0, total: 0 };
+              if (!acumuladoMotorizados[rep]) {
+                acumuladoMotorizados[rep] = { cantidadServicios: 0, montoTotal: 0 };
               }
-              rendimientoRepartidores[rep].carreras += 1;
-              rendimientoRepartidores[rep].total += car.monto;
+              acumuladoMotorizados[rep].cantidadServicios += 1;
+              acumuladoMotorizados[rep].montoTotal += car.monto;
             });
 
-            for (let [rep, datos] of Object.entries(rendimientoRepartidores)) {
+            for (let [rep, datos] of Object.entries(acumuladoMotorizados)) {
               htmlSubContenido += `
                 <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-900/65 text-[10px] text-slate-600 dark:text-slate-300">
-                  <span>👤 <b>${rep}</b> (${datos.carreras} servicios)</span>
-                  <span class="font-bold text-emerald-600 dark:text-emerald-400">$${datos.total.toFixed(2)}</span>
+                  <span>👤 <b>${rep}</b> — 📦 ${datos.cantidadServicios} servicio(s)</span>
+                  <span class="font-bold text-emerald-600 dark:text-emerald-400">$${datos.montoTotal.toFixed(2)}</span>
                 </div>
               `;
             }
@@ -1172,11 +1287,11 @@
                   <span class="font-bold text-slate-900 dark:text-white text-xs">📅 ${corte.fecha}</span>
                   <span class="text-[9px] text-slate-500">🕒 ${corte.horaCorte}</span>
                 </div>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400">Bruto: $${corte.totalBruto.toFixed(2)} | Gastos: -$${corte.gastoGas.toFixed(2)}</p>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400">Total Turno: $${corte.totalBruto.toFixed(2)}</p>
               </div>
               <div class="flex items-center gap-3">
                 <div class="text-right">
-                  <p class="font-black text-emerald-600 dark:text-emerald-400 text-xs">+$${corte.totalNeto.toFixed(2)} <span class="text-[9px] text-slate-500 font-normal">neto</span></p>
+                  <p class="font-black text-emerald-600 dark:text-emerald-400 text-xs">+$${corte.totalNeto.toFixed(2)}</p>
                   <p class="text-[9px] text-slate-500 dark:text-slate-400">Bs. ${totalCorteBS.toFixed(2)}</p>
                 </div>
                 <span id="flecha-corte-${corte.id}" class="text-slate-500 text-xs transition-transform duration-200">▼</span>
@@ -1184,7 +1299,7 @@
             </div>
 
             <div id="detalle-corte-${corte.id}" class="hidden p-3.5 bg-slate-50 dark:bg-slate-900/90 border-t border-slate-200 dark:border-slate-800/80 space-y-2">
-              <p class="text-[10px] font-bold ${rolSeleccionado === 'comercio' ? 'text-blue-600 dark:text-blue-400' : 'text-emerald-600 dark:text-emerald-400'} uppercase tracking-wider">${rolSeleccionado === 'comercio' ? '📊 Rendimiento por Motorizado / Flota' : '📋 Detalle de Servicios'} (${corte.carreras.length} total):</p>
+              <p class="text-[10px] font-bold ${rolSeleccionado === 'comercio' ? 'text-blue-600 dark:text-blue-400' : 'text-emerald-600 dark:text-emerald-400'} uppercase tracking-wider">${rolSeleccionado === 'comercio' ? '📊 Resumen Acumulado por Motorizado' : '📋 Detalle de Servicios'} (${corte.carreras.length} servicios totales):</p>
               <div class="pl-2 space-y-1">
                 ${htmlSubContenido}
               </div>
@@ -1211,7 +1326,7 @@
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(16);
-      doc.text(esComercio ? "COTIZADOR FLEET - REPORTE DE RENDIMIENTO B2B" : "COTIZADOR DELIVERY - REPORTE DE CORTES DIARIOS", 20, 20);
+      doc.text(esComercio ? "REPORTE DE CIERRE GENERAL - FLOTA B2B" : "COTIZADOR DELIVERY - REPORTE DE CORTES DIARIOS", 20, 20);
 
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
@@ -1225,9 +1340,8 @@
       let y = 52;
       doc.setFont("helvetica", "bold");
       doc.text("Fecha", 20, y);
-      doc.text("Bruto ($)", 70, y);
-      doc.text("Gastos ($)", 110, y);
-      doc.text("Neto ($)", 150, y);
+      doc.text("Servicios", 80, y);
+      doc.text("Total Bruto ($)", 140, y);
       
       y += 4;
       doc.line(20, y, 190, y);
@@ -1240,9 +1354,8 @@
           y = 20;
         }
         doc.text(c.fecha, 20, y);
-        doc.text(`$${c.totalBruto.toFixed(2)}`, 70, y);
-        doc.text(`-$${c.gastoGas.toFixed(2)}`, 110, y);
-        doc.text(`$${c.totalNeto.toFixed(2)}`, 150, y);
+        doc.text(`${c.carreras.length} entregas`, 80, y);
+        doc.text(`$${c.totalBruto.toFixed(2)}`, 140, y);
         y += 7;
       });
 
@@ -1251,21 +1364,15 @@
       y += 8;
 
       const totalBrutoAcum = cortesArchivados.reduce((acc, c) => acc + c.totalBruto, 0);
-      const totalGasAcum = cortesArchivados.reduce((acc, c) => acc + c.gastoGas, 0);
-      const totalNetoAcum = cortesArchivados.reduce((acc, c) => acc + c.totalNeto, 0);
-      const totalBS = totalNetoAcum * tasaBCV;
+      const totalBS = totalBrutoAcum * tasaBCV;
 
       doc.setFont("helvetica", "bold");
-      doc.text(`TOTAL BRUTO ACUMULADO: $${totalBrutoAcum.toFixed(2)}`, 20, y);
-      y += 6;
-      doc.text(`TOTAL GASTOS / VIÁTICOS: -$${totalGasAcum.toFixed(2)}`, 20, y);
-      y += 6;
-      doc.text(`TOTAL NETO REAL (USD): $${totalNetoAcum.toFixed(2)}`, 20, y);
+      doc.text(`TOTAL GENERAL ACUMULADO: $${totalBrutoAcum.toFixed(2)}`, 20, y);
       y += 6;
       doc.text(`TOTAL EN BOLÍVARES: Bs. ${totalBS.toFixed(2)}`, 20, y);
 
-      doc.save(`Reporte_Rendimiento_Fleet_${Date.now()}.pdf`);
-      mostrarAlertaPro("📄 ¡Reporte PDF con métricas generado y descargado con éxito!");
+      doc.save(`Reporte_Cierre_Fleet_${Date.now()}.pdf`);
+      mostrarAlertaPro("📄 ¡Reporte PDF generado y descargado con éxito!");
     }
 
     async function iniciarConGoogle() {
@@ -1329,7 +1436,6 @@
       const tituloSeccionCortes = document.getElementById('titulo-seccion-cortes');
       const modalCorteTit = document.getElementById('modal-corte-titulo');
       const modalCorteSub = document.getElementById('modal-corte-sub');
-      const labelGasto = document.getElementById('label-gasto-corte');
 
       if (user && rolSeleccionado === 'comercio') {
         const b2bNombre = localStorage.getItem(`b2b_nombre_${user.uid}`) || 'Comercio B2B';
@@ -1340,21 +1446,20 @@
         document.getElementById('b2b-banner-nombre').innerText = `Flota: ${b2bNombre}`;
         headerTitulo.innerText = "Cotizador Fleet B2B";
         headerSub.innerText = "Control Corporativo de Flotas";
-        if(btnProLabel) btnProLabel.innerText = "Panel de Control y Rendimiento";
+        if(btnProLabel) btnProLabel.innerText = "Panel de Control y Motorizados";
         if(badgeProTipo) {
           badgeProTipo.innerText = "B2B";
           badgeProTipo.className = "bg-blue-500/15 text-blue-600 dark:text-blue-400 text-[10px] px-2 py-0.5 rounded-md border border-blue-500/30 font-black tracking-wider";
         }
         if(iconoModo) iconoModo.innerText = "🏢";
         if(textoModo) textoModo.innerText = "Control de Despachos de Flota";
-        if(labelSubcarrera) labelSubcarrera.innerText = "Registra el servicio y el motorizado asignado:";
+        if(labelSubcarrera) labelSubcarrera.innerText = "Selecciona el motorizado y registra el destino:";
         if(campoRepartidorB2B) campoRepartidorB2B.classList.remove('hidden');
         if(inputNota) inputNota.placeholder = "Cliente / Destino (Ej. Av. Bolívar)";
         if(btnTextoRegistrar) btnTextoRegistrar.innerText = "+ Registrar Servicio de Flota";
-        if(tituloSeccionCortes) tituloSeccionCortes.innerText = "📁 Liquidaciones y Rendimiento";
-        if(modalCorteTit) modalCorteTit.innerText = "Cierre y Liquidación de Flota";
-        if(modalCorteSub) modalCorteSub.innerText = "Ingresa el gasto total o viáticos de la jornada para calcular neto.";
-        if(labelGasto) labelGasto.innerText = "⛽ Gastos de Flota / Viáticos ($ USD):";
+        if(tituloSeccionCortes) tituloSeccionCortes.innerText = "📁 Cierres Generales Archivados";
+        if(modalCorteTit) modalCorteTit.innerText = "Cierre General de Turno";
+        if(modalCorteSub) modalCorteSub.innerText = "Se consolidarán todos los servicios registrados en la jornada.";
       } else {
         bannerB2B.classList.add('hidden');
         PRECIO_KM_EXTRA = 0.40;
@@ -1374,7 +1479,6 @@
         if(tituloSeccionCortes) tituloSeccionCortes.innerText = "📁 Cortes Diarios Archivados";
         if(modalCorteTit) modalCorteTit.innerText = "Cierre y Corte Diario";
         if(modalCorteSub) modalCorteSub.innerText = "Ingresa el gasto total de gasolina o mantenimiento de la jornada.";
-        if(labelGasto) labelGasto.innerText = "⛽ Gastos de Gasolina / Mantenimiento ($ USD):";
       }
     }
 
