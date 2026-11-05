@@ -71,14 +71,14 @@
       </div>
       
       <!-- Botón Modo Oscuro / Claro -->
-      <button onclick="toggleTheme()" class="p-2.5 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/90 shadow-sm cursor-pointer" title="Cambiar Tema">
+      <button onclick="toggleTheme()" class="p-2.5 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/90 shadow-sm cursor-pointer focus:outline-none" title="Cambiar Tema">
         <span id="theme-icon">☀️</span>
       </button>
     </div>
 
     <!-- Botón Dinámico de Cuenta / Perfil -->
     <div class="max-w-md mx-auto mt-2.5">
-      <button onclick="gestionarClicCuenta()" class="w-full px-3.5 py-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex items-center justify-center gap-2 hover:bg-emerald-500/20 transition cursor-pointer shadow-inner">
+      <button onclick="gestionarClicCuenta()" class="w-full px-3.5 py-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex items-center justify-center gap-2 hover:bg-emerald-500/20 transition cursor-pointer shadow-inner focus:outline-none">
         <span id="btn-mi-cuenta-texto">👤 Mi Cuenta / Acceso Pro & B2B</span>
       </button>
     </div>
@@ -87,13 +87,13 @@
   <!-- Contenedor App -->
   <main class="max-w-md mx-auto px-4 pt-6 space-y-5">
 
-    <!-- Indicador de Modo B2B Comercio (Si aplica) -->
+    <!-- Indicador de Modo B2B Comercio -->
     <div id="banner-modo-b2b" class="hidden p-3.5 bg-gradient-to-r from-blue-600/20 to-indigo-600/20 border border-blue-500/40 rounded-2xl flex items-center justify-between text-xs backdrop-blur-xl">
       <div class="flex items-center gap-2.5">
         <span class="text-xl">🏢</span>
         <div>
           <p class="font-bold text-blue-600 dark:text-blue-300" id="b2b-banner-nombre">Modo Flota B2B Activo</p>
-          <p class="text-[10px] text-slate-500 dark:text-slate-400">Tarifas y control de repartidores activos</p>
+          <p class="text-[10px] text-slate-500 dark:text-slate-400">Control corporativo de unidades y liquidaciones</p>
         </div>
       </div>
       <span class="bg-blue-500/20 text-blue-600 dark:text-blue-300 text-[9px] px-2 py-0.5 rounded font-black tracking-wider uppercase border border-blue-500/30">FLEET</span>
@@ -112,8 +112,8 @@
       </div>
     </div>
 
-    <!-- Botón directo Google Maps -->
-    <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 px-4 bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-bold rounded-2xl text-center flex items-center justify-center gap-2.5 shadow-lg shadow-rose-500/25 transition-all active:scale-[0.98]">
+    <!-- Botón directo Google Maps (Corregido el estado de presión/foco) -->
+    <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 px-4 bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-bold rounded-2xl text-center flex items-center justify-center gap-2.5 shadow-lg shadow-rose-500/25 transition-all focus:outline-none">
       <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
       Abrir Google Maps (Ver Ruta Real)
     </a>
@@ -158,7 +158,7 @@
         <input type="hidden" id="tipo-envio" value="estandar">
 
         <button type="button" id="btn-desplegable-envio" onclick="toggleMenuEnvio()" 
-          class="w-full p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-left flex items-center justify-between transition-all hover:border-emerald-500/40 cursor-pointer">
+          class="w-full p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-left flex items-center justify-between transition-all hover:border-emerald-500/40 cursor-pointer focus:outline-none">
           <div class="flex items-center gap-3">
             <span id="icono-envio-actual" class="text-lg">📦</span>
             <div>
@@ -171,7 +171,7 @@
 
         <div id="opciones-desplegable-envio" class="hidden absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-2 shadow-2xl z-40 space-y-1.5 backdrop-blur-xl">
           <button type="button" onclick="seleccionarOpcionEnvio('estandar', '📦', 'Estándar', 'Documentos, Comida, Ropa')" 
-            class="w-full p-3 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
+            class="w-full p-3 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer focus:outline-none">
             <div class="flex items-center gap-3">
               <span class="text-base">📦</span>
               <div>
@@ -181,7 +181,7 @@
             </div>
           </button>
           <button type="button" onclick="seleccionarOpcionEnvio('pesado', '🏋️', 'Carga Pesada / Voluminosa', 'Recargo del +25%')" 
-            class="w-full p-3 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
+            class="w-full p-3 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer focus:outline-none">
             <div class="flex items-center gap-3">
               <span class="text-base">🏋️</span>
               <div>
@@ -191,7 +191,7 @@
             </div>
           </button>
           <button type="button" onclick="seleccionarOpcionEnvio('fragil', '💎', 'Objeto Frágil / Delicado', 'Recargo del +15%')" 
-            class="w-full p-3 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
+            class="w-full p-3 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer focus:outline-none">
             <div class="flex items-center gap-3">
               <span class="text-base">💎</span>
               <div>
@@ -201,7 +201,7 @@
             </div>
           </button>
           <button type="button" onclick="seleccionarOpcionEnvio('picking', '🛒', 'Picking / Compras en Tienda', 'Recargo del +30% (Supermercado / Farmacia)')" 
-            class="w-full p-3 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer">
+            class="w-full p-3 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer focus:outline-none">
             <div class="flex items-center gap-3">
               <span class="text-base">🛒</span>
               <div>
@@ -213,8 +213,8 @@
         </div>
       </div>
 
-      <!-- Botón Calcular -->
-      <button onclick="calcularTarifa()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-cyan-400 hover:from-emerald-400 hover:to-cyan-300 text-slate-950 font-black rounded-2xl shadow-lg shadow-emerald-500/20 transition active:scale-[0.98] cursor-pointer tracking-wide text-sm">
+      <!-- Botón Calcular (Corregido el estado persistente de presión) -->
+      <button onclick="calcularTarifa()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-cyan-400 hover:from-emerald-400 hover:to-cyan-300 text-slate-950 font-black rounded-2xl shadow-lg shadow-emerald-500/20 transition cursor-pointer tracking-wide text-sm focus:outline-none">
         ⚡ Calcular Tarifa Exacta
       </button>
     </div>
@@ -223,7 +223,7 @@
     <div id="resultado-box" class="hidden p-5 rounded-3xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500/40 space-y-4 backdrop-blur-xl shadow-2xl">
       <div class="flex justify-between items-center">
         <h3 class="text-xs uppercase font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">Resumen de Cotización</h3>
-        <button onclick="reiniciarCotizacion()" class="text-xs px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-700 dark:text-emerald-300 font-semibold rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+        <button onclick="reiniciarCotizacion()" class="text-xs px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-700 dark:text-emerald-300 font-semibold rounded-xl transition flex items-center gap-1.5 cursor-pointer focus:outline-none">
           🔄 Nueva Cotización
         </button>
       </div>
@@ -239,10 +239,10 @@
 
     <!-- Botones de Acción -->
     <div class="grid grid-cols-2 gap-3 pt-1">
-      <button onclick="enviarWhatsApp()" class="py-3.5 px-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition active:scale-[0.98] cursor-pointer text-xs">
+      <button onclick="enviarWhatsApp()" class="py-3.5 px-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition cursor-pointer text-xs focus:outline-none">
         💬 WhatsApp
       </button>
-      <button onclick="copiarAlPortapapeles()" id="btn-copiar" class="py-3.5 px-4 bg-slate-200 dark:bg-slate-900 hover:bg-slate-300 dark:hover:bg-slate-800 text-slate-900 dark:text-white font-semibold rounded-2xl flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-800 transition active:scale-[0.98] cursor-pointer text-xs">
+      <button onclick="copiarAlPortapapeles()" id="btn-copiar" class="py-3.5 px-4 bg-slate-200 dark:bg-slate-900 hover:bg-slate-300 dark:hover:bg-slate-800 text-slate-900 dark:text-white font-semibold rounded-2xl flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-800 transition cursor-pointer text-xs focus:outline-none">
         📋 Copiar Texto
       </button>
     </div>
@@ -250,7 +250,7 @@
     <!-- BOTÓN DESPLEGABLE GANANCIAS PRO / PANEL B2B -->
     <div class="pt-2">
       <button type="button" onclick="intentarAccesoPro()" 
-        class="w-full py-3 bg-white dark:bg-slate-900/90 hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 font-semibold text-xs rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 transition cursor-pointer shadow-lg">
+        class="w-full py-3 bg-white dark:bg-slate-900/90 hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 font-semibold text-xs rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 transition cursor-pointer shadow-lg focus:outline-none">
         <div class="flex items-center gap-2.5">
           <span>⚡</span>
           <span id="btn-pro-label">Registro de Ganancias Pro</span>
@@ -260,7 +260,7 @@
       </button>
     </div>
 
-    <!-- MÓDULO DE REGISTRO DE GANANCIAS PRO / FLOTA B2B -->
+    <!-- MÓDULO DE REGISTRO PRO / FLOTA B2B -->
     <div id="modulo-ganancias-pro" class="hidden p-5 rounded-3xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-emerald-500/30 space-y-4 shadow-2xl backdrop-blur-xl transition-all">
       <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
         <div class="flex items-center gap-2.5">
@@ -269,7 +269,7 @@
         </div>
       </div>
 
-      <!-- Formulario Ágil de Registro de Carrera / Unidad -->
+      <!-- Formulario de Registro -->
       <div class="space-y-3 pt-1">
         <p class="text-xs text-slate-500 dark:text-slate-400" id="label-subtitulo-carrera">Registra tus servicios del turno actual:</p>
         <div class="grid grid-cols-2 gap-2">
@@ -277,7 +277,7 @@
           <input type="text" id="pro-cliente-nota" placeholder="Descripción / Cliente" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-3 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none">
         </div>
 
-        <button type="button" onclick="registrarCarreraPro()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl transition cursor-pointer flex items-center justify-center gap-2 shadow-md">
+        <button type="button" onclick="registrarCarreraPro()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl transition cursor-pointer flex items-center justify-center gap-2 shadow-md focus:outline-none">
           <span id="btn-texto-registrar">+ Añadir Carrera</span>
         </button>
       </div>
@@ -288,27 +288,27 @@
           <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Total Bruto Turno:</p>
           <p id="pro-total-turno" class="text-base font-black text-emerald-600 dark:text-emerald-400 mt-0.5">$0.00 <span id="pro-total-turno-bs" class="text-xs text-slate-500 dark:text-slate-400 font-normal">(Bs. 0.00)</span></p>
         </div>
-        <button type="button" onclick="abrirModalCorte()" class="py-2.5 px-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-lg shadow-amber-500/20">
+        <button type="button" onclick="abrirModalCorte()" class="py-2.5 px-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-lg shadow-amber-500/20 focus:outline-none">
           ✂️ Realizar Corte
         </button>
       </div>
 
-      <!-- Carreras Pendientes del Turno -->
+      <!-- Lista de Registros Activos -->
       <div id="contenedor-carreras-turno" class="space-y-1.5 max-h-40 overflow-y-auto pr-1 text-xs">
-        <p class="text-center text-slate-400 dark:text-slate-500 py-3 text-[11px]" id="msg-turno-vacio">Sin carreras registradas en este turno.</p>
+        <p class="text-center text-slate-400 dark:text-slate-500 py-3 text-[11px]" id="msg-turno-vacio">Sin registros en este turno.</p>
       </div>
 
-      <!-- HISTORIAL ARCHIVADO DE CORTES DIARIOS / LIQUIDACIONES -->
+      <!-- HISTORIAL ARCHIVADO -->
       <div class="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-800">
         <div class="flex items-center justify-between">
           <h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider" id="titulo-seccion-cortes">📁 Cortes Diarios Archivados</h3>
-          <button onclick="descargarReportePDF()" class="text-[11px] px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-700 dark:text-emerald-400 font-bold rounded-xl transition border border-emerald-500/30 flex items-center gap-1.5 cursor-pointer">
+          <button onclick="descargarReportePDF()" class="text-[11px] px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-700 dark:text-emerald-400 font-bold rounded-xl transition border border-emerald-500/30 flex items-center gap-1.5 cursor-pointer focus:outline-none">
             📄 Reporte PDF
           </button>
         </div>
 
         <div id="lista-cortes-acordeon" class="space-y-2 max-h-72 overflow-y-auto pr-1 text-xs">
-          <p class="text-center text-slate-400 dark:text-slate-500 py-4 text-[11px]" id="msg-cortes-vacio">No hay cortes archivados aún.</p>
+          <p class="text-center text-slate-400 dark:text-slate-500 py-4 text-[11px]" id="msg-cortes-vacio">No hay registros archivados aún.</p>
         </div>
       </div>
     </div>
@@ -324,12 +324,12 @@
   <!-- MODAL REALIZAR CORTE DIARIO -->
   <div id="modal-corte" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative">
-      <button onclick="cerrarModalCorte()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-bold cursor-pointer">✕</button>
+      <button onclick="cerrarModalCorte()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-bold cursor-pointer focus:outline-none">✕</button>
 
       <div class="text-center space-y-1">
         <span class="text-3xl">✂️</span>
-        <h3 class="text-base font-bold text-slate-900 dark:text-white">Cierre y Corte Diario</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400">Ingresa el gasto total de gasolina o viáticos de la jornada.</p>
+        <h3 class="text-base font-bold text-slate-900 dark:text-white" id="modal-corte-titulo">Cierre y Corte Diario</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400" id="modal-corte-sub">Ingresa el gasto total de gasolina o mantenimiento de la jornada.</p>
       </div>
 
       <div class="p-3.5 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-1">
@@ -338,34 +338,34 @@
       </div>
 
       <div>
-        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">⛽ Gastos de Gasolina / Mantenimiento ($ USD):</label>
+        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5" id="label-gasto-corte">⛽ Gastos de Gasolina / Mantenimiento ($ USD):</label>
         <input type="number" id="corte-gasto-gasolina" placeholder="Ej. 0.00" step="0.50" value="0.00" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3 text-slate-900 dark:text-white text-xs font-bold text-center focus:border-amber-500 focus:outline-none">
       </div>
 
-      <button type="button" onclick="confirmarCorteDiario()" class="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-2xl text-xs transition cursor-pointer shadow-lg shadow-amber-500/20">
-        ✅ Guardar y Archivar Corte
+      <button type="button" onclick="confirmarCorteDiario()" class="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-2xl text-xs transition cursor-pointer shadow-lg shadow-amber-500/20 focus:outline-none">
+        ✅ Guardar y Archivar Registro
       </button>
     </div>
   </div>
 
-  <!-- MODAL PERFIL DE USUARIO PRO / CONFIGURACIÓN B2B COMERCIO -->
+  <!-- MODAL PERFIL Y CONFIGURACIÓN B2B -->
   <div id="modal-perfil" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative text-center max-h-[90vh] overflow-y-auto">
-      <button onclick="cerrarPerfil()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-bold cursor-pointer">✕</button>
+      <button onclick="cerrarPerfil()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-bold cursor-pointer focus:outline-none">✕</button>
 
       <!-- Avatar -->
       <div class="relative w-20 h-20 mx-auto">
         <div id="perfil-avatar-preview" class="w-20 h-20 bg-gradient-to-tr from-emerald-500 to-cyan-400 rounded-full flex items-center justify-center text-slate-950 text-2xl font-black shadow-lg shadow-emerald-500/20 overflow-hidden border-2 border-emerald-500">
           🛵
         </div>
-        <label for="input-foto-perfil" class="absolute bottom-0 right-0 bg-emerald-500 hover:bg-emerald-400 text-slate-950 p-1.5 rounded-full cursor-pointer shadow-md text-xs z-10" title="Cambiar foto">
+        <label for="input-foto-perfil" class="absolute bottom-0 right-0 bg-emerald-500 hover:bg-emerald-400 text-slate-950 p-1.5 rounded-full cursor-pointer shadow-md text-xs z-10 focus:outline-none" title="Cambiar foto">
           📷
         </label>
         <input type="file" id="input-foto-perfil" accept="image/*" class="hidden" onchange="cambiarFotoPerfil(event)">
       </div>
 
       <div>
-        <button type="button" onclick="eliminarFotoPerfil()" class="text-[11px] text-rose-500 dark:text-rose-400 hover:underline font-medium cursor-pointer">
+        <button type="button" onclick="eliminarFotoPerfil()" class="text-[11px] text-rose-500 dark:text-rose-400 hover:underline font-medium cursor-pointer focus:outline-none">
           🗑️ Eliminar foto de perfil
         </button>
       </div>
@@ -378,7 +378,7 @@
         </span>
       </div>
 
-      <!-- Configuración Modo Repartidor Pro -->
+      <!-- Configuración Repartidor Pro -->
       <div id="cfg-seccion-repartidor" class="border-t border-slate-200 dark:border-slate-800 pt-4 text-left space-y-2.5">
         <p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">⚙️ Credenciales y Marca Pro:</p>
         <div>
@@ -399,7 +399,7 @@
           <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Datos Pago Móvil:</label>
           <input type="text" id="cfg-pago-movil" placeholder="0414-1234567 / BDV" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none">
         </div>
-        <button onclick="guardarConfiguracionMarca()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl transition cursor-pointer shadow-md">
+        <button onclick="guardarConfiguracionMarca()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl transition cursor-pointer shadow-md focus:outline-none">
           💾 Guardar Datos Pro
         </button>
       </div>
@@ -433,13 +433,13 @@
           <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Zelle / Correo Oficial (Opcional):</label>
           <input type="text" id="cfg-b2b-zelle" placeholder="pagos@farmaciasandiego.com" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-blue-500 focus:outline-none">
         </div>
-        <button onclick="guardarConfiguracionB2B()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs rounded-xl transition cursor-pointer shadow-md">
+        <button onclick="guardarConfiguracionB2B()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs rounded-xl transition cursor-pointer shadow-md focus:outline-none">
           💾 Guardar Parámetros de Flota B2B
         </button>
       </div>
 
       <div class="border-t border-slate-200 dark:border-slate-800 pt-3">
-        <button type="button" onclick="cerrarSesion()" class="w-full py-2.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 dark:text-rose-400 border border-rose-500/30 font-bold text-xs rounded-xl transition cursor-pointer">
+        <button type="button" onclick="cerrarSesion()" class="w-full py-2.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 dark:text-rose-400 border border-rose-500/30 font-bold text-xs rounded-xl transition cursor-pointer focus:outline-none">
           🚪 Cerrar Sesión
         </button>
       </div>
@@ -449,23 +449,23 @@
   <!-- MODAL DE AUTENTICACIÓN -->
   <div id="modal-auth" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-5 shadow-2xl relative">
-      <button onclick="cerrarAuth()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-bold cursor-pointer">✕</button>
+      <button onclick="cerrarAuth()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-bold cursor-pointer focus:outline-none">✕</button>
 
       <div class="text-center space-y-1">
         <h3 id="auth-titulo" class="text-lg font-bold text-slate-900 dark:text-white">Bienvenido de nuevo</h3>
         <p class="text-xs text-slate-500 dark:text-slate-400">Accede para gestionar tus cotizaciones y flotas</p>
       </div>
 
-      <!-- Selector de Rol (Repartidor o Comercio B2B) -->
+      <!-- Selector de Rol -->
       <div id="selector-rol" class="grid grid-cols-2 gap-2 pt-1">
-        <button type="button" id="btn-rol-repartidor" onclick="seleccionarRol('repartidor')" class="py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/15 text-slate-900 dark:text-white transition flex items-center justify-center gap-2 cursor-pointer">🛵 Repartidor</button>
-        <button type="button" id="btn-rol-comercio" onclick="seleccionarRol('comercio')" class="py-2.5 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 transition hover:border-slate-400 dark:hover:border-slate-700 cursor-pointer">🏪 Comercio / Flota</button>
+        <button type="button" id="btn-rol-repartidor" onclick="seleccionarRol('repartidor')" class="py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/15 text-slate-900 dark:text-white transition flex items-center justify-center gap-2 cursor-pointer focus:outline-none">🛵 Repartidor</button>
+        <button type="button" id="btn-rol-comercio" onclick="seleccionarRol('comercio')" class="py-2.5 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 transition hover:border-slate-400 dark:hover:border-slate-700 cursor-pointer focus:outline-none">🏪 Comercio / Flota</button>
       </div>
 
       <form id="form-auth" class="space-y-3">
         <input type="email" id="email-input" placeholder="Correo electrónico" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-emerald-500">
         <input type="password" id="password-input" placeholder="Contraseña" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-emerald-500">
-        <button type="submit" id="btn-submit-auth" class="w-full py-3.5 bg-emerald-500 text-slate-950 font-black rounded-2xl text-xs hover:bg-emerald-400 transition cursor-pointer shadow-lg shadow-emerald-500/20">Iniciar Sesión</button>
+        <button type="submit" id="btn-submit-auth" class="w-full py-3.5 bg-emerald-500 text-slate-950 font-black rounded-2xl text-xs hover:bg-emerald-400 transition cursor-pointer shadow-lg shadow-emerald-500/20 focus:outline-none">Iniciar Sesión</button>
       </form>
 
       <div class="flex items-center my-2">
@@ -474,7 +474,7 @@
         <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
       </div>
 
-      <button type="button" onclick="iniciarConGoogle()" class="w-full py-3 px-4 rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/80 text-slate-900 dark:text-white font-semibold text-xs flex items-center justify-center gap-3 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer active:scale-95 shadow-md">
+      <button type="button" onclick="iniciarConGoogle()" class="w-full py-3 px-4 rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/80 text-slate-900 dark:text-white font-semibold text-xs flex items-center justify-center gap-3 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer shadow-md focus:outline-none">
         <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
           <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -485,7 +485,7 @@
       </button>
 
       <div class="text-center pt-2">
-        <button type="button" onclick="alternarModoAuth()" class="text-xs text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition cursor-pointer">
+        <button type="button" onclick="alternarModoAuth()" class="text-xs text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition cursor-pointer focus:outline-none">
           <span id="texto-cambio-auth">¿No tienes cuenta?</span> <span id="link-cambio-auth" class="underline font-bold text-slate-900 dark:text-white">Regístrate</span>
         </button>
       </div>
@@ -500,7 +500,7 @@
         <h3 class="text-base font-bold text-slate-900 dark:text-white">Aviso</h3>
         <p id="mensaje-alerta-texto" class="text-xs text-slate-500 dark:text-slate-400">Mensaje de alerta</p>
       </div>
-      <button type="button" onclick="cerrarAlertaPro()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-2xl transition shadow-lg cursor-pointer">Entendido</button>
+      <button type="button" onclick="cerrarAlertaPro()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-2xl transition shadow-lg cursor-pointer focus:outline-none">Entendido</button>
     </div>
   </div>
 
@@ -599,7 +599,6 @@
       const hayLluvia = document.getElementById('check-lluvia').checked;
       if(hayLluvia) subtotalUSD *= 1.30;
 
-      // Si aplica tarifa mínima B2B
       const user = auth.currentUser;
       if (user && rolSeleccionado === 'comercio') {
         const minFare = parseFloat(localStorage.getItem(`b2b_min_fare_${user.uid}`)) || 2.00;
@@ -644,7 +643,6 @@
 
       const user = auth.currentUser;
       
-      // PLANTILLA B2B SI EL ROL ES COMERCIO
       if (user && rolSeleccionado === 'comercio') {
         const b2bNombre = localStorage.getItem(`b2b_nombre_${user.uid}`) || 'FARMACIA / COMERCIO B2B';
         const b2bRif = localStorage.getItem(`b2b_rif_${user.uid}`) || '';
@@ -678,7 +676,6 @@
         return texto;
       }
 
-      // PLANTILLA REPARTIDOR INDEPENDIENTE (B2C)
       const nombreMarca = (user && localStorage.getItem(`marca_${user.uid}`)) || 'COTIZACIÓN DE DELIVERY';
       const cedula = (user && localStorage.getItem(`cedula_${user.uid}`)) || '';
       const placa = (user && localStorage.getItem(`placa_${user.uid}`)) || '';
@@ -694,7 +691,7 @@
       if(tipoEnvioVal === 'picking') texto += `🛒 *Servicio:* Picking / Compras en Tienda (+30%)\n`;
       if(tipoEnvioVal === 'pesado') texto += `🏋️ *Tipo:* Carga Pesada (+25%)\n`;
       if(tipoEnvioVal === 'fragil') texto += `💎 *Tipo:* Objeto Frágil (+15%)\n`;
-      if(linkMaps) texto += `🗺️ *Ruta Maps:* ${linkMaps}\n`;
+      if(linkmaps) texto += `🗺️ *Ruta Maps:* ${linkMaps}\n`;
       if(esHorarioNocturno) texto += `🌙 *Tarifa:* Nocturna (9pm - 6am)\n`;
       if(hayLluvia) texto += `🌧️ *Recargo:* Lluvia / Mal Tiempo\n`;
       texto += `💵 *Monto USD:* ${usd}\n` + `💳 *Total a pagar:* ${bs}\n` + `🏛️ *Tasa BCV:* Bs. ${tasaBCV.toFixed(2)}\n`;
@@ -745,7 +742,6 @@
         document.getElementById('cfg-placa').value = localStorage.getItem(`placa_${user.uid}`) || '';
         document.getElementById('cfg-pago-movil').value = localStorage.getItem(`pagomovil_${user.uid}`) || '';
         
-        // Datos B2B
         document.getElementById('cfg-b2b-nombre').value = localStorage.getItem(`b2b_nombre_${user.uid}`) || '';
         document.getElementById('cfg-b2b-rif').value = localStorage.getItem(`b2b_rif_${user.uid}`) || '';
         document.getElementById('cfg-b2b-rate-km').value = localStorage.getItem(`b2b_rate_km_${user.uid}`) || '0.40';
@@ -760,7 +756,6 @@
           revertirAvatarUI();
         }
 
-        // Mostrar sección según rol activo
         if (rolSeleccionado === 'comercio') {
           document.getElementById('cfg-seccion-comercio').classList.remove('hidden');
           document.getElementById('cfg-seccion-repartidor').classList.add('hidden');
@@ -940,18 +935,18 @@
       const btnRepartidor = document.getElementById('btn-rol-repartidor');
       const btnComercio = document.getElementById('btn-rol-comercio');
       if (rol === 'repartidor') {
-        btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/15 text-slate-900 dark:text-white transition flex items-center justify-center gap-2 cursor-pointer";
-        btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 transition hover:border-slate-400 dark:hover:border-slate-700 cursor-pointer";
+        btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/15 text-slate-900 dark:text-white transition flex items-center justify-center gap-2 cursor-pointer focus:outline-none";
+        btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 transition hover:border-slate-400 dark:hover:border-slate-700 cursor-pointer focus:outline-none";
       } else {
-        btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-blue-500 bg-blue-500/15 text-slate-900 dark:text-white transition flex items-center justify-center gap-2 cursor-pointer";
-        btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 transition hover:border-slate-400 dark:hover:border-slate-700 cursor-pointer";
+        btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-blue-500 bg-blue-500/15 text-slate-900 dark:text-white transition flex items-center justify-center gap-2 cursor-pointer focus:outline-none";
+        btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 transition hover:border-slate-400 dark:hover:border-slate-700 cursor-pointer focus:outline-none";
       }
     }
 
     function intentarAccesoPro() {
       const usuarioActual = auth.currentUser;
       if (!usuarioActual) {
-        mostrarAlertaPro("🔒 Debes iniciar sesión o registrarte para acceder al Registro de Ganancias / Panel B2B.");
+        mostrarAlertaPro("🔒 Debes iniciar sesión o registrarte para acceder al Registro / Panel B2B.");
         abrirAuth();
       } else {
         const mod = document.getElementById('modulo-ganancias-pro');
@@ -1096,12 +1091,12 @@
           item.className = 'p-2.5 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs';
           item.innerHTML = `
             <div>
-              <span class="font-bold text-slate-900 dark:text-white">🛵 ${c.nota}</span>
+              <span class="font-bold text-slate-900 dark:text-white">${rolSeleccionado === 'comercio' ? '🛵 Repartidor: ' : ''}${c.nota}</span>
               <span class="text-[10px] text-slate-500 ml-2">🕒 ${c.hora}</span>
             </div>
             <div class="flex items-center gap-2.5">
               <span class="font-black text-emerald-600 dark:text-emerald-400">$${c.monto.toFixed(2)}</span>
-              <button onclick="eliminarCarreraTurno(${c.id})" class="text-rose-500 dark:text-rose-400 hover:text-rose-400 text-xs cursor-pointer font-bold">✕</button>
+              <button onclick="eliminarCarreraTurno(${c.id})" class="text-rose-500 dark:text-rose-400 hover:text-rose-400 text-xs cursor-pointer font-bold focus:outline-none">✕</button>
             </div>
           `;
           contTurno.appendChild(item);
@@ -1122,7 +1117,7 @@
           corte.carreras.forEach(car => {
             htmlCarrerasSub += `
               <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-900/65 text-[10px] text-slate-500 dark:text-slate-400">
-                <span>• 👤 ${car.nota} (${car.hora})</span>
+                <span>• ${rolSeleccionado === 'comercio' ? '👤 ' : ''}${car.nota} (${car.hora})</span>
                 <span class="font-bold text-slate-700 dark:text-slate-200">$${car.monto.toFixed(2)}</span>
               </div>
             `;
@@ -1137,7 +1132,7 @@
                   <span class="font-bold text-slate-900 dark:text-white text-xs">📅 ${corte.fecha}</span>
                   <span class="text-[9px] text-slate-500">🕒 ${corte.horaCorte}</span>
                 </div>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400">Bruto: $${corte.totalBruto.toFixed(2)} | ⛽ Gastos: -$${corte.gastoGas.toFixed(2)}</p>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400">Bruto: $${corte.totalBruto.toFixed(2)} | Gastos: -$${corte.gastoGas.toFixed(2)}</p>
               </div>
               <div class="flex items-center gap-3">
                 <div class="text-right">
@@ -1149,12 +1144,12 @@
             </div>
 
             <div id="detalle-corte-${corte.id}" class="hidden p-3.5 bg-slate-50 dark:bg-slate-900/90 border-t border-slate-200 dark:border-slate-800/80 space-y-2">
-              <p class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">📋 Desglose por Repartidor / Unidad (${corte.carreras.length}):</p>
+              <p class="text-[10px] font-bold ${rolSeleccionado === 'comercio' ? 'text-blue-600 dark:text-blue-400' : 'text-emerald-600 dark:text-emerald-400'} uppercase tracking-wider">${rolSeleccionado === 'comercio' ? '📋 Desglose por Repartidor / Unidad' : '📋 Detalle de Servicios'} (${corte.carreras.length}):</p>
               <div class="pl-2 space-y-1">
                 ${htmlCarrerasSub}
               </div>
               <div class="pt-2 text-right">
-                <button onclick="eliminarCorteArchivado(${corte.id})" class="text-[10px] text-rose-500 dark:text-rose-400 underline cursor-pointer font-bold">🗑️ Eliminar este registro</button>
+                <button onclick="eliminarCorteArchivado(${corte.id})" class="text-[10px] text-rose-500 dark:text-rose-400 underline cursor-pointer font-bold focus:outline-none">🗑️ Eliminar este registro</button>
               </div>
             </div>
           `;
@@ -1291,6 +1286,9 @@
       const inputNota = document.getElementById('pro-cliente-nota');
       const btnTextoRegistrar = document.getElementById('btn-texto-registrar');
       const tituloSeccionCortes = document.getElementById('titulo-seccion-cortes');
+      const modalCorteTit = document.getElementById('modal-corte-titulo');
+      const modalCorteSub = document.getElementById('modal-corte-sub');
+      const labelGasto = document.getElementById('label-gasto-corte');
 
       if (user && rolSeleccionado === 'comercio') {
         const b2bNombre = localStorage.getItem(`b2b_nombre_${user.uid}`) || 'Comercio B2B';
@@ -1312,6 +1310,9 @@
         if(inputNota) inputNota.placeholder = "Repartidor / Unidad (Ej. Carlos M-01)";
         if(btnTextoRegistrar) btnTextoRegistrar.innerText = "+ Registrar Servicio de Flota";
         if(tituloSeccionCortes) tituloSeccionCortes.innerText = "📁 Liquidaciones Archivadas";
+        if(modalCorteTit) modalCorteTit.innerText = "Cierre y Liquidación de Flota";
+        if(modalCorteSub) modalCorteSub.innerText = "Ingresa el gasto total o viáticos de la jornada para calcular neto.";
+        if(labelGasto) labelGasto.innerText = "⛽ Gastos de Flota / Viáticos ($ USD):";
       } else {
         bannerB2B.classList.add('hidden');
         PRECIO_KM_EXTRA = 0.40;
@@ -1328,6 +1329,9 @@
         if(inputNota) inputNota.placeholder = "Descripción / Cliente";
         if(btnTextoRegistrar) btnTextoRegistrar.innerText = "+ Añadir Carrera";
         if(tituloSeccionCortes) tituloSeccionCortes.innerText = "📁 Cortes Diarios Archivados";
+        if(modalCorteTit) modalCorteTit.innerText = "Cierre y Corte Diario";
+        if(modalCorteSub) modalCorteSub.innerText = "Ingresa el gasto total de gasolina o mantenimiento de la jornada.";
+        if(labelGasto) labelGasto.innerText = "⛽ Gastos de Gasolina / Mantenimiento ($ USD):";
       }
     }
 
