@@ -240,7 +240,7 @@
     <!-- Botones de Acción -->
     <div class="grid grid-cols-2 gap-3 pt-1">
       <button onclick="enviarWhatsApp()" class="py-3.5 px-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition cursor-pointer text-xs focus:outline-none">
-        💬 WhatsApp
+        💬 WhatsApp Cliente
       </button>
       <button onclick="copiarAlPortapapeles()" id="btn-copiar" class="py-3.5 px-4 bg-slate-200 dark:bg-slate-900 hover:bg-slate-300 dark:hover:bg-slate-800 text-slate-900 dark:text-white font-semibold rounded-2xl flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-800 transition cursor-pointer text-xs focus:outline-none">
         📋 Copiar Texto
@@ -340,8 +340,8 @@
         </button>
       </div>
 
-      <!-- Lista de Registros Activos -->
-      <div id="contenedor-carreras-turno" class="space-y-1.5 max-h-40 overflow-y-auto pr-1 text-xs">
+      <!-- Lista de Registros Activos (Con Botón de Notificación WhatsApp al Motorizado) -->
+      <div id="contenedor-carreras-turno" class="space-y-1.5 max-h-48 overflow-y-auto pr-1 text-xs">
         <p class="text-center text-slate-400 dark:text-slate-500 py-3 text-[11px]" id="msg-turno-vacio">Sin registros en este turno.</p>
       </div>
 
@@ -368,7 +368,7 @@
     <p class="font-medium text-slate-600 dark:text-slate-400">Diseñado con dedicación por <span class="text-emerald-600 dark:text-emerald-400 font-bold">Herggie Díaz</span></p>
   </footer>
 
-  <!-- MODAL REALIZAR CORTE (Con gasto de gasolina solo para Repartidor Independiente) -->
+  <!-- MODAL REALIZAR CORTE -->
   <div id="modal-corte" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative">
       <button onclick="cerrarModalCorte()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-bold cursor-pointer focus:outline-none">✕</button>
@@ -384,7 +384,6 @@
         <p id="corte-monto-bruto" class="text-xl font-black text-emerald-600 dark:text-emerald-400">$0.00</p>
       </div>
 
-      <!-- Campo de Gasolina (Oculto en Modo Comercio B2B, Activo en Repartidor) -->
       <div id="caja-gasto-gasolina-modal">
         <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">⛽ Gastos de Gasolina / Mantenimiento ($ USD):</label>
         <input type="number" id="corte-gasto-gasolina" placeholder="Ej. 0.00" step="0.50" value="0.00" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3 text-slate-900 dark:text-white text-xs font-bold text-center focus:border-amber-500 focus:outline-none">
@@ -770,6 +769,34 @@
       if (!validarCotizacionLista()) return;
       const texto = generarTextoPlantilla();
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
+    }
+
+    // NUEVA FUNCIÓN: Notificar al motorizado directamente por WhatsApp con los detalles del servicio
+    function notificarMotorizadoWhatsApp(nombreMotorizado, notaServicio, montoUSD) {
+      let motorizadoEncontrado = motorizadosFlota.find(m => m.nombre === nombreMotorizado);
+      if (!motorizadoEncontrado || !motorizadoEncontrado.telefono || motorizadoEncontrado.telefono === 'N/A') {
+        mostrarAlertaPro(`⚠️ El motorizado ${nombreMotorizado} no tiene un número de teléfono válido registrado.`);
+        return;
+      }
+
+      // Limpiar el teléfono para formato internacional (asumiendo formato venezolano 0414... o similar)
+      let tlf = motorizadoEncontrado.telefono.replace(/\D/g, '');
+      if (tlf.startsWith('0')) {
+        tlf = '58' + tlf.substring(1); // Prefijo de Venezuela +58
+      } else if (!tlf.startsWith('58')) {
+        tlf = '58' + tlf;
+      }
+
+      const user = auth.currentUser;
+      const b2bNombre = (user && localStorage.getItem(`b2b_nombre_${user.uid}`)) || 'Comercio';
+
+      let mensajeMotorizado = `🛵 *NUEVO SERVICIO ASIGNADO*\n\n`;
+      mensajeMotorizado += `🏢 *Comercio:* ${b2bNombre}\n`;
+      mensajeMotorizado += `📦 *Detalle / Destino:* ${notaServicio}\n`;
+      mensajeMotorizado += `💵 *Tarifa del Servicio:* $${montoUSD.toFixed(2)}\n\n`;
+      mensajeMotorizado += `¡Por favor acércate al local a retirar el pedido! 🚀`;
+
+      window.open(`https://api.whatsapp.com/send?phone=${tlf}&text=${encodeURIComponent(mensajeMotorizado)}`, '_blank');
     }
 
     function copiarAlPortapapeles() {
@@ -1286,8 +1313,17 @@
           item.className = 'p-2.5 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs';
           
           let infoTexto = `<span>${c.nota}</span>`;
+          let botonNotificarMotorizadoHTML = '';
+
           if (rolSeleccionado === 'comercio') {
             infoTexto = `<span class="font-bold text-blue-600 dark:text-blue-400">🛵 ${c.repartidor}</span> <span class="text-slate-500">(${c.nota})</span>`;
+            // Botón directo para notificar por WhatsApp al motorizado asignado
+            botonNotificarMotorizadoHTML = `
+              <button onclick="notificarMotorizadoWhatsApp('${c.repartidor}', '${c.nota}', ${c.monto})" 
+                class="px-2 py-1 bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-600 dark:text-emerald-400 rounded-lg font-bold text-[10px] transition flex items-center gap-1 cursor-pointer border border-emerald-500/30" title="Avisar a motorizado por WhatsApp">
+                💬 Avisar
+              </button>
+            `;
           }
 
           item.innerHTML = `
@@ -1295,7 +1331,8 @@
               ${infoTexto}
               <span class="text-[10px] text-slate-400 ml-1">🕒 ${c.hora}</span>
             </div>
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-2">
+              ${botonNotificarMotorizadoHTML}
               <span class="font-black text-emerald-600 dark:text-emerald-400">$${c.monto.toFixed(2)}</span>
               <button onclick="eliminarCarreraTurno(${c.id})" class="text-rose-500 dark:text-rose-400 hover:text-rose-400 text-xs cursor-pointer font-bold focus:outline-none">✕</button>
             </div>
@@ -1554,7 +1591,7 @@
       }
     }
 
-    auth.getRedirectResult().then((result) => {
+    auth.getRedirectResult().test?.((result) => {
       if (result && result.user) {
         cerrarAuth();
         mostrarAlertaPro(`¡Bienvenido de nuevo, ${result.user.displayName || result.user.email}!`);
