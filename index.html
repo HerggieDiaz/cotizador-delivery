@@ -340,7 +340,7 @@
         </button>
       </div>
 
-      <!-- Lista de Registros Activos (Con Botón de Notificación WhatsApp al Motorizado) -->
+      <!-- Lista de Registros Activos -->
       <div id="contenedor-carreras-turno" class="space-y-1.5 max-h-48 overflow-y-auto pr-1 text-xs">
         <p class="text-center text-slate-400 dark:text-slate-500 py-3 text-[11px]" id="msg-turno-vacio">Sin registros en este turno.</p>
       </div>
@@ -771,7 +771,7 @@
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
     }
 
-    // NUEVA FUNCIÓN: Notificar al motorizado directamente por WhatsApp con los detalles del servicio
+    // FUNCIÓN ACTUALIZADA: Notifica al motorizado incluyendo automáticamente el enlace de Maps pegado en la cotización
     function notificarMotorizadoWhatsApp(nombreMotorizado, notaServicio, montoUSD) {
       let motorizadoEncontrado = motorizadosFlota.find(m => m.nombre === nombreMotorizado);
       if (!motorizadoEncontrado || !motorizadoEncontrado.telefono || motorizadoEncontrado.telefono === 'N/A') {
@@ -779,22 +779,27 @@
         return;
       }
 
-      // Limpiar el teléfono para formato internacional (asumiendo formato venezolano 0414... o similar)
       let tlf = motorizadoEncontrado.telefono.replace(/\D/g, '');
       if (tlf.startsWith('0')) {
-        tlf = '58' + tlf.substring(1); // Prefijo de Venezuela +58
+        tlf = '58' + tlf.substring(1);
       } else if (!tlf.startsWith('58')) {
         tlf = '58' + tlf;
       }
 
       const user = auth.currentUser;
       const b2bNombre = (user && localStorage.getItem(`b2b_nombre_${user.uid}`)) || 'Comercio';
+      const linkMapsActual = document.getElementById('link-maps').value.trim();
 
       let mensajeMotorizado = `🛵 *NUEVO SERVICIO ASIGNADO*\n\n`;
       mensajeMotorizado += `🏢 *Comercio:* ${b2bNombre}\n`;
       mensajeMotorizado += `📦 *Detalle / Destino:* ${notaServicio}\n`;
-      mensajeMotorizado += `💵 *Tarifa del Servicio:* $${montoUSD.toFixed(2)}\n\n`;
-      mensajeMotorizado += `¡Por favor acércate al local a retirar el pedido! 🚀`;
+      mensajeMotorizado += `💵 *Tarifa del Servicio:* $${montoUSD.toFixed(2)}\n`;
+      
+      if (linkMapsActual) {
+        mensajeMotorizado += `🗺️ *Ruta Google Maps:* ${linkMapsActual}\n`;
+      }
+      
+      mensajeMotorizado += `\n¡Por favor revisa la ruta y acércate al local a retirar el pedido! 🚀`;
 
       window.open(`https://api.whatsapp.com/send?phone=${tlf}&text=${encodeURIComponent(mensajeMotorizado)}`, '_blank');
     }
@@ -1317,10 +1322,9 @@
 
           if (rolSeleccionado === 'comercio') {
             infoTexto = `<span class="font-bold text-blue-600 dark:text-blue-400">🛵 ${c.repartidor}</span> <span class="text-slate-500">(${c.nota})</span>`;
-            // Botón directo para notificar por WhatsApp al motorizado asignado
             botonNotificarMotorizadoHTML = `
               <button onclick="notificarMotorizadoWhatsApp('${c.repartidor}', '${c.nota}', ${c.monto})" 
-                class="px-2 py-1 bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-600 dark:text-emerald-400 rounded-lg font-bold text-[10px] transition flex items-center gap-1 cursor-pointer border border-emerald-500/30" title="Avisar a motorizado por WhatsApp">
+                class="px-2 py-1 bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-600 dark:text-emerald-400 rounded-lg font-bold text-[10px] transition flex items-center gap-1 cursor-pointer border border-emerald-500/30" title="Avisar a motorizado por WhatsApp con ruta">
                 💬 Avisar
               </button>
             `;
@@ -1591,7 +1595,7 @@
       }
     }
 
-    auth.getRedirectResult().test?.((result) => {
+    auth.getRedirectResult().then((result) => {
       if (result && result.user) {
         cerrarAuth();
         mostrarAlertaPro(`¡Bienvenido de nuevo, ${result.user.displayName || result.user.email}!`);
