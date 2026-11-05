@@ -297,11 +297,26 @@
       <div class="space-y-3 pt-1">
         <p class="text-xs text-slate-500 dark:text-slate-400" id="label-subtitulo-carrera">Registra tus servicios del turno actual:</p>
         
-        <!-- Selector Desplegable de Motorizado (Modo B2B) -->
-        <div id="campo-repartidor-b2b-container" class="hidden">
-          <select id="select-motorizado-activo" class="w-full bg-slate-50 dark:bg-slate-950 border border-blue-500/40 rounded-xl px-3 py-3 text-slate-900 dark:text-white text-xs focus:border-blue-500 focus:outline-none font-semibold cursor-pointer">
-            <option value="">Selecciona motorizado asignado...</option>
-          </select>
+        <!-- SELECTOR ESTILIZADO DE MOTORIZADO (Modo B2B con Estética de Tarjetas) -->
+        <div id="campo-repartidor-b2b-container" class="hidden relative">
+          <input type="hidden" id="input-motorizado-seleccionado" value="">
+          
+          <button type="button" id="btn-selector-motorizado" onclick="toggleMenuSelectorMotorizado()" 
+            class="w-full p-3 rounded-xl border border-blue-500/40 bg-slate-50 dark:bg-slate-950 text-left flex items-center justify-between transition-all hover:border-blue-500 cursor-pointer focus:outline-none">
+            <div class="flex items-center gap-2.5">
+              <span class="text-base">🛵</span>
+              <div>
+                <p id="label-motorizado-actual" class="text-xs font-bold text-slate-900 dark:text-white">Selecciona motorizado asignado...</p>
+                <p id="sublabel-motorizado-actual" class="text-[10px] text-slate-500">Toca para desplegar flota</p>
+              </div>
+            </div>
+            <span id="flecha-selector-moto" class="text-slate-400 text-xs transition-transform duration-200">▼</span>
+          </button>
+
+          <!-- Lista Flotante Estilizada -->
+          <div id="dropdown-motorizados-tarjetas" class="hidden absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-900 border border-blue-500/30 rounded-2xl p-2 shadow-2xl z-40 space-y-1.5 max-h-48 overflow-y-auto backdrop-blur-xl">
+            <!-- Se llena dinámicamente -->
+          </div>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
@@ -683,8 +698,7 @@
         const b2bPago = localStorage.getItem(`b2b_pagomovil_${user.uid}`) || '';
         const b2bZelle = localStorage.getItem(`b2b_zelle_${user.uid}`) || '';
 
-        const selectMotorizado = document.getElementById('select-motorizado-activo');
-        let nombreMotorizadoAsignado = selectMotorizado ? selectMotorizado.value : '';
+        const nombreMotorizadoAsignado = document.getElementById('input-motorizado-seleccionado').value;
         let tlfMotorizado = '';
         if (nombreMotorizadoAsignado) {
           let found = motorizadosFlota.find(m => m.nombre === nombreMotorizadoAsignado);
@@ -1023,7 +1037,7 @@
       cortesArchivados = rawCortes ? JSON.parse(rawCortes) : [];
       motorizadosFlota = rawMoto ? JSON.parse(rawMoto) : [];
 
-      actualizarSelectMotorizados();
+      renderizarDropdownSelectorMotorizado();
       renderizarMóduloPro();
     }
 
@@ -1053,7 +1067,7 @@
       document.getElementById('nuevo-motorizado-nombre').value = '';
       document.getElementById('nuevo-motorizado-tlf').value = '';
 
-      actualizarSelectMotorizados();
+      renderizarDropdownSelectorMotorizado();
       renderizarListaMotorizadosAcordeon();
       mostrarAlertaPro("✅ Motorizado agregado correctamente.");
     }
@@ -1063,7 +1077,7 @@
       const { keyMotorizados } = obtenerClavesStorage();
       localStorage.setItem(keyMotorizados, JSON.stringify(motorizadosFlota));
 
-      actualizarSelectMotorizados();
+      renderizarDropdownSelectorMotorizado();
       renderizarListaMotorizadosAcordeon();
     }
 
@@ -1088,15 +1102,45 @@
       });
     }
 
-    function actualizarSelectMotorizados() {
-      const select = document.getElementById('select-motorizado-activo');
-      if (!select) return;
-      select.innerHTML = '<option value="">Selecciona motorizado asignado...</option>';
+    function toggleMenuSelectorMotorizado() {
+      const menu = document.getElementById('dropdown-motorizados-tarjetas');
+      const flecha = document.getElementById('flecha-selector-moto');
+      menu.classList.toggle('hidden');
+      flecha.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+      if (!menu.classList.contains('hidden')) {
+        renderizarDropdownSelectorMotorizado();
+      }
+    }
+
+    function seleccionarMotorizadoCard(nombre, telefono) {
+      document.getElementById('input-motorizado-seleccionado').value = nombre;
+      document.getElementById('label-motorizado-actual').innerText = nombre;
+      document.getElementById('sublabel-motorizado-actual').innerText = `📞 ${telefono}`;
+      toggleMenuSelectorMotorizado();
+    }
+
+    function renderizarDropdownSelectorMotorizado() {
+      const contenedor = document.getElementById('dropdown-motorizados-tarjetas');
+      contenedor.innerHTML = '';
+      
+      if (motorizadosFlota.length === 0) {
+        contenedor.innerHTML = '<p class="text-slate-400 text-center py-3 text-[11px]">No hay motorizados. Agrégalos arriba en "Gestión de Equipo".</p>';
+        return;
+      }
+
       motorizadosFlota.forEach(m => {
-        const opt = document.createElement('option');
-        opt.value = m.nombre;
-        opt.textContent = `${m.nombre} (${m.telefono})`;
-        select.appendChild(opt);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.onclick = () => seleccionarMotorizadoCard(m.nombre, m.telefono);
+        btn.className = 'w-full p-2.5 rounded-xl bg-white dark:bg-slate-950 hover:bg-blue-500/10 border border-blue-500/20 text-left flex items-center justify-between transition cursor-pointer';
+        btn.innerHTML = `
+          <div>
+            <p class="text-xs font-bold text-slate-900 dark:text-white">🛵 ${m.nombre}</p>
+            <p class="text-[10px] text-slate-500">📞 ${m.telefono}</p>
+          </div>
+          <span class="text-blue-500 text-xs font-bold">Seleccionar ➔</span>
+        `;
+        contenedor.appendChild(btn);
       });
     }
 
@@ -1106,10 +1150,9 @@
       
       let motorizado = 'Independiente / Personal';
       if (rolSeleccionado === 'comercio') {
-        const selectMoto = document.getElementById('select-motorizado-activo');
-        motorizado = selectMoto ? selectMoto.value : '';
+        motorizado = document.getElementById('input-motorizado-seleccionado').value;
         if (!motorizado) {
-          mostrarAlertaPro("⚠️ Por favor selecciona un motorizado del menú desplegable.");
+          mostrarAlertaPro("⚠️ Por favor selecciona un motorizado de la flota haciendo clic en el selector.");
           return;
         }
       }
@@ -1155,7 +1198,6 @@
       const totalBruto = carrerasTurnoActual.reduce((acc, c) => acc + c.monto, 0);
       document.getElementById('corte-monto-bruto').innerText = `$${totalBruto.toFixed(2)}`;
       
-      // Mostrar u ocultar el campo de gasolina según el rol activo
       const cajaGasolina = document.getElementById('caja-gasto-gasolina-modal');
       if (rolSeleccionado === 'comercio') {
         cajaGasolina.classList.add('hidden');
@@ -1265,7 +1307,6 @@
           let htmlSubContenido = '';
           
           if (rolSeleccionado === 'comercio') {
-            // CONTEO ACUMULADO POR MOTORIZADO (Sin repetir nombres)
             let acumuladoMotorizados = {};
             corte.carreras.forEach(car => {
               let rep = car.repartidor || 'Sin asignar';
@@ -1296,7 +1337,6 @@
           }
 
           const totalCorteBS = corte.totalNeto * tasaBCV;
-
           let infoGasolinaHTML = rolSeleccionado === 'repartidor' ? `<p class="text-[10px] text-slate-500 dark:text-slate-400">Bruto: $${corte.totalBruto.toFixed(2)} | Gasolina: -$${corte.gastoGas.toFixed(2)}</p>` : `<p class="text-[10px] text-slate-500 dark:text-slate-400">Total Turno: $${corte.totalBruto.toFixed(2)}</p>`;
 
           item.innerHTML = `
