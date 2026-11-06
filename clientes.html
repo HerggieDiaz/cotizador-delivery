@@ -35,7 +35,6 @@
   </script>
 
   <style>
-    /* Custom Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
     }
@@ -53,7 +52,7 @@
 </head>
 <body class="h-full flex justify-center bg-slate-950 font-sans antialiased selection:bg-brand-500 selection:text-slate-950">
 
-  <!-- Mobile Frame Container (Optimized for PWA / Native APK feel) -->
+  <!-- Mobile Frame Container -->
   <main class="w-full max-w-md h-full flex flex-col bg-slate-900 border-x border-slate-800 shadow-2xl relative overflow-hidden">
 
     <!-- Top Header Bar -->
@@ -71,7 +70,7 @@
             <p class="text-xs text-slate-400">Repartidores independientes cerca de ti</p>
           </div>
         </div>
-        <button id="refreshBtn" onclick="simularActualizacion()" class="w-9 h-9 rounded-full bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center border border-slate-700/60 active:scale-95 transition-all">
+        <button id="refreshBtn" onclick="sincronizarDatos()" class="w-9 h-9 rounded-full bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center border border-slate-700/60 active:scale-95 transition-all" title="Actualizar disponibilidad">
           <i class="fa-solid fa-rotate-right text-xs"></i>
         </button>
       </div>
@@ -104,7 +103,7 @@
     </header>
 
     <!-- Verification / Safety Banner -->
-    <section class="mx-4 mt-4 p-3.5 bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-500/20 rounded-2xl flex items-center space-x-3 shadow-md">
+    <section class="mx-4 mt-4 p-3.5 bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-500/20 rounded-2xl flex items-center space-x-3 shadow-md shrink-0">
       <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
         <i class="fa-solid fa-user-shield text-lg"></i>
       </div>
@@ -121,11 +120,11 @@
 
     <!-- Main Content List (Scrollable Area) -->
     <div id="listaRepartidores" class="flex-1 overflow-y-auto px-4 py-4 space-y-3.5">
-      <!-- Repartidores inyectados por JS -->
+      <!-- Inyectado dinámicamente -->
     </div>
 
-    <!-- Bottom Navigation / Info Footer Bar -->
-    <footer class="p-3 bg-slate-900 border-t border-slate-800 text-center text-xs text-slate-500 flex items-center justify-between px-6">
+    <!-- Bottom Footer Bar -->
+    <footer class="p-3 bg-slate-900 border-t border-slate-800 text-center text-xs text-slate-500 flex items-center justify-between px-6 shrink-0">
       <span class="flex items-center gap-1.5 text-slate-400 font-medium">
         <i class="fa-solid fa-shield-halved text-brand-500"></i> Red Directa B2B
       </span>
@@ -155,9 +154,9 @@
 
           <!-- Quick Feedback Tags -->
           <div class="flex flex-wrap justify-center gap-1.5 mb-5 text-xs">
-            <button onclick="toggleTag(this)" class="tag-btn px-3 py-1.5 rounded-full border border-slate-800 bg-slate-950 text-slate-400 hover:border-slate-700">⚡ Muy rápido</button>
-            <button onclick="toggleTag(this)" class="tag-btn px-3 py-1.5 rounded-full border border-slate-800 bg-slate-950 text-slate-400 hover:border-slate-700">🛡️ Carga segura</button>
-            <button onclick="toggleTag(this)" class="tag-btn px-3 py-1.5 rounded-full border border-slate-800 bg-slate-950 text-slate-400 hover:border-slate-700">🤝 Educado y amable</button>
+            <button onclick="toggleTag(this)" class="tag-btn px-3 py-1.5 rounded-full border border-slate-800 bg-slate-950 text-slate-400 hover:border-slate-700" data-tag="⚡ Muy rápido">⚡ Muy rápido</button>
+            <button onclick="toggleTag(this)" class="tag-btn px-3 py-1.5 rounded-full border border-slate-800 bg-slate-950 text-slate-400 hover:border-slate-700" data-tag="🛡️ Carga segura">🛡️ Carga segura</button>
+            <button onclick="toggleTag(this)" class="tag-btn px-3 py-1.5 rounded-full border border-slate-800 bg-slate-950 text-slate-400 hover:border-slate-700" data-tag="🤝 Educado y amable">🤝 Educado y amable</button>
           </div>
 
           <!-- Comment input -->
@@ -168,7 +167,7 @@
             <button onclick="closeRatingModal()" class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold rounded-xl text-xs transition-colors">
               Cancelar
             </button>
-            <button onclick="enviarCalificacion()" class="flex-1 py-3 bg-gradient-to-r from-brand-600 to-brand-accent hover:opacity-90 text-slate-950 font-bold rounded-xl text-xs transition-opacity shadow-lg shadow-brand-500/20">
+            <button onclick="enviarCalificacionReal()" class="flex-1 py-3 bg-gradient-to-r from-brand-600 to-brand-accent hover:opacity-90 text-slate-950 font-bold rounded-xl text-xs transition-opacity shadow-lg shadow-brand-500/20">
               Enviar Calificación
             </button>
           </div>
@@ -184,10 +183,10 @@
 
   </main>
 
-  <!-- Application Logic -->
+  <!-- Application Logic & LocalStorage Persistence -->
   <script>
-    // Datos de Repartidores Simulados (Sincronizados con backend Pro / KYC)
-    const repartidoresData = [
+    // Datos Base Iniciales (Se cargan en localStorage si no existen)
+    const datosIniciales = [
       {
         id: 1,
         nombre: "Carlos Mendoza",
@@ -263,7 +262,21 @@
     let currentRating = 5;
     let selectedDriverId = null;
 
-    // Renderizar la lista de repartidores
+    // Obtener repartidores desde LocalStorage o inicializar
+    function obtenerRepartidores() {
+      const guardados = localStorage.getItem('repartidores_directorio');
+      if (!guardados) {
+        localStorage.setItem('repartidores_directorio', JSON.stringify(datosIniciales));
+        return datosIniciales;
+      }
+      return JSON.parse(guardados);
+    }
+
+    function guardarRepartidores(data) {
+      localStorage.setItem('repartidores_directorio', JSON.stringify(data));
+    }
+
+    // Renderizar lista en interfaz
     function renderRepartidores(lista) {
       const contenedor = document.getElementById('listaRepartidores');
       contenedor.innerHTML = '';
@@ -290,15 +303,14 @@
                Desconectado
              </span>`;
 
-        // Generar enlace WhatsApp con mensaje predeterminado dinámico
-        const mensajeWA = encodeURIComponent(`¡Hola, ${driver.nombre}! Vi tu perfil disponible en la App de Clientes en ${driver.zona}. Necesito cotizar un servicio de delivery. ¿Estás libre en este momento?`);
+        // Enlace WhatsApp dinámico optimizado
+        const mensajeWA = encodeURIComponent(`¡Hola, ${driver.nombre}! Vi tu perfil verificado en el Directorio Delivery en ${driver.zona}. Necesito cotizar un servicio de encomienda o entrega. ¿Estás disponible?`);
         const linkWA = `https://wa.me/${driver.whatsapp}?text=${mensajeWA}`;
 
         const card = document.createElement('div');
         card.className = "bg-slate-900 border border-slate-800 rounded-2xl p-4 transition-all hover:border-slate-700 shadow-lg relative overflow-hidden group";
 
         card.innerHTML = `
-          <!-- Header Card Info -->
           <div class="flex items-start justify-between">
             <div class="flex items-center space-x-3">
               <div class="w-12 h-12 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-2xl relative shrink-0 shadow-inner">
@@ -329,7 +341,7 @@
             <div>
               <span class="text-[10px] uppercase font-semibold text-slate-500 block">Calificación</span>
               <span class="text-xs font-bold text-amber-400 flex items-center justify-center gap-1">
-                <i class="fa-solid fa-star text-[10px]"></i> ${driver.calificacion} <span class="text-[10px] text-slate-500 font-normal">(${driver.resenasCount})</span>
+                <i class="fa-solid fa-star text-[10px]"></i> ${Number(driver.calificacion).toFixed(1)} <span class="text-[10px] text-slate-500 font-normal">(${driver.resenasCount})</span>
               </span>
             </div>
             <div>
@@ -357,32 +369,34 @@
       });
     }
 
-    // Filtrar por Zona y por disponibilidad
+    // Filtrar por Zona y Disponibilidad
     function filtrarRepartidores() {
       const zonaSeleccionada = document.getElementById('zonaSelect').value;
       const soloDisponibles = document.getElementById('disponiblesToggle').checked;
 
-      let filtrados = repartidoresData;
+      let dataset = obtenerRepartidores();
 
       if (zonaSeleccionada !== 'todas') {
-        filtrados = filtrados.filter(r => r.zona === zonaSeleccionada);
+        dataset = dataset.filter(r => r.zona === zonaSeleccionada);
       }
 
       if (soloDisponibles) {
-        filtrados = filtrados.filter(r => r.enLinea);
+        dataset = dataset.filter(r => r.enLinea);
       }
 
-      renderRepartidores(filtrados);
+      renderRepartidores(dataset);
     }
 
-    // Modal de Calificación
+    // Modal de Calificación Interactivo
     function openRatingModal(driverId) {
       selectedDriverId = driverId;
-      const driver = repartidoresData.find(r => r.id === driverId);
+      const dataset = obtenerRepartidores();
+      const driver = dataset.find(r => r.id === driverId);
       if(!driver) return;
 
       document.getElementById('modalDriverName').innerText = driver.nombre;
       document.getElementById('modalDriverAvatar').innerText = driver.avatarIcon;
+      document.getElementById('ratingComment').value = '';
       setRating(5);
 
       const modal = document.getElementById('ratingModal');
@@ -424,23 +438,42 @@
       btn.classList.toggle('text-brand-500');
     }
 
-    function enviarCalificacion() {
-      const driver = repartidoresData.find(r => r.id === selectedDriverId);
-      if(driver) {
+    // Guardar calificación real con recálculo matemático de promedio
+    function enviarCalificacionReal() {
+      let dataset = obtenerRepartidores();
+      const driverIndex = dataset.findIndex(r => r.id === selectedDriverId);
+      
+      if(driverIndex !== -1) {
+        const driver = dataset[driverIndex];
+        const comentarioTexto = document.getElementById('ratingComment').value.trim();
+
+        // Recálculo real del promedio ponderado de estrellas
+        const totalPuntosPrevios = driver.calificacion * driver.resenasCount;
         driver.resenasCount += 1;
-        showToast(`¡Calificación enviada a ${driver.nombre}!`);
+        driver.calificacion = Number(((totalPuntosPrevios + currentRating) / driver.resenasCount).toFixed(1));
+        
+        if(comentarioTexto) {
+          driver.comentarioDestacado = comentarioTexto;
+        }
+
+        // Guardar cambios persistentes
+        guardarRepartidores(dataset);
+        
+        showToast(`¡Reseña guardada para ${driver.nombre}! ⭐`);
       }
+
       closeRatingModal();
       filtrarRepartidores();
     }
 
-    function simularActualizacion() {
+    function sincronizarDatos() {
       const btn = document.getElementById('refreshBtn');
       btn.classList.add('animate-spin');
       setTimeout(() => {
         btn.classList.remove('animate-spin');
-        showToast('Lista de repartidores actualizada');
-      }, 700);
+        filtrarRepartidores();
+        showToast('Directorio sincronizado en tiempo real');
+      }, 600);
     }
 
     function showToast(msg) {
@@ -452,7 +485,7 @@
       }, 3000);
     }
 
-    // Inicialización al cargar ventana
+    // Inicialización al cargar la página
     window.onload = function() {
       filtrarRepartidores();
     };
