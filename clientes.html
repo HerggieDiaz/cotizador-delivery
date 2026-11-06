@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Directorio de Delivery - Clientes</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    /* Estilos táctiles para móvil */
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen pb-20 font-sans antialiased">
+
+  <!-- ENCABEZADO PRINCIPAL -->
+  <header class="sticky top-0 z-30 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-xl bg-brand-500/20 text-brand-500 border border-brand-500/30 flex items-center justify-center font-bold text-lg">
+          <i data-lucide="truck" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h1 class="font-extrabold text-base tracking-tight leading-none text-white">Directorio Delivery</h1>
+          <p class="text-[11px] text-slate-400 font-medium">Repartidores independientes verificados</p>
+        </div>
+      </div>
+      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        En vivo
+      </span>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL EN MÓVIL -->
+  <main class="max-w-md mx-auto px-4 pt-4 space-y-4">
+
+    <!-- SECTOR Y FILTROS -->
+    <section class="bg-slate-900 rounded-2xl p-3.5 border border-slate-800 shadow-lg space-y-3">
+      <!-- Selector de Municipio/Zona -->
+      <div>
+        <label for="selectZona" class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">
+          ¿Dónde necesitas el servicio?
+        </label>
+        <div class="relative">
+          <select id="selectZona" onchange="filtrarRepartidores()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 font-medium appearance-none focus:outline-none focus:border-brand-500 transition">
+            <option value="todos">📍 Todas las zonas (Valencia)</option>
+            <option value="San Diego" selected>📍 San Diego</option>
+            <option value="El Trigal">📍 El Trigal / Prebo</option>
+            <option value="Naguanagua">📍 Naguanagua</option>
+            <option value="Valencia Norte">📍 Valencia Norte</option>
+            <option value="Valencia Sur">📍 Valencia Sur</option>
+          </select>
+          <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-3.5 top-3 pointer-events-none"></i>
+        </div>
+      </div>
+
+      <!-- Toggle Solo Disponibles -->
+      <div class="flex items-center justify-between pt-1 border-t border-slate-800/80">
+        <span class="text-xs text-slate-300 font-medium flex items-center gap-1.5">
+          <i data-lucide="wifi" class="w-3.5 h-3.5 text-emerald-400"></i>
+          Mostrar solo disponibles ahora
+        </span>
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" id="toggleDisponibles" checked onchange="filtrarRepartidores()" class="sr-only peer">
+          <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-500"></div>
+        </label>
+      </div>
+    </section>
+
+    <!-- ENCABEZADO DE RESULTADOS -->
+    <div class="flex items-center justify-between px-1">
+      <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Repartidores Activos</h2>
+      <span id="contadorRepartidores" class="text-xs font-semibold text-brand-500 bg-brand-500/10 px-2 py-0.5 rounded-full border border-brand-500/20">
+        3 disponibles
+      </span>
+    </div>
+
+    <!-- LISTA DE TARJETAS DE REPARTIDORES -->
+    <div id="listaRepartidores" class="space-y-3">
+      <!-- Se puebla dinámicamente con JS -->
+    </div>
+
+  </main>
+
+  <!-- MODAL DE CALIFICACIÓN -->
+  <div id="modalCalificacion" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center hidden p-0 sm:p-4">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 space-y-4 shadow-2xl animate-in fade-in slide-in-from-bottom duration-200">
+      
+      <div class="flex justify-between items-start">
+        <div>
+          <h3 class="text-base font-bold text-white">Calificar Servicio</h3>
+          <p id="modalNombreRepartidor" class="text-xs text-slate-400">Calificando a Carlos Mendoza</p>
+        </div>
+        <button onclick="cerrarModalCalificar()" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Estrellas Interactivas -->
+      <div class="flex justify-center gap-2 py-2" id="contenedorEstrellas">
+        <button onclick="seleccionarEstrella(1)" class="text-slate-700 hover:text-amber-400 transition transform hover:scale-110 p-1">
+          <i data-lucide="star" class="w-8 h-8 fill-current"></i>
+        </button>
+        <button onclick="seleccionarEstrella(2)" class="text-slate-700 hover:text-amber-400 transition transform hover:scale-110 p-1">
+          <i data-lucide="star" class="w-8 h-8 fill-current"></i>
+        </button>
+        <button onclick="seleccionarEstrella(3)" class="text-slate-700 hover:text-amber-400 transition transform hover:scale-110 p-1">
+          <i data-lucide="star" class="w-8 h-8 fill-current"></i>
+        </button>
+        <button onclick="seleccionarEstrella(4)" class="text-slate-700 hover:text-amber-400 transition transform hover:scale-110 p-1">
+          <i data-lucide="star" class="w-8 h-8 fill-current"></i>
+        </button>
+        <button onclick="seleccionarEstrella(5)" class="text-amber-400 transition transform hover:scale-110 p-1">
+          <i data-lucide="star" class="w-8 h-8 fill-current"></i>
+        </button>
+      </div>
+
+      <!-- Comentario de Calificación -->
+      <div>
+        <label for="comentarioCalificacion" class="block text-xs font-semibold text-slate-400 mb-1">Tu experiencia (opcional):</label>
+        <textarea id="comentarioCalificacion" rows="3" placeholder="Ej: Excelente servicio, muy rápido y cuidadoso con el paquete..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-100 focus:outline-none focus:border-brand-500 resize-none"></textarea>
+      </div>
+
+      <!-- Botón de Envío -->
+      <button onclick="guardarCalificacion()" class="w-full bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold py-3 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-brand-500/20">
+        <i data-lucide="check-circle" class="w-4 h-4"></i>
+        Enviar Calificación
+      </button>
+    </div>
+  </div>
+
+  <!-- SCRIPT DE DATOS Y LÓGICA INTERACTIVA -->
+  <script>
+    // DATOS DE PRUEBA (Simula la Base de Datos)
+    const datosRepartidores = [
+      {
+        id: "rep_1",
+        nombre: "Carlos Mendoza",
+        vehiculo: "Empire Keeway Horse 150",
+        placa: "AB1C23D",
+        zona: "San Diego",
+        disponible: true,
+        verificadoKYC: true,
+        estrellas: 4.9,
+        totalCalificaciones: 128,
+        carrerasRealizadas: 340,
+        whatsapp: "584121234567",
+        foto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
+      },
+      {
+        id: "rep_2",
+        nombre: "José Luis Rodríguez",
+        vehiculo: "Bera Socialista 150",
+        placa: "AD8E90F",
+        zona: "San Diego",
+        disponible: true,
+        verificadoKYC: true,
+        estrellas: 5.0,
+        totalCalificaciones: 84,
+        carrerasRealizadas: 195,
+        whatsapp: "584149876543",
+        foto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
+      },
+      {
+        id: "rep_3",
+        nombre: "Jesús Silva",
+        vehiculo: "TVS HLX 150",
+        placa: "AE4F56G",
+        zona: "El Trigal",
+        disponible: true,
+        verificadoKYC: true,
+        estrellas: 4.8,
+        totalCalificaciones: 62,
+        carrerasRealizadas: 110,
+        whatsapp: "584125556677",
+        foto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80"
+      },
+      {
+        id: "rep_4",
+        nombre: "Daniel Castillo",
+        vehiculo: "Haojue Express 150",
+        placa: "AF9G12H",
+        zona: "Naguanagua",
+        disponible: false,
+        verificadoKYC: true,
+        estrellas: 4.7,
+        totalCalificaciones: 45,
+        carrerasRealizadas: 88,
+        whatsapp: "584241112233",
+        foto: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150&auto=format&fit=crop&q=80"
+      }
+    ];
+
+    let repartidorSeleccionadoModal = null;
+    let estrellasSeleccionadas = 5;
+
+    // RENDERIZAR REPARTIDORES
+    function renderizarLista(lista) {
+      const contenedor = document.getElementById("listaRepartidores");
+      const contador = document.getElementById("contadorRepartidores");
+      contenedor.innerHTML = "";
+
+      contador.innerText = `${lista.length} disponibles`;
+
+      if (lista.length === 0) {
+        contenedor.innerHTML = `
+          <div class="text-center py-10 bg-slate-900/50 rounded-2xl border border-slate-800 p-6">
+            <i data-lucide="search-x" class="w-10 h-10 text-slate-500 mx-auto mb-2"></i>
+            <p class="text-sm font-semibold text-slate-300">No hay repartidores disponibles</p>
+            <p class="text-xs text-slate-500 mt-1">Prueba seleccionando otra zona o desactivando el filtro de disponibles.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      lista.forEach(rep => {
+        const tarjeta = document.createElement("div");
+        tarjeta.className = "bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3.5 shadow-md relative overflow-hidden";
+
+        // Mensaje de WhatsApp dinámico
+        const mensajeWA = encodeURIComponent(`¡Hola ${rep.nombre}! Vi tu perfil verificado en el Directorio de Delivery. Quisiera solicitar una cotización para un servicio en la zona de ${rep.zona}.`);
+        const urlWhatsApp = `https://wa.me/${rep.whatsapp}?text=${mensajeWA}`;
+
+        tarjeta.innerHTML = `
+          <div class="flex items-start gap-3.5">
+            <!-- Foto Avatar -->
+            <div class="relative">
+              <img src="${rep.foto}" alt="${rep.nombre}" class="w-14 h-14 rounded-2xl object-cover border border-slate-700">
+              <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full ${rep.disponible ? 'bg-emerald-500' : 'bg-slate-500'} border-2 border-slate-900" title="${rep.disponible ? 'Disponible' : 'Fuera de turno'}"></span>
+            </div>
+
+            <!-- Detalles del Repartidor -->
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5">
+                <h3 class="font-bold text-sm text-white truncate">${rep.nombre}</h3>
+                ${rep.verificadoKYC ? '<i data-lucide="shield-check" class="w-4 h-4 text-sky-400 shrink-0" title="Cédula y Licencia Verificada"></i>' : ''}
+              </div>
+
+              <p class="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
+                <i data-lucide="bike" class="w-3.5 h-3.5 text-slate-500"></i>
+                <span class="truncate">${rep.vehiculo} • <strong class="text-slate-300 font-mono">${rep.placa}</strong></span>
+              </p>
+
+              <!-- Calificación y Stats -->
+              <div class="flex items-center gap-3 mt-2 text-xs">
+                <span class="flex items-center gap-1 font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-md border border-amber-400/20">
+                  <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
+                  ${rep.estrellas.toFixed(1)}
+                  <span class="text-[10px] text-slate-400 font-normal">(${rep.totalCalificaciones})</span>
+                </span>
+                <span class="text-slate-400 font-medium">
+                  <strong>${rep.carrerasRealizadas}</strong> envíos
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- BOTONES DE ACCIÓN -->
+          <div class="grid grid-cols-5 gap-2 pt-1 border-t border-slate-800/80">
+            <!-- Botón Calificar -->
+            <button onclick="abrirModalCalificar('${rep.id}')" class="col-span-2 bg-slate-800 hover:bg-slate-750 text-slate-200 font-semibold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 border border-slate-700">
+              <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400"></i>
+              Calificar
+            </button>
+
+            <!-- Botón WhatsApp -->
+            <a href="${urlWhatsApp}" target="_blank" class="col-span-3 bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 shadow-lg shadow-brand-500/15">
+              <i data-lucide="message-circle" class="w-4 h-4 fill-current"></i>
+              Pedir por WhatsApp
+            </a>
+          </div>
+        `;
+
+        contenedor.appendChild(tarjeta);
+      });
+
+      lucide.createIcons();
+    }
+
+    // FILTRADO
+    function filtrarRepartidores() {
+      const zona = document.getElementById("selectZona").value;
+      const soloDisponibles = document.getElementById("toggleDisponibles").checked;
+
+      const filtrados = datosRepartidores.filter(rep => {
+        const coincideZona = (zona === "todos" || rep.zona === zona);
+        const coincideDisp = soloDisponibles ? rep.disponible : true;
+        return coincideZona && coincideDisp;
+      });
+
+      renderizarLista(filtrados);
+    }
+
+    // MODAL DE CALIFICACIÓN
+    function abrirModalCalificar(id) {
+      repartidorSeleccionadoModal = datosRepartidores.find(r => r.id === id);
+      if(!repartidorSeleccionadoModal) return;
+
+      document.getElementById("modalNombreRepartidor").innerText = `Calificando a ${repartidorSeleccionadoModal.nombre}`;
+      document.getElementById("modalCalificacion").classList.remove("hidden");
+      seleccionarEstrella(5);
+    }
+
+    function cerrarModalCalificar() {
+      document.getElementById("modalCalificacion").classList.add("hidden");
+    }
+
+    function seleccionarEstrella(num) {
+      estrellasSeleccionadas = num;
+      const botones = document.getElementById("contenedorEstrellas").querySelectorAll("button");
+      
+      botones.forEach((btn, index) => {
+        const icono = btn.querySelector("svg");
+        if (index < num) {
+          btn.className = "text-amber-400 transition transform hover:scale-110 p-1";
+        } else {
+          btn.className = "text-slate-700 hover:text-amber-400 transition transform hover:scale-110 p-1";
+        }
+      });
+    }
+
+    function guardarCalificacion() {
+      if(!repartidorSeleccionadoModal) return;
+      
+      alert(`¡Gracias! Has calificado a ${repartidorSeleccionadoModal.nombre} con ${estrellasSeleccionadas} estrellas.`);
+      cerrarModalCalificar();
+    }
+
+    // INICIALIZACIÓN
+    document.addEventListener("DOMContentLoaded", () => {
+      filtrarRepartidores();
+    });
+  </script>
+</body>
+</html>
