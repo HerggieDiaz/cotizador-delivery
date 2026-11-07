@@ -64,7 +64,7 @@
     </div>
   </main>
 
-  <!-- SCRIPT DE SINCRONIZACIÓN -->
+  <!-- SCRIPT DE SINCRONIZACIÓN Y MAPEO REAL -->
   <script>
     function toggleTheme() {
       const html = document.documentElement;
@@ -92,23 +92,42 @@
       }
     })();
 
-    // LÓGICA DE ENLACE DIRECTO CON LA CUENTA DE REPARTIDOR
     function cargarDirectorioRepartidores() {
       const contenedor = document.getElementById('lista-repartidores-clientes');
       contenedor.innerHTML = '';
 
       let flota = [];
 
-      // 1. Verificamos si hay una sesión Pro activa con turno encendido en el cotizador
-      const sesionProActiva = JSON.parse(localStorage.getItem('repartidor_pro_session'));
+      // Recuperar sesión activa del repartidor
+      let sesionProActiva = JSON.parse(localStorage.getItem('repartidor_pro_session'));
+
       if (sesionProActiva && sesionProActiva.enLinea) {
+        // Extraer los datos reales actualizados desde las claves individuales de la app repartidor
+        // (Esto asegura que si cambiaste la placa, cédula o WhatsApp en el perfil, se refleje aquí al instante)
+        if (sesionProActiva.id) {
+          const uidPartes = sesionProActiva.id.replace('rep_', '');
+          const marcaReal = localStorage.getItem(`marca_${uidPartes}`);
+          const placaReal = localStorage.getItem(`placa_${uidPartes}`);
+          const vehiculoReal = localStorage.getItem(`vehiculo_${uidPartes}`);
+          const zonaReal = localStorage.getItem(`zona_${uidPartes}`);
+          const wppReal = localStorage.getItem(`whatsapp_${uidPartes}`);
+          const avatarReal = localStorage.getItem(`avatar_${uidPartes}`);
+
+          if (marcaReal) sesionProActiva.nombre = marcaReal;
+          if (placaReal) sesionProActiva.placa = placaReal;
+          if (vehiculoReal) sesionProActiva.vehiculo = vehiculoReal;
+          if (zonaReal) sesionProActiva.zona = zonaReal;
+          if (wppReal) sesionProActiva.whatsapp = wppReal;
+          if (avatarReal) {
+            sesionProActiva.avatarIcon = `<img src="${avatarReal}" style="width:100%;height:100%;object-fit:cover;">`;
+          }
+        }
         flota.push(sesionProActiva);
       }
 
-      // 2. También buscamos en la base general de la flota por si hay más
+      // También verificar flota general
       const flotaGeneral = JSON.parse(localStorage.getItem('flota_repartidores')) || [];
       flotaGeneral.forEach(rep => {
-        // Evitar duplicados si ya está el de la sesión activa
         if (rep.enLinea && !flota.some(item => item.id === rep.id)) {
           flota.push(rep);
         }
@@ -116,26 +135,29 @@
 
       if (flota.length === 0) {
         contenedor.innerHTML = `
-          <div class="p-8 text-center bg-white dark:bg-slate-900/80 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-2">
+          <div class="p-8 text-center bg-white dark:bg-slate-900/80 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-2 shadow-xl">
             <span class="text-3xl">☕</span>
             <p class="text-xs font-bold text-slate-800 dark:text-slate-200">No hay repartidores en turno activo</p>
-            <p class="text-[11px] text-slate-500">Enciende tu interruptor en la app de repartidor para aparecer aquí.</p>
+            <p class="text-[11px] text-slate-500">Enciende tu interruptor en la app de repartidor con el GPS activo para aparecer aquí.</p>
           </div>
         `;
         return;
       }
 
-      // Pintamos cada repartidor activo con sus datos reales
+      // Pintar las tarjetas con la información real
       flota.forEach(rep => {
         const card = document.createElement('div');
         card.className = 'p-4 bg-white dark:bg-slate-900/90 rounded-3xl border border-emerald-500/30 space-y-3 shadow-xl backdrop-blur-xl';
         
-        // Manejar el icono o foto de perfil guardada
         let avatarHTML = `<div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-cyan-400 flex items-center justify-center font-black text-slate-950 text-xl shadow-lg shadow-emerald-500/20 overflow-hidden">🛵</div>`;
         if (rep.avatarIcon) {
-          if (rep.avatarIcon.startsWith('<img') || rep.avatarIcon.startsWith('data:')) {
-            avatarHTML = `<div class="w-12 h-12 rounded-2xl overflow-hidden shadow-lg shadow-emerald-500/20 ring-2 ring-emerald-500/30">${rep.avatarIcon.startsWith('data:') ? `<img src="${rep.avatarIcon}" style="width:100%;height:100%;object-fit:cover;">` : rep.avatarIcon}</div>`;
-          }
+          avatarHTML = `<div class="w-12 h-12 rounded-2xl overflow-hidden shadow-lg shadow-emerald-500/20 ring-2 ring-emerald-500/30">${rep.avatarIcon}</div>`;
+        }
+
+        // Limpiar el número de teléfono para asegurar el formato correcto de WhatsApp (ej: 584121234567)
+        let tlfLimpio = (rep.whatsapp || '584120000000').replace(/\D/g, '');
+        if (tlfLimpio.startsWith('0')) {
+          tlfLimpio = '58' + tlfLimpio.substring(1);
         }
 
         card.innerHTML = `
@@ -143,7 +165,7 @@
             <div class="flex items-center gap-3">
               ${avatarHTML}
               <div>
-                <h3 class="font-bold text-slate-900 dark:text-white text-sm">${rep.nombre}</h3>
+                <h3 class="font-bold text-slate-900 dark:text-white text-sm">${rep.nombre || 'Repartidor Pro'}</h3>
                 <p class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">📍 Zona: ${rep.zona || 'San Diego'}</p>
               </div>
             </div>
@@ -164,10 +186,10 @@
           </div>
 
           <div class="flex items-center gap-2 pt-1">
-            <a href="https://api.whatsapp.com/send?phone=${rep.whatsapp || '584120000000'}&text=${encodeURIComponent('¡Hola ' + rep.nombre + '! Vi tu perfil en el directorio y necesito un servicio de delivery.')}" 
+            <a href="https://api.whatsapp.com/send?phone=${tlfLimpio}&text=${encodeURIComponent('¡Hola ' + (rep.nombre || 'Repartidor') + '! Vi tu perfil en el directorio de clientes y necesito cotizar un delivery.')}" 
                target="_blank" rel="noopener noreferrer" 
                class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-2xl text-center flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 text-xs transition">
-              <i class="fa-brands fa-whatsapp text-base"></i> Contactar por WhatsApp
+              <i class="fa-brands fa-whatsapp text-base"></i> Contactar por WhatsApp (${tlfLimpio})
             </a>
           </div>
         `;
@@ -175,11 +197,9 @@
       });
     }
 
-    // Cargar al iniciar la página
+    // Cargar al iniciar y actualizar cada 3 segundos en tiempo real
     cargarDirectorioRepartidores();
-    
-    // Auto-refrescar cada 5 segundos para mantener la sincronización en tiempo real
-    setInterval(cargarDirectorioRepartidores, 5000);
+    setInterval(cargarDirectorioRepartidores, 3000);
   </script>
 </body>
 </html>
