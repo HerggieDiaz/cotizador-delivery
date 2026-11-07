@@ -101,14 +101,14 @@
       <span class="bg-blue-500/20 text-blue-600 dark:text-blue-300 text-[9px] px-2 py-0.5 rounded font-black tracking-wider uppercase border border-blue-500/30">FLEET</span>
     </div>
 
-    <!-- PANEL PRO & KYC (Interruptor de Turno en Vivo con Geolocalización) -->
-    <div class="bg-white dark:bg-slate-900/90 p-4 rounded-3xl border border-emerald-500/30 space-y-3 shadow-xl">
+    <!-- PANEL PRO & KYC (EXCLUSIVO PARA REPARTIDORES CON SESIÓN Y BETA ACTIVOS) -->
+    <div id="panel-turno-repartidor" class="hidden bg-white dark:bg-slate-900/90 p-4 rounded-3xl border border-emerald-500/30 space-y-3 shadow-xl">
       <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
         <div>
           <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
             <i class="fa-solid fa-id-card text-emerald-500"></i> Estado Pro & Turno Público
           </h3>
-          <p class="text-[10px] text-slate-500 dark:text-slate-400">Actívate para aparecer en el Directorio de Clientes</p>
+          <p class="text-[10px] text-slate-500 dark:text-slate-400">Actívate para aparecer en el Directorio de Clientes (Beta 14 Días)</p>
         </div>
         <!-- Interruptor En Línea / Fuera de Turno -->
         <label class="relative inline-flex items-center cursor-pointer">
@@ -1146,13 +1146,17 @@
         await auth.signOut();
         cerrarPerfil();
         document.getElementById('modulo-ganancias-pro').classList.add('hidden');
-        document.getElementById('flecha-pro').style.transform = 'rotate(0deg)';
         document.getElementById('banner-modo-b2b').classList.add('hidden');
+        document.getElementById('panel-turno-repartidor').classList.add('hidden');
+        document.getElementById('flecha-pro').style.transform = 'rotate(0deg)';
         document.getElementById('proToggleTurno').checked = false;
+        
+        // Remover sesión de repartidor activo en el directorio
+        localStorage.removeItem('repartidor_pro_session');
+
         rolSeleccionado = 'repartidor';
         aplicarConfiguracionSegunRol();
         revertirAvatarUI();
-        localStorage.removeItem('repartidor_pro_session');
         mostrarAlertaPro("Sesión cerrada correctamente.");
       } catch (e) {
         mostrarAlertaPro("Error al cerrar sesión.");
@@ -1686,6 +1690,7 @@
     function aplicarConfiguracionSegunRol() {
       const user = auth.currentUser;
       const bannerB2B = document.getElementById('banner-modo-b2b');
+      const panelTurnoRepartidor = document.getElementById('panel-turno-repartidor');
       const headerTitulo = document.getElementById('header-titulo-app');
       const headerSub = document.getElementById('header-subtitulo-app');
       const btnProLabel = document.getElementById('btn-pro-label');
@@ -1700,6 +1705,13 @@
       const tituloSeccionCortes = document.getElementById('titulo-seccion-cortes');
       const modalCorteTit = document.getElementById('modal-corte-titulo');
       const modalCorteSub = document.getElementById('modal-corte-sub');
+
+      // VISIBILIDAD ESTRICTA DEL APARTADO DE TURNO PÚBLICO
+      if (user && rolSeleccionado === 'repartidor') {
+        panelTurnoRepartidor.classList.remove('hidden');
+      } else {
+        panelTurnoRepartidor.classList.add('hidden');
+      }
 
       if (user && rolSeleccionado === 'comercio') {
         const b2bNombre = localStorage.getItem(`b2b_nombre_${user.uid}`) || 'Comercio B2B';
@@ -1725,7 +1737,7 @@
         if(tituloSeccionCortes) tituloSeccionCortes.innerText = "📁 Cierres Generales Archivados";
         if(modalCorteTit) modalCorteTit.innerText = "Cierre General de Turno";
         if(modalCorteSub) modalCorteSub.innerText = "Se consolidarán todos los servicios registrados en la jornada.";
-      } else {
+      } else if (!user || rolSeleccionado === 'repartidor') {
         bannerB2B.classList.add('hidden');
         PRECIO_KM_EXTRA = 0.40;
         headerTitulo.innerText = "Cotizador Delivery";
@@ -1778,6 +1790,7 @@
         btnTexto.innerText = `👤 Mi Cuenta / Acceso Pro & B2B`;
         document.getElementById('modulo-ganancias-pro').classList.add('hidden');
         document.getElementById('banner-modo-b2b').classList.add('hidden');
+        document.getElementById('panel-turno-repartidor').classList.add('hidden');
         document.getElementById('flecha-pro').style.transform = 'rotate(0deg)';
         rolSeleccionado = 'repartidor';
         aplicarConfiguracionSegunRol();
