@@ -932,7 +932,7 @@
       }
     }
 
-    // GESTIÓN DE TURNO PRO & GPS GEOLOCALIZACIÓN
+    // GESTIÓN DE TURNO PRO & GPS GEOLOCALIZACIÓN (PUENTE HACIA APP CLIENTES)
     function cambiarEstadoTurnoPro() {
       const user = auth.currentUser;
       if (!user) {
@@ -985,12 +985,13 @@
       const user = auth.currentUser;
       if(!user) return;
 
+      // Extraer los datos reales actualizados desde las claves individuales del perfil
       const nombre = localStorage.getItem(`marca_${user.uid}`) || user.displayName || 'Repartidor Pro';
       const vehiculo = localStorage.getItem(`vehiculo_${user.uid}`) || 'Bera Socialista 150';
       const placa = localStorage.getItem(`placa_${user.uid}`) || 'AB1C23D';
       const zona = localStorage.getItem(`zona_${user.uid}`) || 'San Diego';
       const whatsapp = localStorage.getItem(`whatsapp_${user.uid}`) || '584120000000';
-      const avatarGuardado = localStorage.getItem(`avatar_${user.uid}`) || '🛵';
+      const avatarGuardado = localStorage.getItem(`avatar_${user.uid}`);
 
       const sesionPro = {
         id: `rep_${user.uid}`,
@@ -1004,7 +1005,7 @@
         calificacion: 5.0,
         resenasCount: 15,
         carreras: 120,
-        avatarIcon: avatarGuardado.startsWith('data:') ? `<img src="${avatarGuardado}" style="width:100%;height:100%;object-fit:cover;">` : '🛵',
+        avatarBase64: avatarGuardado || null,
         esPro: true,
         comentarioDestacado: "Repartidor verificado de la flota principal.",
         lat: lat,
@@ -1012,6 +1013,7 @@
         ultimaActualizacion: new Date().toISOString()
       };
 
+      // Guardar sesión activa exacta para la app de clientes
       localStorage.setItem('repartidor_pro_session', JSON.stringify(sesionPro));
 
       // Sincronizar con el array general de la flota
