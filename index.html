@@ -6,7 +6,7 @@
   <title>Cotizador Delivery & Fleet B2B</title>
   
   <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://tailwindcss.com"></script>
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script>
@@ -15,12 +15,7 @@
       theme: {
         extend: {
           colors: {
-            brand: {
-              50: '#ecfdf5',
-              500: '#10b981',
-              600: '#059669',
-              700: '#047857',
-            }
+            brand: { 50: '#ecfdf5', 500: '#10b981', 600: '#059669', 700: '#047857' }
           }
         }
       }
@@ -28,18 +23,14 @@
   </script>
   <style>
     input[type=number]::-webkit-inner-spin-button, 
-    input[type=number]::-webkit-outer-spin-button { 
-      -webkit-appearance: none; 
-      margin: 0; 
-    }
-    input[type=number] {
-      -moz-appearance: textfield;
-    }
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { -moz-appearance: textfield; }
   </style>
 
-  <!-- SDKs de Firebase -->
+  <!-- SDKs de Firebase (Auth y Firestore) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   
   <!-- Librería JSPDF para Descarga de PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -55,11 +46,12 @@
     };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+    const db = firebase.firestore();
   </script>
 </head>
-<body class="bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen font-sans selection:bg-emerald-500 selection:text-slate-950 pb-12 transition-colors duration-300">
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen font-sans pb-12 transition-colors duration-300">
 
-  <!-- Header principal adaptable -->
+  <!-- Header principal -->
   <header class="border-b border-slate-200 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl sticky top-0 z-50 px-4 py-3.5">
     <div class="max-w-md mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -71,16 +63,12 @@
           <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold tracking-wide uppercase" id="header-subtitulo-app">Venezuela • Tasa BCV Oficial</span>
         </div>
       </div>
-      
-      <!-- Botón Modo Oscuro / Claro -->
-      <button onclick="toggleTheme()" class="p-2.5 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/90 shadow-sm cursor-pointer focus:outline-none" title="Cambiar Tema">
+      <button onclick="toggleTheme()" class="p-2.5 text-slate-600 dark:text-slate-300 transition rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/90 shadow-sm cursor-pointer">
         <span id="theme-icon">☀️</span>
       </button>
     </div>
-
-    <!-- Botón Dinámico de Cuenta / Perfil -->
     <div class="max-w-md mx-auto mt-2.5">
-      <button onclick="gestionarClicCuenta()" class="w-full px-3.5 py-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex items-center justify-center gap-2 hover:bg-emerald-500/20 transition cursor-pointer shadow-inner focus:outline-none">
+      <button onclick="gestionarClicCuenta()" class="w-full px-3.5 py-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex items-center justify-center gap-2 hover:bg-emerald-500/20 transition cursor-pointer">
         <span id="btn-mi-cuenta-texto">👤 Mi Cuenta / Acceso Pro & B2B</span>
       </button>
     </div>
@@ -89,170 +77,54 @@
   <!-- Contenedor App -->
   <main class="max-w-md mx-auto px-4 pt-6 space-y-5">
 
-    <!-- Indicador de Modo B2B Comercio -->
-    <div id="banner-modo-b2b" class="hidden p-3.5 bg-gradient-to-r from-blue-600/20 to-indigo-600/20 border border-blue-500/40 rounded-2xl flex items-center justify-between text-xs backdrop-blur-xl">
-      <div class="flex items-center gap-2.5">
-        <span class="text-xl">🏢</span>
-        <div>
-          <p class="font-bold text-blue-600 dark:text-blue-300" id="b2b-banner-nombre">Modo Flota B2B Activo</p>
-          <p class="text-[10px] text-slate-500 dark:text-slate-400">Control corporativo y gestión de motorizados</p>
-        </div>
-      </div>
-      <span class="bg-blue-500/20 text-blue-600 dark:text-blue-300 text-[9px] px-2 py-0.5 rounded font-black tracking-wider uppercase border border-blue-500/30">FLEET</span>
-    </div>
-
-    <!-- PANEL PRO & KYC (EXCLUSIVO PARA REPARTIDORES CON SESIÓN Y BETA ACTIVOS) -->
+    <!-- PANEL PRO & TURNO PÚBLICO EN TIEMPO REAL -->
     <div id="panel-turno-repartidor" class="hidden bg-white dark:bg-slate-900/90 p-4 rounded-3xl border border-emerald-500/30 space-y-3 shadow-xl">
       <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
         <div>
           <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
             <i class="fa-solid fa-id-card text-emerald-500"></i> Estado Pro & Turno Público
           </h3>
-          <p class="text-[10px] text-slate-500 dark:text-slate-400">Actívate para aparecer en el Directorio de Clientes (Beta 14 Días)</p>
+          <p class="text-[10px] text-slate-500 dark:text-slate-400">Actívate para aparecer en la App de Clientes en tiempo real</p>
         </div>
-        <!-- Interruptor En Línea / Fuera de Turno -->
         <label class="relative inline-flex items-center cursor-pointer">
           <input type="checkbox" id="proToggleTurno" onchange="cambiarEstadoTurnoPro()" class="sr-only peer">
           <div class="w-11 h-6 bg-slate-300 dark:bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
         </label>
       </div>
-
       <div class="flex items-center justify-between text-xs pt-1">
         <span class="text-slate-500 dark:text-slate-400 flex items-center gap-1">
-          <i class="fa-solid fa-location-dot text-emerald-500"></i> GPS Estado:
+          <i class="fa-solid fa-location-dot text-emerald-500"></i> Estado Cloud:
         </span>
         <span id="gps-status-badge" class="font-bold text-amber-500">Pendiente de activación</span>
       </div>
     </div>
 
-    <!-- Tarjeta de Tasa BCV y Estado Nocturno -->
+    <!-- Tasa BCV y Nocturno -->
     <div class="grid grid-cols-2 gap-3">
       <div id="card-bcv" class="bg-white dark:bg-slate-900/80 p-4 rounded-2xl flex flex-col justify-between border border-slate-200 dark:border-slate-800 shadow-xl animate-pulse">
         <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-bold">Tasa Oficial BCV</p>
         <p id="tasa-bcv-txt" class="text-sm font-black text-emerald-600 dark:text-emerald-400 mt-1">Actualizando...</p>
       </div>
-      
       <div id="badge-nocturno" class="bg-white dark:bg-slate-900/80 p-4 rounded-2xl flex flex-col justify-between hidden border border-slate-200 dark:border-indigo-500/30 shadow-xl">
         <p class="text-[10px] text-indigo-600 dark:text-indigo-400 uppercase tracking-wider font-bold">Modo Activo</p>
         <p class="text-xs font-bold text-indigo-700 dark:text-indigo-200 mt-1">🌙 Nocturno (9pm - 6am)</p>
       </div>
     </div>
 
-    <!-- Botón directo Google Maps -->
-    <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 px-4 bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-bold rounded-2xl text-center flex items-center justify-center gap-2.5 shadow-lg shadow-rose-500/25 transition-all focus:outline-none">
-      <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-      Abrir Google Maps (Ver Ruta Real)
-    </a>
-
-    <!-- Formulario de Cotización -->
+    <!-- Formulario Cotización -->
     <div class="bg-white dark:bg-slate-900/80 p-5 rounded-3xl space-y-4 border border-slate-200 dark:border-slate-800 shadow-xl">
       <div>
-        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-          🔗 Link de Ruta (Google Maps) - Opcional:
-        </label>
-        <input type="text" id="link-maps" placeholder="Pega aquí el enlace de Google Maps..." 
-               class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition text-sm">
+        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">📐 Distancia (Kilómetros km):</label>
+        <input type="number" id="distancia" placeholder="Ej. 4.6" step="0.1" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white focus:border-emerald-500 focus:outline-none text-sm font-bold">
       </div>
-
-      <div>
-        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-          📐 Distancia Exacta (Kilómetros km):
-        </label>
-        <input type="number" id="distancia" placeholder="Ej. 4.6" step="0.1" 
-               class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition text-sm font-bold">
-      </div>
-
-      <!-- Recargo por Lluvia -->
-      <div class="pt-1">
-        <label class="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 cursor-pointer hover:border-cyan-500/40 transition">
-          <div class="flex items-center gap-3">
-            <span class="text-xl">🌧️</span>
-            <div>
-              <p class="text-xs font-bold text-slate-900 dark:text-white">Recargo por Lluvia / Mal Tiempo</p>
-              <p class="text-[10px] text-slate-500 dark:text-slate-400">Aplica un incremento del +30% por clima adverso</p>
-            </div>
-          </div>
-          <input type="checkbox" id="check-lluvia" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer">
-        </label>
-      </div>
-
-      <!-- Tipo de Envío -->
-      <div class="space-y-2 relative">
-        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-          Tipo de Envío / Servicio:
-        </label>
-        <input type="hidden" id="tipo-envio" value="estandar">
-
-        <button type="button" id="btn-desplegable-envio" onclick="toggleMenuEnvio()" 
-          class="w-full p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-left flex items-center justify-between transition-all hover:border-emerald-500/40 cursor-pointer focus:outline-none">
-          <div class="flex items-center gap-3">
-            <span id="icono-envio-actual" class="text-lg">📦</span>
-            <div>
-              <p id="titulo-envio-actual" class="text-xs font-bold text-slate-900 dark:text-white">Estándar</p>
-              <p id="subtitulo-envio-actual" class="text-[10px] text-slate-500 dark:text-slate-400">Documentos, Comida, Ropa</p>
-            </div>
-          </div>
-          <span id="flecha-desplegable" class="text-slate-500 dark:text-slate-400 text-xs transition-transform duration-200">▼</span>
-        </button>
-
-        <div id="opciones-desplegable-envio" class="hidden absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-2 shadow-2xl z-40 space-y-1.5 backdrop-blur-xl">
-          <button type="button" onclick="seleccionarOpcionEnvio('estandar', '📦', 'Estándar', 'Documentos, Comida, Ropa')" 
-            class="w-full p-3 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer focus:outline-none">
-            <div class="flex items-center gap-3">
-              <span class="text-base">📦</span>
-              <div>
-                <p class="text-xs font-bold text-slate-900 dark:text-white">Estándar</p>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400">Documentos, Comida, Ropa</p>
-              </div>
-            </div>
-          </button>
-          <button type="button" onclick="seleccionarOpcionEnvio('pesado', '🏋️', 'Carga Pesada / Voluminosa', 'Recargo del +25%')" 
-            class="w-full p-3 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer focus:outline-none">
-            <div class="flex items-center gap-3">
-              <span class="text-base">🏋️</span>
-              <div>
-                <p class="text-xs font-bold text-slate-900 dark:text-white">Carga Pesada / Voluminosa</p>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400">Recargo del +25%</p>
-              </div>
-            </div>
-          </button>
-          <button type="button" onclick="seleccionarOpcionEnvio('fragil', '💎', 'Objeto Frágil / Delicado', 'Recargo del +15%')" 
-            class="w-full p-3 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer focus:outline-none">
-            <div class="flex items-center gap-3">
-              <span class="text-base">💎</span>
-              <div>
-                <p class="text-xs font-bold text-slate-900 dark:text-white">Objeto Frágil / Delicado</p>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400">Recargo del +15%</p>
-              </div>
-            </div>
-          </button>
-          <button type="button" onclick="seleccionarOpcionEnvio('picking', '🛒', 'Picking / Compras en Tienda', 'Recargo del +30% (Supermercado / Farmacia)')" 
-            class="w-full p-3 rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-transparent text-left flex items-center justify-between transition-all cursor-pointer focus:outline-none">
-            <div class="flex items-center gap-3">
-              <span class="text-base">🛒</span>
-              <div>
-                <p class="text-xs font-bold text-slate-900 dark:text-white">Picking / Compras en Tienda</p>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400">Recargo del +30% (Supermercado / Farmacia)</p>
-              </div>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      <!-- Botón Calcular -->
-      <button onclick="calcularTarifa()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-cyan-400 hover:from-emerald-400 hover:to-cyan-300 text-slate-950 font-black rounded-2xl shadow-lg shadow-emerald-500/20 transition cursor-pointer tracking-wide text-sm focus:outline-none">
+      <input type="hidden" id="tipo-envio" value="estandar">
+      <button onclick="calcularTarifa()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-cyan-400 text-slate-950 font-black rounded-2xl shadow-lg cursor-pointer text-sm">
         ⚡ Calcular Tarifa Exacta
       </button>
     </div>
 
     <!-- Resultado -->
-    <div id="resultado-box" class="hidden p-5 rounded-3xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500/40 space-y-4 backdrop-blur-xl shadow-2xl">
-      <div class="flex justify-between items-center">
-        <h3 class="text-xs uppercase font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">Resumen de Cotización</h3>
-        <button onclick="reiniciarCotizacion()" class="text-xs px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-700 dark:text-emerald-300 font-semibold rounded-xl transition flex items-center gap-1.5 cursor-pointer focus:outline-none">
-          🔄 Nueva Cotización
-        </button>
-      </div>
+    <div id="resultado-box" class="hidden p-5 rounded-3xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500/40 space-y-4 shadow-2xl">
       <div class="flex justify-between items-baseline">
         <span class="text-slate-700 dark:text-slate-300 text-sm">Monto Ref. (USD):</span>
         <span id="res-usd" class="text-3xl font-black text-slate-900 dark:text-white">$0.00</span>
@@ -263,353 +135,122 @@
       </div>
     </div>
 
-    <!-- Botones de Acción -->
+    <!-- Acciones -->
     <div class="grid grid-cols-2 gap-3 pt-1">
-      <button onclick="enviarWhatsApp()" class="py-3.5 px-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition cursor-pointer text-xs focus:outline-none">
-        💬 WhatsApp Cliente
-      </button>
-      <button onclick="copiarAlPortapapeles()" id="btn-copiar" class="py-3.5 px-4 bg-slate-200 dark:bg-slate-900 hover:bg-slate-300 dark:hover:bg-slate-800 text-slate-900 dark:text-white font-semibold rounded-2xl flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-800 transition cursor-pointer text-xs focus:outline-none">
-        📋 Copiar Texto
-      </button>
+      <button onclick="enviarWhatsApp()" class="py-3.5 px-4 bg-emerald-500 text-slate-950 font-bold rounded-2xl flex items-center justify-center gap-2 shadow-lg text-xs cursor-pointer">💬 WhatsApp</button>
+      <button onclick="copiarAlPortapapeles()" id="btn-copiar" class="py-3.5 px-4 bg-slate-200 dark:bg-slate-900 text-slate-900 dark:text-white font-semibold rounded-2xl flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-800 text-xs cursor-pointer">📋 Copiar</button>
     </div>
 
-    <!-- BOTÓN DESPLEGABLE PANEL PRO / B2B -->
+    <!-- Módulo Pro / Ganancias -->
     <div class="pt-2">
-      <button type="button" onclick="intentarAccesoPro()" 
-        class="w-full py-3 bg-white dark:bg-slate-900/90 hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 font-semibold text-xs rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 transition cursor-pointer shadow-lg focus:outline-none">
+      <button type="button" onclick="intentarAccesoPro()" class="w-full py-3 bg-white dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 font-semibold text-xs rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 shadow-lg cursor-pointer">
         <div class="flex items-center gap-2.5">
           <span>⚡</span>
           <span id="btn-pro-label">Registro de Ganancias Pro</span>
-          <span id="badge-pro-tipo" class="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] px-2 py-0.5 rounded-md border border-emerald-500/30 font-black tracking-wider">PRO</span>
+          <span id="badge-pro-tipo" class="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] px-2 py-0.5 rounded-md border border-emerald-500/30 font-black">PRO</span>
         </div>
-        <span id="flecha-pro" class="text-slate-500 dark:text-slate-400 text-xs transition-transform duration-200">▼</span>
+        <span id="flecha-pro" class="text-slate-500 text-xs transition-transform duration-200">▼</span>
       </button>
     </div>
 
-    <!-- MÓDULO DE REGISTRO PRO / FLOTA B2B -->
-    <div id="modulo-ganancias-pro" class="hidden p-5 rounded-3xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-emerald-500/30 space-y-4 shadow-2xl backdrop-blur-xl transition-all">
+    <div id="modulo-ganancias-pro" class="hidden p-5 rounded-3xl bg-white dark:bg-slate-900/90 border border-emerald-500/30 space-y-4 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
         <div class="flex items-center gap-2.5">
-          <span class="text-xl" id="icono-modulo-titulo">📊</span>
-          <h2 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider" id="texto-modulo-titulo">Turno Activo del Día</h2>
+          <span class="text-xl">📊</span>
+          <h2 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Turno Activo del Día</h2>
         </div>
       </div>
-
-      <!-- ACORDEÓN DE GESTIÓN DE MOTORIZADOS (Visible sólo en modo Comercio B2B) -->
-      <div id="seccion-motorizados-acordeon" class="hidden border border-blue-500/30 bg-blue-500/5 rounded-2xl overflow-hidden">
-        <button type="button" onclick="toggleAcordeonMotorizados()" class="w-full p-3 text-left flex items-center justify-between text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 transition cursor-pointer focus:outline-none">
-          <div class="flex items-center gap-2">
-            <span>🛵</span>
-            <span>Gestión de Equipo y Motorizados</span>
-          </div>
-          <span id="flecha-acordeon-moto" class="transition-transform duration-200">▼</span>
-        </button>
-
-        <div id="contenido-acordeon-moto" class="hidden p-3 border-t border-blue-500/20 space-y-3 bg-white/50 dark:bg-slate-950/50">
-          <div class="space-y-2">
-            <input type="text" id="nuevo-motorizado-nombre" placeholder="Nombre y Apellido / Alias" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none">
-            <input type="text" id="nuevo-motorizado-tlf" placeholder="Teléfono (Ej. 04141234567)" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-blue-500 focus:outline-none">
-            <button type="button" onclick="guardarNuevoMotorizado()" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs rounded-xl transition cursor-pointer shadow-md focus:outline-none">
-              + Guardar Motorizado en Flota
-            </button>
-          </div>
-          <div id="lista-motorizados-guardados" class="space-y-1.5 max-h-28 overflow-y-auto text-xs pr-1">
-            <p class="text-slate-400 text-center text-[11px]">No hay motorizados registrados.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Formulario de Registro -->
-      <div class="space-y-3 pt-1">
-        <p class="text-xs text-slate-500 dark:text-slate-400" id="label-subtitulo-carrera">Registra tus servicios del turno actual:</p>
-        
-        <!-- SELECTOR ESTILIZADO DE MOTORIZADO (Modo B2B con Estética de Tarjetas) -->
-        <div id="campo-repartidor-b2b-container" class="hidden relative">
-          <input type="hidden" id="input-motorizado-seleccionado" value="">
-          
-          <button type="button" id="btn-selector-motorizado" onclick="toggleMenuSelectorMotorizado()" 
-            class="w-full p-3 rounded-xl border border-blue-500/40 bg-slate-50 dark:bg-slate-950 text-left flex items-center justify-between transition-all hover:border-blue-500 cursor-pointer focus:outline-none">
-            <div class="flex items-center gap-2.5">
-              <span class="text-base">🛵</span>
-              <div>
-                <p id="label-motorizado-actual" class="text-xs font-bold text-slate-900 dark:text-white">Selecciona motorizado asignado...</p>
-                <p id="sublabel-motorizado-actual" class="text-[10px] text-slate-500">Toca para desplegar flota</p>
-              </div>
-            </div>
-            <span id="flecha-selector-moto" class="text-slate-400 text-xs transition-transform duration-200">▼</span>
-          </button>
-
-          <!-- Lista Flotante Estilizada -->
-          <div id="dropdown-motorizados-tarjetas" class="hidden absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-900 border border-blue-500/30 rounded-2xl p-2 shadow-2xl z-40 space-y-1.5 max-h-48 overflow-y-auto backdrop-blur-xl">
-            <!-- Se llena dinámicamente -->
-          </div>
-        </div>
-
+      <div class="space-y-3">
         <div class="grid grid-cols-2 gap-2">
-          <input type="number" id="pro-monto-usd" placeholder="Monto ($ USD)" step="0.01" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-3 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none font-bold">
-          <input type="text" id="pro-cliente-nota" placeholder="Descripción / Cliente" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-3 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none">
+          <input type="number" id="pro-monto-usd" placeholder="Monto ($ USD)" step="0.01" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-3 text-slate-900 dark:text-white text-xs font-bold">
+          <input type="text" id="pro-cliente-nota" placeholder="Descripción / Cliente" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-3 text-slate-900 dark:text-white text-xs">
         </div>
-
-        <button type="button" onclick="registrarCarreraPro()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl transition cursor-pointer flex items-center justify-center gap-2 shadow-md focus:outline-none">
-          <span id="btn-texto-registrar">+ Añadir Carrera</span>
-        </button>
+        <button type="button" onclick="registrarCarreraPro()" class="w-full py-3 bg-emerald-500 text-slate-950 font-black text-xs rounded-xl shadow-md cursor-pointer">+ Añadir Carrera</button>
       </div>
-
-      <!-- Resumen Acumulado del Turno Actual -->
-      <div class="p-3.5 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-inner">
+      <div class="p-3.5 bg-slate-100 dark:bg-slate-950 rounded-2xl flex items-center justify-between">
         <div>
-          <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Total Bruto Turno:</p>
-          <p id="pro-total-turno" class="text-base font-black text-emerald-600 dark:text-emerald-400 mt-0.5">$0.00 <span id="pro-total-turno-bs" class="text-xs text-slate-500 dark:text-slate-400 font-normal">(Bs. 0.00)</span></p>
+          <p class="text-[10px] text-slate-500 font-bold uppercase">Total Bruto Turno:</p>
+          <p id="pro-total-turno" class="text-base font-black text-emerald-600 dark:text-emerald-400 mt-0.5">$0.00</p>
         </div>
-        <button type="button" onclick="abrirModalCorte()" class="py-2.5 px-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-lg shadow-amber-500/20 focus:outline-none">
-          ✂️ Realizar Corte
-        </button>
+        <button type="button" onclick="abrirModalCorte()" class="py-2.5 px-3.5 bg-amber-500 text-slate-950 font-black text-xs rounded-xl shadow-lg cursor-pointer">✂️ Realizar Corte</button>
       </div>
-
-      <!-- Lista de Registros Activos -->
-      <div id="contenedor-carreras-turno" class="space-y-1.5 max-h-48 overflow-y-auto pr-1 text-xs">
-        <p class="text-center text-slate-400 dark:text-slate-500 py-3 text-[11px]" id="msg-turno-vacio">Sin registros en este turno.</p>
-      </div>
-
-      <!-- HISTORIAL ARCHIVADO -->
-      <div class="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-800">
-        <div class="flex items-center justify-between">
-          <h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider" id="titulo-seccion-cortes">📁 Cortes Diarios Archivados</h3>
-          <button onclick="descargarReportePDF()" class="text-[11px] px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-700 dark:text-emerald-400 font-bold rounded-xl transition border border-emerald-500/30 flex items-center gap-1.5 cursor-pointer focus:outline-none">
-            📄 Reporte PDF
-          </button>
-        </div>
-
-        <div id="lista-cortes-acordeon" class="space-y-2 max-h-72 overflow-y-auto pr-1 text-xs">
-          <p class="text-center text-slate-400 dark:text-slate-500 py-4 text-[11px]" id="msg-cortes-vacio">No hay registros archivados aún.</p>
-        </div>
+      <div id="contenedor-carreras-turno" class="space-y-1.5 max-h-48 overflow-y-auto text-xs">
+        <p class="text-center text-slate-400 py-3 text-[11px]">Sin registros en este turno.</p>
       </div>
     </div>
-
   </main>
 
-  <!-- Footer -->
-  <footer class="text-center space-y-1.5 pt-10 pb-6 text-xs text-slate-500 border-t border-slate-200 dark:border-slate-900 mt-10">
-    <p>© 2026 Cotizador Delivery. Todos los derechos reservados.</p>
-    <p class="font-medium text-slate-600 dark:text-slate-400">Diseñado con dedicación por <span class="text-emerald-600 dark:text-emerald-400 font-bold">Herggie Díaz</span></p>
-  </footer>
-
-  <!-- MODAL REALIZAR CORTE -->
-  <div id="modal-corte" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative">
-      <button onclick="cerrarModalCorte()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-bold cursor-pointer focus:outline-none">✕</button>
-
-      <div class="text-center space-y-1">
-        <span class="text-3xl">✂️</span>
-        <h3 class="text-base font-bold text-slate-900 dark:text-white" id="modal-corte-titulo">Cierre y Corte Diario</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400" id="modal-corte-sub">Ingresa el gasto total de gasolina o mantenimiento de la jornada.</p>
-      </div>
-
-      <div class="p-3.5 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-1">
-        <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Total Bruto Acumulado:</p>
-        <p id="corte-monto-bruto" class="text-xl font-black text-emerald-600 dark:text-emerald-400">$0.00</p>
-      </div>
-
-      <div id="caja-gasto-gasolina-modal">
-        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">⛽ Gastos de Gasolina / Mantenimiento ($ USD):</label>
-        <input type="number" id="corte-gasto-gasolina" placeholder="Ej. 0.00" step="0.50" value="0.00" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3 text-slate-900 dark:text-white text-xs font-bold text-center focus:border-amber-500 focus:outline-none">
-      </div>
-
-      <button type="button" onclick="confirmarCorteDiario()" class="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-2xl text-xs transition cursor-pointer shadow-lg shadow-amber-500/20 focus:outline-none">
-        ✅ Guardar y Archivar Registro
-      </button>
-    </div>
-  </div>
-
-  <!-- MODAL PERFIL Y CONFIGURACIÓN B2B -->
+  <!-- MODAL PERFIL / KYC -->
   <div id="modal-perfil" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative text-center max-h-[90vh] overflow-y-auto">
-      <button onclick="cerrarPerfil()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-bold cursor-pointer focus:outline-none">✕</button>
-
-      <!-- Avatar -->
+      <button onclick="cerrarPerfil()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold cursor-pointer">✕</button>
       <div class="relative w-20 h-20 mx-auto">
-        <div id="perfil-avatar-preview" class="w-20 h-20 bg-gradient-to-tr from-emerald-500 to-cyan-400 rounded-full flex items-center justify-center text-slate-950 text-2xl font-black shadow-lg shadow-emerald-500/20 overflow-hidden border-2 border-emerald-500">
-          🛵
-        </div>
-        <label for="input-foto-perfil" class="absolute bottom-0 right-0 bg-emerald-500 hover:bg-emerald-400 text-slate-950 p-1.5 rounded-full cursor-pointer shadow-md text-xs z-10 focus:outline-none" title="Cambiar foto">
-          📷
-        </label>
+        <div id="perfil-avatar-preview" class="w-20 h-20 bg-gradient-to-tr from-emerald-500 to-cyan-400 rounded-full flex items-center justify-center text-slate-950 text-2xl font-black shadow-lg overflow-hidden border-2 border-emerald-500">🛵</div>
+        <label for="input-foto-perfil" class="absolute bottom-0 right-0 bg-emerald-500 text-slate-950 p-1.5 rounded-full cursor-pointer shadow-md text-xs z-10">📷</label>
         <input type="file" id="input-foto-perfil" accept="image/*" class="hidden" onchange="cambiarFotoPerfil(event)">
       </div>
-
-      <div>
-        <button type="button" onclick="eliminarFotoPerfil()" class="text-[11px] text-rose-500 dark:text-rose-400 hover:underline font-medium cursor-pointer focus:outline-none">
-          🗑️ Eliminar foto de perfil
-        </button>
-      </div>
-
       <div>
         <h3 id="perfil-nombre" class="text-base font-bold text-slate-900 dark:text-white">Cargando...</h3>
-        <p id="perfil-email" class="text-xs text-slate-500 dark:text-slate-400">correo@ejemplo.com</p>
-        <span id="perfil-badge-rol" class="inline-block mt-2 text-[10px] font-bold px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 uppercase tracking-wider">
-          Repartidor Pro
-        </span>
+        <p id="perfil-email" class="text-xs text-slate-500">correo@ejemplo.com</p>
       </div>
-
-      <!-- Configuración Repartidor Pro -->
-      <div id="cfg-seccion-repartidor" class="border-t border-slate-200 dark:border-slate-800 pt-4 text-left space-y-2.5">
-        <p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">⚙️ Credenciales y Marca Pro (KYC):</p>
-        <div>
-          <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Nombre de tu Servicio / Marca:</label>
-          <input type="text" id="cfg-nombre-marca" placeholder="Ej. Express Valencia" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none">
+      <div class="border-t border-slate-200 dark:border-slate-800 pt-4 text-left space-y-2.5">
+        <p class="text-[11px] font-bold text-emerald-600 uppercase">⚙️ Credenciales y Marca Pro (KYC):</p>
+        <input type="text" id="cfg-nombre-marca" placeholder="Nombre de tu Marca / Servicio" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs">
+        <div class="grid grid-cols-2 gap-2">
+          <input type="text" id="cfg-cedula" placeholder="Cédula (V-28123456)" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs">
+          <input type="text" id="cfg-placa" placeholder="Placa Moto (AB1C23D)" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs uppercase">
         </div>
         <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Cédula (V- / E-):</label>
-            <input type="text" id="cfg-cedula" placeholder="V-28123456" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none">
-          </div>
-          <div>
-            <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Placa de Moto:</label>
-            <input type="text" id="cfg-placa" placeholder="AB1C23D" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none uppercase">
-          </div>
+          <input type="text" id="cfg-vehiculo" placeholder="Vehículo (Bera 150)" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs">
+          <select id="cfg-zona" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs">
+            <option value="San Diego">San Diego</option>
+            <option value="El Trigal">El Trigal / Prebo</option>
+            <option value="Naguanagua">Naguanagua</option>
+            <option value="Valencia Norte">Valencia Norte</option>
+            <option value="Valencia Sur">Valencia Sur</option>
+          </select>
         </div>
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Vehículo / Modelo:</label>
-            <input type="text" id="cfg-vehiculo" placeholder="Bera Socialista 150" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none">
-          </div>
-          <div>
-            <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Zona Principal:</label>
-            <select id="cfg-zona" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none">
-              <option value="San Diego">San Diego</option>
-              <option value="El Trigal">El Trigal / Prebo</option>
-              <option value="Naguanagua">Naguanagua</option>
-              <option value="Valencia Norte">Valencia Norte</option>
-              <option value="Valencia Sur">Valencia Sur</option>
-            </select>
-          </div>
-        </div>
-        <div>
-          <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">WhatsApp de Contacto (con código 58):</label>
-          <input type="text" id="cfg-whatsapp" placeholder="584121234567" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none">
-        </div>
-        <div>
-          <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Datos Pago Móvil:</label>
-          <input type="text" id="cfg-pago-movil" placeholder="0414-1234567 / BDV" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-emerald-500 focus:outline-none">
-        </div>
-        <button onclick="guardarConfiguracionMarca()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl transition cursor-pointer shadow-md focus:outline-none">
-          💾 Guardar Datos Pro & KYC
-        </button>
+        <input type="text" id="cfg-whatsapp" placeholder="WhatsApp (584121234567)" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs">
+        <button onclick="guardarConfiguracionMarca()" class="w-full py-2.5 bg-emerald-500 text-slate-950 font-black text-xs rounded-xl cursor-pointer shadow-md">💾 Guardar Datos Pro</button>
       </div>
-
-      <!-- Configuración Módulo B2B Comercio / Flota -->
-      <div id="cfg-seccion-comercio" class="hidden border-t border-slate-200 dark:border-slate-800 pt-4 text-left space-y-2.5">
-        <p class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">🏢 Configuración de Flota B2B:</p>
-        <div>
-          <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Nombre del Comercio / Empresa:</label>
-          <input type="text" id="cfg-b2b-nombre" placeholder="Ej. Farmacia San Diego C.A." class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-blue-500 focus:outline-none">
-        </div>
-        <div>
-          <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">RIF Comercial:</label>
-          <input type="text" id="cfg-b2b-rif" placeholder="Ej. J-40123456-7" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-blue-500 focus:outline-none">
-        </div>
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Tarifa Base ($ / Km):</label>
-            <input type="number" step="0.10" id="cfg-b2b-rate-km" placeholder="0.40" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-blue-500 focus:outline-none">
-          </div>
-          <div>
-            <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Tarifa Mínima ($):</label>
-            <input type="number" step="0.50" id="cfg-b2b-min-fare" placeholder="2.00" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-blue-500 focus:outline-none">
-          </div>
-        </div>
-        <div>
-          <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Datos Pago Móvil Corporativo:</label>
-          <input type="text" id="cfg-b2b-pago-movil" placeholder="0102 - 04141234567 - J401234567" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-blue-500 focus:outline-none">
-        </div>
-        <div>
-          <label class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Zelle / Correo Oficial (Opcional):</label>
-          <input type="text" id="cfg-b2b-zelle" placeholder="pagos@farmaciasandiego.com" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white text-xs focus:border-blue-500 focus:outline-none">
-        </div>
-        <button onclick="guardarConfiguracionB2B()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs rounded-xl transition cursor-pointer shadow-md focus:outline-none">
-          💾 Guardar Parámetros de Flota B2B
-        </button>
-      </div>
-
       <div class="border-t border-slate-200 dark:border-slate-800 pt-3">
-        <button type="button" onclick="cerrarSesion()" class="w-full py-2.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 dark:text-rose-400 border border-rose-500/30 font-bold text-xs rounded-xl transition cursor-pointer focus:outline-none">
-          🚪 Cerrar Sesión
-        </button>
+        <button type="button" onclick="cerrarSesion()" class="w-full py-2.5 bg-rose-500/10 text-rose-500 font-bold text-xs rounded-xl cursor-pointer">🚪 Cerrar Sesión</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL DE AUTENTICACIÓN -->
+  <!-- MODAL AUTH -->
   <div id="modal-auth" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-5 shadow-2xl relative">
-      <button onclick="cerrarAuth()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm font-bold cursor-pointer focus:outline-none">✕</button>
-
+      <button onclick="cerrarAuth()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold cursor-pointer">✕</button>
       <div class="text-center space-y-1">
-        <h3 id="auth-titulo" class="text-lg font-bold text-slate-900 dark:text-white">Bienvenido de nuevo</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400">Accede para gestionar tus cotizaciones y flotas</p>
+        <h3 id="auth-titulo" class="text-lg font-bold text-slate-900 dark:text-white">Iniciar Sesión Pro</h3>
       </div>
-
-      <!-- Selector de Rol -->
-      <div id="selector-rol" class="grid grid-cols-2 gap-2 pt-1">
-        <button type="button" id="btn-rol-repartidor" onclick="seleccionarRol('repartidor')" class="py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/15 text-slate-900 dark:text-white transition flex items-center justify-center gap-2 cursor-pointer focus:outline-none">🛵 Repartidor</button>
-        <button type="button" id="btn-rol-comercio" onclick="seleccionarRol('comercio')" class="py-2.5 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 transition hover:border-slate-400 dark:hover:border-slate-700 cursor-pointer focus:outline-none">🏪 Comercio / Flota</button>
-      </div>
-
       <form id="form-auth" class="space-y-3">
-        <input type="email" id="email-input" placeholder="Correo electrónico" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-emerald-500">
-        <input type="password" id="password-input" placeholder="Contraseña" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-emerald-500">
-        <button type="submit" id="btn-submit-auth" class="w-full py-3.5 bg-emerald-500 text-slate-950 font-black rounded-2xl text-xs hover:bg-emerald-400 transition cursor-pointer shadow-lg shadow-emerald-500/20 focus:outline-none">Iniciar Sesión</button>
+        <input type="email" id="email-input" placeholder="Correo electrónico" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3 text-xs">
+        <input type="password" id="password-input" placeholder="Contraseña" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3 text-xs">
+        <button type="submit" class="w-full py-3.5 bg-emerald-500 text-slate-950 font-black rounded-2xl text-xs cursor-pointer shadow-lg">Entrar</button>
       </form>
-
-      <div class="flex items-center my-2">
-        <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
-        <span class="px-3 text-[10px] text-slate-500 uppercase tracking-wider font-semibold">o continúa con</span>
-        <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
-      </div>
-
-      <button type="button" onclick="iniciarConGoogle()" class="w-full py-3 px-4 rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/80 text-slate-900 dark:text-white font-semibold text-xs flex items-center justify-center gap-3 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer shadow-md focus:outline-none">
-        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-        </svg>
-        <span>Continuar con Google</span>
-      </button>
-
-      <div class="text-center pt-2">
-        <button type="button" onclick="alternarModoAuth()" class="text-xs text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition cursor-pointer focus:outline-none">
-          <span id="texto-cambio-auth">¿No tienes cuenta?</span> <span id="link-cambio-auth" class="underline font-bold text-slate-900 dark:text-white">Regístrate</span>
-        </button>
-      </div>
     </div>
   </div>
 
-  <!-- MODAL DE ALERTA -->
-  <div id="modal-alerta" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
-    <div class="bg-white dark:bg-slate-900 border-t sm:border border-slate-200 dark:border-slate-800 rounded-t-3xl sm:rounded-3xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl relative">
-      <div class="w-12 h-12 bg-amber-500/10 rounded-full border border-amber-500/20 flex items-center justify-center mx-auto text-xl">⚠️</div>
-      <div class="space-y-1">
-        <h3 class="text-base font-bold text-slate-900 dark:text-white">Aviso</h3>
-        <p id="mensaje-alerta-texto" class="text-xs text-slate-500 dark:text-slate-400">Mensaje de alerta</p>
-      </div>
-      <button type="button" onclick="cerrarAlertaPro()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-2xl transition shadow-lg cursor-pointer focus:outline-none">Entendido</button>
+  <!-- MODAL ALERTA -->
+  <div id="modal-alerta" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl">
+      <div class="text-xl">⚠️</div>
+      <p id="mensaje-alerta-texto" class="text-xs text-slate-500">Aviso</p>
+      <button type="button" onclick="cerrarAlertaPro()" class="w-full py-3 bg-emerald-500 text-slate-950 font-black text-xs rounded-2xl cursor-pointer">Entendido</button>
     </div>
   </div>
 
-  <!-- SCRIPT GENERAL Y LÓGICA DE LA APLICACIÓN -->
+  <!-- LÓGICA REPARTIDOR -->
   <script>
-    let tasaBCV = 88.47; 
-    let TARIFA_BASE = 2.00;       
-    let KM_BASE = 2.0;            
-    let PRECIO_KM_EXTRA = 0.40;   
+    let tasaBCV = 88.47;
+    let TARIFA_BASE = 2.00;
+    let KM_BASE = 2.0;
+    let PRECIO_KM_EXTRA = 0.40;
     let esHorarioNocturno = false;
-    let esRegistro = false;
-    let rolSeleccionado = 'repartidor';
-    
     let carrerasTurnoActual = [];
-    let cortesArchivados = [];
-    let motorizadosFlota = [];
 
     function toggleTheme() {
       const html = document.documentElement;
@@ -624,319 +265,57 @@
         localStorage.setItem('theme', 'dark');
       }
     }
-
-    (function() {
-      const savedTheme = localStorage.getItem('theme');
-      const icon = document.getElementById('theme-icon');
-      if (savedTheme === 'light') {
-        document.documentElement.classList.remove('dark');
-        if(icon) icon.innerText = '🌙';
-      } else {
-        document.documentElement.classList.add('dark');
-        if(icon) icon.innerText = '☀️';
-      }
-    })();
-
-    function verificarHorarioNocturno() {
-      const horaActual = new Date().getHours();
-      if (horaActual >= 21 || horaActual < 6) {
-        esHorarioNocturno = true;
-        document.getElementById('badge-nocturno').classList.remove('hidden');
-      } else {
-        esHorarioNocturno = false;
-        document.getElementById('badge-nocturno').classList.add('hidden');
-      }
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.classList.remove('dark');
+      document.getElementById('theme-icon').innerText = '🌙';
     }
 
     async function obtenerTasaBCV() {
-      const el = document.getElementById('tasa-bcv-txt');
-      const card = document.getElementById('card-bcv');
-      card.classList.add('animate-pulse');
-
       try {
-        el.innerText = 'Actualizando...';
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3000);
-        const res = await fetch('https://ve.dolarapi.com/v1/dolares/oficial', { signal: controller.signal });
-        clearTimeout(timeoutId);
+        const res = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
         const data = await res.json();
-        if(data && data.promedio) {
-          tasaBCV = data.promedio;
-        }
-      } catch (e) {
-        console.log("Usando tasa de respaldo.");
-      }
-      el.innerText = `Bs. ${tasaBCV.toFixed(2)} / USD`;
-      card.classList.remove('animate-pulse');
-      renderizarMóduloPro();
+        if(data && data.promedio) tasaBCV = data.promedio;
+      } catch(e) {}
+      document.getElementById('tasa-bcv-txt').innerText = `Bs. ${tasaBCV.toFixed(2)} / USD`;
     }
 
     function calcularTarifa() {
       const dist = parseFloat(document.getElementById('distancia').value);
       if(!dist || dist <= 0) {
-        mostrarAlertaPro("Por favor ingresa una distancia válida en kilómetros antes de calcular.");
+        mostrarAlertaPro("Ingresa una distancia válida.");
         return;
       }
-
-      let subtotalUSD = TARIFA_BASE;
-      if (dist > KM_BASE) {
-        subtotalUSD += (dist - KM_BASE) * PRECIO_KM_EXTRA;
-      }
-
-      const tipo = document.getElementById('tipo-envio').value;
-      if(tipo === 'pesado') subtotalUSD *= 1.25; 
-      else if(tipo === 'fragil') subtotalUSD *= 1.15; 
-      else if(tipo === 'picking') subtotalUSD *= 1.30; 
-
-      if(esHorarioNocturno) subtotalUSD *= 1.30;
-
-      const hayLluvia = document.getElementById('check-lluvia').checked;
-      if(hayLluvia) subtotalUSD *= 1.30;
-
-      const user = auth.currentUser;
-      if (user && rolSeleccionado === 'comercio') {
-        const minFare = parseFloat(localStorage.getItem(`b2b_min_fare_${user.uid}`)) || 2.00;
-        if (subtotalUSD < minFare) subtotalUSD = minFare;
-      }
-
-      const totalUSD = subtotalUSD.toFixed(2);
-      const totalBS = (totalUSD * tasaBCV).toFixed(2);
-
-      document.getElementById('res-usd').innerText = `$${totalUSD}`;
-      document.getElementById('res-bs').innerText = `Bs. ${totalBS}`;
+      let subtotal = TARIFA_BASE;
+      if (dist > KM_BASE) subtotal += (dist - KM_BASE) * PRECIO_KM_EXTRA;
+      const hora = new Date().getHours();
+      if (hora >= 21 || hora < 6) subtotal *= 1.30;
+      
+      const usd = subtotal.toFixed(2);
+      const bs = (usd * tasaBCV).toFixed(2);
+      document.getElementById('res-usd').innerText = `$${usd}`;
+      document.getElementById('res-bs').innerText = `Bs. ${bs}`;
       document.getElementById('resultado-box').classList.remove('hidden');
-      document.getElementById('resultado-box').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function reiniciarCotizacion() {
-      document.getElementById('link-maps').value = '';
-      document.getElementById('distancia').value = '';
-      document.getElementById('check-lluvia').checked = false;
-      document.getElementById('resultado-box').classList.add('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function validarCotizacionLista() {
-      const dist = document.getElementById('distancia').value;
-      const resBox = document.getElementById('resultado-box');
-      
-      if (!dist || dist <= 0 || resBox.classList.contains('hidden')) {
-        mostrarAlertaPro("⚠️ Debes ingresar la distancia en kilómetros y presionar 'Calcular Tarifa Exacta' antes de compartir.");
-        return false;
-      }
-      return true;
-    }
-
-    function generarTextoPlantilla() {
-      const dist = document.getElementById('distancia').value || '0';
-      const linkMaps = document.getElementById('link-maps').value.trim();
-      const usd = document.getElementById('res-usd').innerText;
-      const bs = document.getElementById('res-bs').innerText;
-      const hayLluvia = document.getElementById('check-lluvia').checked;
-      const tipoEnvioVal = document.getElementById('tipo-envio').value;
-
-      const user = auth.currentUser;
-      
-      if (user && rolSeleccionado === 'comercio') {
-        const b2bNombre = localStorage.getItem(`b2b_nombre_${user.uid}`) || 'COMERCIO';
-        const b2bRif = localStorage.getItem(`b2b_rif_${user.uid}`) || '';
-        const b2bPago = localStorage.getItem(`b2b_pagomovil_${user.uid}`) || '';
-        const b2bZelle = localStorage.getItem(`b2b_zelle_${user.uid}`) || '';
-
-        const nombreMotorizadoAsignado = document.getElementById('input-motorizado-seleccionado').value;
-        let tlfMotorizado = '';
-        if (nombreMotorizadoAsignado) {
-          let found = motorizadosFlota.find(m => m.nombre === nombreMotorizadoAsignado);
-          if (found) tlfMotorizado = found.telefono;
-        }
-
-        let texto = `🏢 *${b2bNombre.toUpperCase()}*\n`;
-        if (b2bRif) texto += `📄 RIF: ${b2bRif}\n\n`;
-        
-        if (nombreMotorizadoAsignado) {
-          texto += `🛵 *Motorizado Asignado:* ${nombreMotorizadoAsignado}\n`;
-          if (tlfMotorizado) texto += `📞 *Contacto:* ${tlfMotorizado}\n\n`;
-        }
-        
-        texto += `📍 *Distancia:* ${dist} km\n`;
-        if (linkMaps) texto += `🗺️ *Ruta Maps:* ${linkMaps}\n`;
-        texto += `💵 *Tasa Oficial BCV:* Bs. ${tasaBCV.toFixed(2)} / USD\n\n`;
-        
-        texto += `💰 *DETALLE DEL SERVICIO:*\n`;
-        if (tipoEnvioVal === 'picking') texto += `• Picking / Compras en Tienda (+30%)\n`;
-        if (tipoEnvioVal === 'pesado') texto += `• Carga Pesada (+25%)\n`;
-        if (tipoEnvioVal === 'fragil') texto += `• Objeto Frágil (+15%)\n`;
-        if (esHorarioNocturno) texto += `• Horario Nocturno (9pm - 6am)\n`;
-        if (hayLluvia) texto += `• Recargo Climático (Lluvia): +30%\n\n`;
-        
-        texto += `💳 *TOTAL A PAGAR:*\n`;
-        texto += `💵 *Monto USD:* ${usd}\n`;
-        texto += `🏛️ *Total en Bolívares:* ${bs}\n\n`;
-
-        if (b2bPago || b2bZelle) {
-          texto += `🏦 *MÉTODOS DE PAGO:*\n`;
-          if (b2bPago) texto += `• Pago Móvil: ${b2bPago}\n`;
-          if (b2bZelle) texto += `• Zelle: ${b2bZelle}\n\n`;
-        }
-        
-        if (nombreMotorizadoAsignado) {
-          texto += `💬 *${nombreMotorizadoAsignado}* va a encargarse de tu pedido. Comunícate con él al *${tlfMotorizado}*.\n\n`;
-        }
-
-        texto += `_¡Gracias por tu preferencia! Tu pedido va en camino._`;
-        return texto;
-      }
-
-      const nombreMarca = (user && localStorage.getItem(`marca_${user.uid}`)) || 'COTIZACIÓN DE DELIVERY';
-      const cedula = (user && localStorage.getItem(`cedula_${user.uid}`)) || '';
-      const placa = (user && localStorage.getItem(`placa_${user.uid}`)) || '';
-      const pagoMovil = (user && localStorage.getItem(`pagomovil_${user.uid}`)) || '';
-
-      let texto = `🛵 *${nombreMarca.toUpperCase()}*\n\n`;
-      if(cedula || placa) {
-        texto += `🛡️ *Repartidor:* ${user ? (user.displayName || 'Verificado') : ''} ${cedula ? '('+cedula+')' : ''}\n`;
-        if(placa) texto += `🏍️ *Moto Placa:* ${placa}\n`;
-        texto += `\n`;
-      }
-      texto += `📍 *Distancia:* ${dist} km\n`;
-      if(tipoEnvioVal === 'picking') texto += `🛒 *Servicio:* Picking / Compras en Tienda (+30%)\n`;
-      if(tipoEnvioVal === 'pesado') texto += `🏋️ *Tipo:* Carga Pesada (+25%)\n`;
-      if(tipoEnvioVal === 'fragil') texto += `💎 *Tipo:* Objeto Frágil (+15%)\n`;
-      if(linkMaps) texto += `🗺️ *Ruta Maps:* ${linkMaps}\n`;
-      if(esHorarioNocturno) texto += `🌙 *Tarifa:* Nocturna (9pm - 6am)\n`;
-      if(hayLluvia) texto += `🌧️ *Recargo:* Lluvia / Mal Tiempo\n`;
-      texto += `💵 *Monto USD:* ${usd}\n` + `💳 *Total a pagar:* ${bs}\n` + `🏛️ *Tasa BCV:* Bs. ${tasaBCV.toFixed(2)}\n`;
-      if(pagoMovil) texto += `🏦 *Pago Móvil:* ${pagoMovil}\n`;
-      texto += `\n¡Gracias por preferir nuestro servicio!`;
-      return texto;
-    }
-
-    function enviarWhatsApp() {
-      if (!validarCotizacionLista()) return;
-      const texto = generarTextoPlantilla();
-      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
-    }
-
-    function notificarMotorizadoWhatsApp(nombreMotorizado, notaServicio, montoUSD) {
-      let motorizadoEncontrado = motorizadosFlota.find(m => m.nombre === nombreMotorizado);
-      if (!motorizadoEncontrado || !motorizadoEncontrado.telefono || motorizadoEncontrado.telefono === 'N/A') {
-        mostrarAlertaPro(`⚠️ El motorizado ${nombreMotorizado} no tiene un número de teléfono válido registrado.`);
-        return;
-      }
-
-      let tlf = motorizadoEncontrado.telefono.replace(/\D/g, '');
-      if (tlf.startsWith('0')) {
-        tlf = '58' + tlf.substring(1);
-      } else if (!tlf.startsWith('58')) {
-        tlf = '58' + tlf;
-      }
-
-      const user = auth.currentUser;
-      const b2bNombre = (user && localStorage.getItem(`b2b_nombre_${user.uid}`)) || 'Comercio';
-      const linkMapsActual = document.getElementById('link-maps').value.trim();
-
-      let mensajeMotorizado = `🛵 *NUEVO SERVICIO ASIGNADO*\n\n`;
-      mensajeMotorizado += `🏢 *Comercio:* ${b2bNombre}\n`;
-      mensajeMotorizado += `📦 *Detalle / Destino:* ${notaServicio}\n`;
-      mensajeMotorizado += `💵 *Tarifa del Servicio:* $${montoUSD.toFixed(2)}\n`;
-      
-      if (linkMapsActual) {
-        mensajeMotorizado += `🗺️ *Ruta Google Maps:* ${linkMapsActual}\n`;
-      }
-      
-      mensajeMotorizado += `\n¡Por favor revisa la ruta y acércate al local a retirar el pedido! 🚀`;
-
-      window.open(`https://api.whatsapp.com/send?phone=${tlf}&text=${encodeURIComponent(mensajeMotorizado)}`, '_blank');
-    }
-
-    function copiarAlPortapapeles() {
-      if (!validarCotizacionLista()) return;
-      const texto = generarTextoPlantilla();
-      navigator.clipboard.writeText(texto).then(() => {
-        const btn = document.getElementById('btn-copiar');
-        btn.innerText = '✓ ¡Copiado!';
-        setTimeout(() => btn.innerText = '📋 Copiar Texto', 2000);
-      }).catch(() => mostrarAlertaPro("No se pudo copiar automáticamente."));
-    }
-
-    function toggleMenuEnvio() {
-      const menu = document.getElementById('opciones-desplegable-envio');
-      const flecha = document.getElementById('flecha-desplegable');
-      menu.classList.toggle('hidden');
-      flecha.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
-    }
-
-    function seleccionarOpcionEnvio(valor, icono, titulo, subtitulo) {
-      document.getElementById('tipo-envio').value = valor;
-      document.getElementById('icono-envio-actual').innerText = icono;
-      document.getElementById('titulo-envio-actual').innerText = titulo;
-      document.getElementById('subtitulo-envio-actual').innerText = subtitulo;
-      toggleMenuEnvio();
     }
 
     function abrirAuth() { document.getElementById('modal-auth').classList.remove('hidden'); }
     function cerrarAuth() { document.getElementById('modal-auth').classList.add('hidden'); }
-    
-    function abrirPerfil() { 
-      const user = auth.currentUser;
-      if (user) {
-        document.getElementById('cfg-nombre-marca').value = localStorage.getItem(`marca_${user.uid}`) || '';
-        document.getElementById('cfg-cedula').value = localStorage.getItem(`cedula_${user.uid}`) || '';
-        document.getElementById('cfg-placa').value = localStorage.getItem(`placa_${user.uid}`) || '';
-        document.getElementById('cfg-vehiculo').value = localStorage.getItem(`vehiculo_${user.uid}`) || 'Bera Socialista 150';
-        document.getElementById('cfg-zona').value = localStorage.getItem(`zona_${user.uid}`) || 'San Diego';
-        document.getElementById('cfg-whatsapp').value = localStorage.getItem(`whatsapp_${user.uid}`) || '584120000000';
-        document.getElementById('cfg-pago-movil').value = localStorage.getItem(`pagomovil_${user.uid}`) || '';
-        
-        document.getElementById('cfg-b2b-nombre').value = localStorage.getItem(`b2b_nombre_${user.uid}`) || '';
-        document.getElementById('cfg-b2b-rif').value = localStorage.getItem(`b2b_rif_${user.uid}`) || '';
-        document.getElementById('cfg-b2b-rate-km').value = localStorage.getItem(`b2b_rate_km_${user.uid}`) || '0.40';
-        document.getElementById('cfg-b2b-min-fare').value = localStorage.getItem(`b2b_min_fare_${user.uid}`) || '2.00';
-        document.getElementById('cfg-b2b-pago-movil').value = localStorage.getItem(`b2b_pagomovil_${user.uid}`) || '';
-        document.getElementById('cfg-b2b-zelle').value = localStorage.getItem(`b2b_zelle_${user.uid}`) || '';
-
-        const avatarGuardado = localStorage.getItem(`avatar_${user.uid}`);
-        if(avatarGuardado) {
-          actualizarAvatarUI(avatarGuardado);
-        } else {
-          revertirAvatarUI();
-        }
-
-        if (rolSeleccionado === 'comercio') {
-          document.getElementById('cfg-seccion-comercio').classList.remove('hidden');
-          document.getElementById('cfg-seccion-repartidor').classList.add('hidden');
-        } else {
-          document.getElementById('cfg-seccion-repartidor').classList.remove('hidden');
-          document.getElementById('cfg-seccion-comercio').classList.add('hidden');
-        }
-      }
-      document.getElementById('modal-perfil').classList.remove('hidden'); 
-    }
+    function abrirPerfil() { document.getElementById('modal-perfil').classList.remove('hidden'); }
     function cerrarPerfil() { document.getElementById('modal-perfil').classList.add('hidden'); }
-    
     function mostrarAlertaPro(msg) {
-      if(msg) document.getElementById('mensaje-alerta-texto').innerText = msg;
+      document.getElementById('mensaje-alerta-texto').innerText = msg;
       document.getElementById('modal-alerta').classList.remove('hidden');
     }
     function cerrarAlertaPro() { document.getElementById('modal-alerta').classList.add('hidden'); }
 
     function gestionarClicCuenta() {
-      const user = auth.currentUser;
-      if (user) {
-        document.getElementById('perfil-nombre').innerText = user.displayName || user.email.split('@')[0];
-        document.getElementById('perfil-email').innerText = user.email;
-        document.getElementById('perfil-badge-rol').innerText = rolSeleccionado === 'comercio' ? 'FLOTA B2B COMERCIO' : 'REPARTIDOR PRO';
-        abrirPerfil();
-      } else {
-        abrirAuth();
-      }
+      if (auth.currentUser) abrirPerfil(); else abrirAuth();
     }
 
-    // GESTIÓN DE TURNO PRO & GPS GEOLOCALIZACIÓN (PUENTE HACIA APP CLIENTES)
-    function cambiarEstadoTurnoPro() {
+    // 🚀 SINCRONIZACIÓN EN TIEMPO REAL CON CLOUD FIRESTORE
+    async function cambiarEstadoTurnoPro() {
       const user = auth.currentUser;
       if (!user) {
-        mostrarAlertaPro("🔒 Debes iniciar sesión para activar tu turno en el directorio público.");
+        mostrarAlertaPro("Debes iniciar sesión para activar tu turno.");
         document.getElementById('proToggleTurno').checked = false;
         abrirAuth();
         return;
@@ -947,86 +326,71 @@
 
       if (enTurno) {
         if (!navigator.geolocation) {
-          mostrarAlertaPro("⚠️ Tu navegador no soporta geolocalización GPS.");
+          mostrarAlertaPro("Tu navegador no soporta GPS.");
           document.getElementById('proToggleTurno').checked = false;
           return;
         }
 
-        gpsBadge.innerText = "Obteniendo ubicación GPS...";
+        gpsBadge.innerText = "Obteniendo GPS y conectando a Cloud...";
         gpsBadge.className = "font-bold text-blue-500 animate-pulse";
 
         navigator.geolocation.getCurrentPosition(
-          (position) => {
+          async (position) => {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
             
-            gpsBadge.innerText = "GPS Activo ✓";
-            gpsBadge.className = "font-bold text-emerald-500";
+            const nombre = localStorage.getItem(`marca_${user.uid}`) || user.displayName || 'Repartidor Pro';
+            const vehiculo = localStorage.getItem(`vehiculo_${user.uid}`) || 'Bera Socialista 150';
+            const placa = localStorage.getItem(`placa_${user.uid}`) || 'AB1C23D';
+            const zona = localStorage.getItem(`zona_${user.uid}`) || 'San Diego';
+            const whatsapp = localStorage.getItem(`whatsapp_${user.uid}`) || '584120000000';
+            const avatarBase64 = localStorage.getItem(`avatar_${user.uid}`) || null;
 
-            guardarSesionProEnLocalStorage(true, lat, lon);
+            const datosRepartidor = {
+              id: user.uid,
+              nombre,
+              vehiculo,
+              placa,
+              zona,
+              whatsapp,
+              avatarBase64,
+              enLinea: true,
+              lat,
+              lon,
+              ultimaActualizacion: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            try {
+              // Guardar en Firestore para que la app de clientes lo lea instantáneamente
+              await db.collection("repartidores_activos").doc(user.uid).set(datosRepartidor);
+              gpsBadge.innerText = "¡En línea en la Nube! ✓";
+              gpsBadge.className = "font-bold text-emerald-500";
+              mostrarAlertaPro("🟢 ¡Turno activo! Ya eres visible en la App de Clientes.");
+            } catch (err) {
+              console.error(err);
+              gpsBadge.innerText = "Error de conexión cloud";
+              gpsBadge.className = "font-bold text-rose-500";
+              document.getElementById('proToggleTurno').checked = false;
+            }
           },
           (error) => {
-            console.error(error);
-            gpsBadge.innerText = "Permiso GPS Denegado";
+            gpsBadge.innerText = "GPS Denegado";
             gpsBadge.className = "font-bold text-rose-500";
             document.getElementById('proToggleTurno').checked = false;
-            mostrarAlertaPro("❌ Para estar visible en el Directorio de Clientes es obligatorio permitir el acceso a tu ubicación GPS.");
+            mostrarAlertaPro("Permiso de GPS requerido para activar tu turno.");
           },
-          { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+          { enableHighAccuracy: true, timeout: 10000 }
         );
       } else {
         gpsBadge.innerText = "Desconectado";
         gpsBadge.className = "font-bold text-slate-400";
-        guardarSesionProEnLocalStorage(false, null, null);
+        try {
+          await db.collection("repartidores_activos").doc(user.uid).update({ enLinea: false });
+          mostrarAlertaPro("🔴 Turno finalizado. Ya no estás visible.");
+        } catch (e) {
+          await db.collection("repartidores_activos").doc(user.uid).set({ enLinea: false }, { merge: true });
+        }
       }
-    }
-
-    function guardarSesionProEnLocalStorage(enLinea, lat, lon) {
-      const user = auth.currentUser;
-      if(!user) return;
-
-      // Extraer los datos reales actualizados desde las claves individuales del perfil
-      const nombre = localStorage.getItem(`marca_${user.uid}`) || user.displayName || 'Repartidor Pro';
-      const vehiculo = localStorage.getItem(`vehiculo_${user.uid}`) || 'Bera Socialista 150';
-      const placa = localStorage.getItem(`placa_${user.uid}`) || 'AB1C23D';
-      const zona = localStorage.getItem(`zona_${user.uid}`) || 'San Diego';
-      const whatsapp = localStorage.getItem(`whatsapp_${user.uid}`) || '584120000000';
-      const avatarGuardado = localStorage.getItem(`avatar_${user.uid}`);
-
-      const sesionPro = {
-        id: `rep_${user.uid}`,
-        nombre: nombre,
-        vehiculo: vehiculo,
-        placa: placa,
-        zona: zona,
-        whatsapp: whatsapp,
-        enLinea: enLinea,
-        verificadoKYC: true,
-        calificacion: 5.0,
-        resenasCount: 15,
-        carreras: 120,
-        avatarBase64: avatarGuardado || null,
-        esPro: true,
-        comentarioDestacado: "Repartidor verificado de la flota principal.",
-        lat: lat,
-        lon: lon,
-        ultimaActualizacion: new Date().toISOString()
-      };
-
-      // Guardar sesión activa exacta para la app de clientes
-      localStorage.setItem('repartidor_pro_session', JSON.stringify(sesionPro));
-
-      // Sincronizar con el array general de la flota
-      let flota = JSON.parse(localStorage.getItem('flota_repartidores')) || [];
-      const idx = flota.findIndex(r => r.id === sesionPro.id);
-      if(idx !== -1) { 
-        flota[idx] = sesionPro; 
-      } else { 
-        flota.unshift(sesionPro); 
-      }
-      localStorage.setItem('flota_repartidores', JSON.stringify(flota));
-
-      mostrarAlertaPro(enLinea ? "🟢 ¡Turno iniciado con éxito! Ya estás visible en el Directorio de Clientes." : "🔴 Has finalizado tu turno y ahora estás oculto en el directorio.");
     }
 
     function cambiarFotoPerfil(event) {
@@ -1038,18 +402,14 @@
           img.onload = function() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            canvas.width = 300;
-            canvas.height = 300;
-            let minDim = Math.min(img.width, img.height);
-            let sx = (img.width - minDim) / 2;
-            let sy = (img.height - minDim) / 2;
-            ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, 300, 300);
-            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.9);
+            canvas.width = 200; canvas.height = 200;
+            ctx.drawImage(img, 0, 0, 200, 200);
+            const b64 = canvas.toDataURL('image/jpeg', 0.85);
             const user = auth.currentUser;
             if (user) {
-              localStorage.setItem(`avatar_${user.uid}`, compressedBase64);
-              actualizarAvatarUI(compressedBase64);
-              mostrarAlertaPro("¡Foto de perfil actualizada correctamente!");
+              localStorage.setItem(`avatar_${user.uid}`, b64);
+              actualizarAvatarUI(b64);
+              mostrarAlertaPro("¡Foto guardada!");
             }
           };
           img.src = e.target.result;
@@ -1058,749 +418,93 @@
       }
     }
 
-    function eliminarFotoPerfil() {
-      const user = auth.currentUser;
-      if (user) {
-        localStorage.removeItem(`avatar_${user.uid}`);
-        revertirAvatarUI();
-        mostrarAlertaPro("Foto de perfil eliminada.");
-      }
-    }
-
-    function actualizarAvatarUI(imgSrc) {
-      const headerAvatar = document.getElementById('header-avatar');
-      const perfilPreview = document.getElementById('perfil-avatar-preview');
-      const contenido = `<img src="${imgSrc}" style="width: 100%; height: 100%; object-fit: cover;">`;
-      if(headerAvatar) {
-        headerAvatar.innerHTML = contenido;
-        headerAvatar.className = "w-10 h-10 rounded-2xl overflow-hidden shadow-lg shadow-emerald-500/20 ring-2 ring-emerald-500/30";
-      }
-      if(perfilPreview) {
-        perfilPreview.innerHTML = contenido;
-        perfilPreview.className = "w-20 h-20 rounded-full overflow-hidden border-2 border-emerald-500 shadow-lg shadow-emerald-500/20";
-      }
-    }
-
-    function revertirAvatarUI() {
-      const headerAvatar = document.getElementById('header-avatar');
-      const perfilPreview = document.getElementById('perfil-avatar-preview');
-      if(headerAvatar) {
-        headerAvatar.innerHTML = rolSeleccionado === 'comercio' ? '🏢' : '🛵';
-        headerAvatar.className = "w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-cyan-400 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-emerald-500/20 overflow-hidden ring-2 ring-emerald-500/30";
-      }
-      if(perfilPreview) {
-        perfilPreview.innerHTML = rolSeleccionado === 'comercio' ? '🏢' : '🛵';
-        perfilPreview.className = "w-20 h-20 bg-gradient-to-tr from-emerald-500 to-cyan-400 rounded-full flex items-center justify-center text-slate-950 text-2xl font-black shadow-lg shadow-emerald-500/20 overflow-hidden border-2 border-emerald-500";
-      }
+    function actualizarAvatarUI(src) {
+      const av = document.getElementById('header-avatar');
+      av.innerHTML = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;">`;
     }
 
     function guardarConfiguracionMarca() {
       const user = auth.currentUser;
       if (user) {
-        const marca = document.getElementById('cfg-nombre-marca').value.trim();
-        const cedula = document.getElementById('cfg-cedula').value.trim();
-        const placa = document.getElementById('cfg-placa').value.trim();
-        const vehiculo = document.getElementById('cfg-vehiculo').value.trim();
-        const zona = document.getElementById('cfg-zona').value;
-        const whatsapp = document.getElementById('cfg-whatsapp').value.trim();
-        const pago = document.getElementById('cfg-pago-movil').value.trim();
-
-        localStorage.setItem(`marca_${user.uid}`, marca);
-        localStorage.setItem(`cedula_${user.uid}`, cedula);
-        localStorage.setItem(`placa_${user.uid}`, placa);
-        localStorage.setItem(`vehiculo_${user.uid}`, vehiculo);
-        localStorage.setItem(`zona_${user.uid}`, zona);
-        localStorage.setItem(`whatsapp_${user.uid}`, whatsapp);
-        localStorage.setItem(`pagomovil_${user.uid}`, pago);
-
-        mostrarAlertaPro("¡Datos Pro & KYC guardados correctamente!");
-        cerrarPerfil();
-      }
-    }
-
-    function guardarConfiguracionB2B() {
-      const user = auth.currentUser;
-      if (user) {
-        const nombre = document.getElementById('cfg-b2b-nombre').value.trim();
-        const rif = document.getElementById('cfg-b2b-rif').value.trim();
-        const rateKm = parseFloat(document.getElementById('cfg-b2b-rate-km').value) || 0.40;
-        const minFare = parseFloat(document.getElementById('cfg-b2b-min-fare').value) || 2.00;
-        const pago = document.getElementById('cfg-b2b-pago-movil').value.trim();
-        const zelle = document.getElementById('cfg-b2b-zelle').value.trim();
-
-        localStorage.setItem(`b2b_nombre_${user.uid}`, nombre);
-        localStorage.setItem(`b2b_rif_${user.uid}`, rif);
-        localStorage.setItem(`b2b_rate_km_${user.uid}`, rateKm);
-        localStorage.setItem(`b2b_min_fare_${user.uid}`, minFare);
-        localStorage.setItem(`b2b_pagomovil_${user.uid}`, pago);
-        localStorage.setItem(`b2b_zelle_${user.uid}`, zelle);
-
-        PRECIO_KM_EXTRA = rateKm;
-
-        mostrarAlertaPro("🏢 ¡Parámetros de Flota B2B actualizados correctamente!");
-        aplicarConfiguracionSegunRol();
+        localStorage.setItem(`marca_${user.uid}`, document.getElementById('cfg-nombre-marca').value.trim());
+        localStorage.setItem(`cedula_${user.uid}`, document.getElementById('cfg-cedula').value.trim());
+        localStorage.setItem(`placa_${user.uid}`, document.getElementById('cfg-placa').value.trim().toUpperCase());
+        localStorage.setItem(`vehiculo_${user.uid}`, document.getElementById('cfg-vehiculo').value.trim());
+        localStorage.setItem(`zona_${user.uid}`, document.getElementById('cfg-zona').value);
+        localStorage.setItem(`whatsapp_${user.uid}`, document.getElementById('cfg-whatsapp').value.trim());
+        mostrarAlertaPro("¡Datos Pro guardados!");
         cerrarPerfil();
       }
     }
 
     async function cerrarSesion() {
-      try {
-        await auth.signOut();
-        cerrarPerfil();
-        document.getElementById('modulo-ganancias-pro').classList.add('hidden');
-        document.getElementById('banner-modo-b2b').classList.add('hidden');
-        document.getElementById('panel-turno-repartidor').classList.add('hidden');
-        document.getElementById('flecha-pro').style.transform = 'rotate(0deg)';
-        document.getElementById('proToggleTurno').checked = false;
-        
-        // Remover sesión de repartidor activo en el directorio
-        localStorage.removeItem('repartidor_pro_session');
-
-        rolSeleccionado = 'repartidor';
-        aplicarConfiguracionSegunRol();
-        revertirAvatarUI();
-        mostrarAlertaPro("Sesión cerrada correctamente.");
-      } catch (e) {
-        mostrarAlertaPro("Error al cerrar sesión.");
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          await db.collection("repartidores_activos").doc(user.uid).update({ enLinea: false });
+        } catch(e) {}
       }
-    }
-
-    function alternarModoAuth() {
-      esRegistro = !esRegistro;
-      const titulo = document.getElementById('auth-titulo');
-      const selectorRol = document.getElementById('selector-rol');
-      const textoCambio = document.getElementById('texto-cambio-auth');
-      const linkCambio = document.getElementById('link-cambio-auth');
-      const btnSubmit = document.getElementById('btn-submit-auth');
-      if (esRegistro) {
-        titulo.innerText = rolSeleccionado === 'comercio' ? "Crea la cuenta de tu Comercio / Flota B2B" : "Crea tu cuenta y gana 14 días Pro";
-        selectorRol.classList.remove('hidden');
-        textoCambio.innerText = "¿Ya tienes cuenta?";
-        linkCambio.innerText = "Inicia Sesión";
-        btnSubmit.innerText = rolSeleccionado === 'comercio' ? "Crear Cuenta B2B" : "Crear Cuenta Pro";
-      } else {
-        titulo.innerText = "Bienvenido de nuevo";
-        selectorRol.classList.add('hidden');
-        textoCambio.innerText = "¿No tienes cuenta?";
-        linkCambio.innerText = "Regístrate";
-        btnSubmit.innerText = "Iniciar Sesión";
-      }
-    }
-
-    function seleccionarRol(rol) {
-      rolSeleccionado = rol;
-      const btnRepartidor = document.getElementById('btn-rol-repartidor');
-      const btnComercio = document.getElementById('btn-rol-comercio');
-      if (rol === 'repartidor') {
-        btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500/15 text-slate-900 dark:text-white transition flex items-center justify-center gap-2 cursor-pointer focus:outline-none";
-        btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 transition hover:border-slate-400 dark:hover:border-slate-700 cursor-pointer focus:outline-none";
-      } else {
-        btnComercio.className = "py-2.5 text-xs font-bold rounded-xl border border-blue-500 bg-blue-500/15 text-slate-900 dark:text-white transition flex items-center justify-center gap-2 cursor-pointer focus:outline-none";
-        btnRepartidor.className = "py-2.5 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 transition hover:border-slate-400 dark:hover:border-slate-700 cursor-pointer focus:outline-none";
-      }
+      await auth.signOut();
+      cerrarPerfil();
+      document.getElementById('panel-turno-repartidor').classList.add('hidden');
+      document.getElementById('proToggleTurno').checked = false;
+      mostrarAlertaPro("Sesión cerrada.");
     }
 
     function intentarAccesoPro() {
-      const usuarioActual = auth.currentUser;
-      if (!usuarioActual) {
-        mostrarAlertaPro("🔒 Debes iniciar sesión o registrarte para acceder al Registro / Panel B2B.");
+      if (!auth.currentUser) {
         abrirAuth();
       } else {
         const mod = document.getElementById('modulo-ganancias-pro');
-        const flecha = document.getElementById('flecha-pro');
         mod.classList.toggle('hidden');
-        const estaAbierto = !mod.classList.contains('hidden');
-        flecha.style.transform = estaAbierto ? 'rotate(180deg)' : 'rotate(0deg)';
-        if (estaAbierto) {
-          cargarDatosProGuardados();
-          mod.scrollIntoView({ behavior: 'smooth' });
-        }
       }
     }
 
-    function obtenerClavesStorage() {
-      const user = auth.currentUser;
-      const uid = user ? user.uid : 'invitado';
-      return {
-        keyTurno: `carreras_turno_${uid}`,
-        keyCortes: `cortes_archivados_${uid}`,
-        keyMotorizados: `motorizados_flota_${uid}`
-      };
-    }
-
-    function cargarDatosProGuardados() {
-      const { keyTurno, keyCortes, keyMotorizados } = obtenerClavesStorage();
-      const rawTurno = localStorage.getItem(keyTurno);
-      const rawCortes = localStorage.getItem(keyCortes);
-      const rawMoto = localStorage.getItem(keyMotorizados);
-
-      carrerasTurnoActual = rawTurno ? JSON.parse(rawTurno) : [];
-      cortesArchivados = rawCortes ? JSON.parse(rawCortes) : [];
-      motorizadosFlota = rawMoto ? JSON.parse(rawMoto) : [];
-
-      renderizarDropdownSelectorMotorizado();
-      renderizarMóduloPro();
-    }
-
-    function toggleAcordeonMotorizados() {
-      const contenido = document.getElementById('contenido-acordeon-moto');
-      const flecha = document.getElementById('flecha-acordeon-moto');
-      contenido.classList.toggle('hidden');
-      flecha.style.transform = contenido.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
-      if (!contenido.classList.contains('hidden')) {
-        renderizarListaMotorizadosAcordeon();
-      }
-    }
-
-    function guardarNuevoMotorizado() {
-      const nombre = document.getElementById('nuevo-motorizado-nombre').value.trim();
-      const telefono = document.getElementById('nuevo-motorizado-tlf').value.trim();
-
-      if (!nombre) {
-        mostrarAlertaPro("Debes ingresar el nombre del motorizado.");
-        return;
-      }
-
-      motorizadosFlota.push({ id: Date.now(), nombre, telefono: telefono || 'N/A' });
-      const { keyMotorizados } = obtenerClavesStorage();
-      localStorage.setItem(keyMotorizados, JSON.stringify(motorizadosFlota));
-
-      document.getElementById('nuevo-motorizado-nombre').value = '';
-      document.getElementById('nuevo-motorizado-tlf').value = '';
-
-      renderizarDropdownSelectorMotorizado();
-      renderizarListaMotorizadosAcordeon();
-      mostrarAlertaPro("✅ Motorizado agregado correctamente.");
-    }
-
-    function eliminarMotorizado(id) {
-      motorizadosFlota = motorizadosFlota.filter(m => m.id !== id);
-      const { keyMotorizados } = obtenerClavesStorage();
-      localStorage.setItem(keyMotorizados, JSON.stringify(motorizadosFlota));
-
-      renderizarDropdownSelectorMotorizado();
-      renderizarListaMotorizadosAcordeon();
-    }
-
-    function renderizarListaMotorizadosAcordeon() {
-      const contenedor = document.getElementById('lista-motorizados-guardados');
-      contenedor.innerHTML = '';
-      if (motorizadosFlota.length === 0) {
-        contenedor.innerHTML = '<p class="text-slate-400 text-center text-[11px]">No hay motorizados registrados.</p>';
-        return;
-      }
-      motorizadosFlota.forEach(m => {
-        const div = document.createElement('div');
-        div.className = 'flex items-center justify-between p-2 bg-white dark:bg-slate-900 rounded-xl border border-blue-500/20 shadow-sm';
-        div.innerHTML = `
-          <div>
-            <p class="font-bold text-slate-900 dark:text-white">🛵 ${m.nombre}</p>
-            <p class="text-[10px] text-slate-500">📞 ${m.telefono}</p>
-          </div>
-          <button onclick="eliminarMotorizado(${m.id})" class="text-rose-500 hover:text-rose-400 text-xs font-bold cursor-pointer focus:outline-none">✕</button>
-        `;
-        contenedor.appendChild(div);
-      });
-    }
-
-    function toggleMenuSelectorMotorizado() {
-      const menu = document.getElementById('dropdown-motorizados-tarjetas');
-      const flecha = document.getElementById('flecha-selector-moto');
-      menu.classList.toggle('hidden');
-      flecha.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
-      if (!menu.classList.contains('hidden')) {
-        renderizarDropdownSelectorMotorizado();
-      }
-    }
-
-    function seleccionarMotorizadoCard(nombre, telefono) {
-      document.getElementById('input-motorizado-seleccionado').value = nombre;
-      document.getElementById('label-motorizado-actual').innerText = nombre;
-      document.getElementById('sublabel-motorizado-actual').innerText = `📞 ${telefono}`;
-      toggleMenuSelectorMotorizado();
-    }
-
-    function renderizarDropdownSelectorMotorizado() {
-      const contenedor = document.getElementById('dropdown-motorizados-tarjetas');
-      contenedor.innerHTML = '';
-      
-      if (motorizadosFlota.length === 0) {
-        contenedor.innerHTML = '<p class="text-slate-400 text-center py-3 text-[11px]">No hay motorizados. Agrégalos arriba en "Gestión de Equipo".</p>';
-        return;
-      }
-
-      motorizadosFlota.forEach(m => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.onclick = () => seleccionarMotorizadoCard(m.nombre, m.telefono);
-        btn.className = 'w-full p-2.5 rounded-xl bg-white dark:bg-slate-950 hover:bg-blue-500/10 border border-blue-500/20 text-left flex items-center justify-between transition cursor-pointer';
-        btn.innerHTML = `
-          <div>
-            <p class="text-xs font-bold text-slate-900 dark:text-white">🛵 ${m.nombre}</p>
-            <p class="text-[10px] text-slate-500">📞 ${m.telefono}</p>
-          </div>
-          <span class="text-blue-500 text-xs font-bold">Seleccionar ➔</span>
-        `;
-        contenedor.appendChild(btn);
-      });
-    }
-
-    function registrarCarreraPro() {
-      const montoBruto = parseFloat(document.getElementById('pro-monto-usd').value);
-      const notaInput = document.getElementById('pro-cliente-nota').value.trim();
-      
-      let motorizado = 'Independiente / Personal';
-      if (rolSeleccionado === 'comercio') {
-        motorizado = document.getElementById('input-motorizado-seleccionado').value;
-        if (!motorizado) {
-          mostrarAlertaPro("⚠️ Por favor selecciona un motorizado de la flota haciendo clic en el selector.");
-          return;
-        }
-      }
-      
-      const nota = notaInput || 'Servicio estándar';
-
-      if(!montoBruto || montoBruto <= 0) {
-        mostrarAlertaPro("Ingresa un monto válido en USD.");
-        return;
-      }
-
-      const nuevaCarrera = {
-        id: Date.now(),
-        monto: montoBruto,
-        nota: nota,
-        repartidor: motorizado,
-        hora: new Date().toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', hour12: true })
-      };
-
-      carrerasTurnoActual.unshift(nuevaCarrera);
-      const { keyTurno } = obtenerClavesStorage();
-      localStorage.setItem(keyTurno, JSON.stringify(carrerasTurnoActual));
-
-      document.getElementById('pro-monto-usd').value = '';
-      document.getElementById('pro-cliente-nota').value = '';
-
-      renderizarMóduloPro();
-      mostrarAlertaPro(rolSeleccionado === 'comercio' ? "✅ ¡Servicio asignado correctamente!" : "¡Carrera añadida al turno!");
-    }
-
-    function eliminarCarreraTurno(id) {
-      carrerasTurnoActual = carrerasTurnoActual.filter(c => c.id !== id);
-      const { keyTurno } = obtenerClavesStorage();
-      localStorage.setItem(keyTurno, JSON.stringify(carrerasTurnoActual));
-      renderizarMóduloPro();
-    }
-
-    function abrirModalCorte() {
-      if (carrerasTurnoActual.length === 0) {
-        mostrarAlertaPro("⚠️ No tienes registros en el turno actual para hacer un cierre.");
-        return;
-      }
-      const totalBruto = carrerasTurnoActual.reduce((acc, c) => acc + c.monto, 0);
-      document.getElementById('corte-monto-bruto').innerText = `$${totalBruto.toFixed(2)}`;
-      
-      const cajaGasolina = document.getElementById('caja-gasto-gasolina-modal');
-      if (rolSeleccionado === 'comercio') {
-        cajaGasolina.classList.add('hidden');
+    auth.onAuthStateChanged((user) => {
+      const btn = document.getElementById('btn-mi-cuenta-texto');
+      const panel = document.getElementById('panel-turno-repartidor');
+      if (user) {
+        btn.innerText = `👤 ${user.displayName || user.email.split('@')[0]} (PRO)`;
+        panel.classList.remove('hidden');
+        document.getElementById('perfil-nombre').innerText = user.displayName || user.email.split('@')[0];
+        document.getElementById('perfil-email').innerText = user.email;
+        
+        const av = localStorage.getItem(`avatar_${user.uid}`);
+        if(av) actualizarAvatarUI(av);
+        
+        document.getElementById('cfg-nombre-marca').value = localStorage.getItem(`marca_${user.uid}`) || '';
+        document.getElementById('cfg-cedula').value = localStorage.getItem(`cedula_${user.uid}`) || '';
+        document.getElementById('cfg-placa').value = localStorage.getItem(`placa_${user.uid}`) || '';
+        document.getElementById('cfg-vehiculo').value = localStorage.getItem(`vehiculo_${user.uid}`) || '';
+        document.getElementById('cfg-whatsapp').value = localStorage.getItem(`whatsapp_${user.uid}`) || '';
       } else {
-        cajaGasolina.classList.remove('hidden');
-        document.getElementById('corte-gasto-gasolina').value = "0.00";
+        btn.innerText = `👤 Mi Cuenta / Acceso Pro & B2B`;
+        panel.classList.add('hidden');
       }
-
-      document.getElementById('modal-corte').classList.remove('hidden');
-    }
-
-    function cerrarModalCorte() {
-      document.getElementById('modal-corte').classList.add('hidden');
-    }
-
-    function confirmarCorteDiario() {
-      const totalBruto = carrerasTurnoActual.reduce((acc, c) => acc + c.monto, 0);
-      let gastoGas = 0;
-      let totalNeto = totalBruto;
-
-      if (rolSeleccionado === 'repartidor') {
-        gastoGas = parseFloat(document.getElementById('corte-gasto-gasolina').value) || 0;
-        totalNeto = Math.max(0, totalBruto - gastoGas);
-      }
-
-      const nuevoCorte = {
-        id: Date.now(),
-        fecha: new Date().toLocaleDateString('es-VE', { day: '2-digit', month: 'short', year: 'numeric' }),
-        horaCorte: new Date().toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', hour12: true }),
-        totalBruto: totalBruto,
-        gastoGas: gastoGas,
-        totalNeto: totalNeto,
-        carreras: [...carrerasTurnoActual]
-      };
-
-      cortesArchivados.unshift(nuevoCorte);
-      carrerasTurnoActual = [];
-
-      const { keyTurno, keyCortes } = obtenerClavesStorage();
-      localStorage.setItem(keyCortes, JSON.stringify(cortesArchivados));
-      localStorage.setItem(keyTurno, JSON.stringify(carrerasTurnoActual));
-
-      cerrarModalCorte();
-      renderizarMóduloPro();
-      mostrarAlertaPro(rolSeleccionado === 'comercio' ? "✂️ ¡Cierre general archivado con éxito!" : "✂️ ¡Corte diario realizado y archivado correctamente!");
-    }
-
-    function toggleAcordeonCorte(id) {
-      const el = document.getElementById(`detalle-corte-${id}`);
-      const flecha = document.getElementById(`flecha-corte-${id}`);
-      if(el) {
-        el.classList.toggle('hidden');
-        flecha.style.transform = el.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
-      }
-    }
-
-    function eliminarCorteArchivado(id) {
-      cortesArchivados = cortesArchivados.filter(c => c.id !== id);
-      const { keyCortes } = obtenerClavesStorage();
-      localStorage.setItem(keyCortes, JSON.stringify(cortesArchivados));
-      renderizarMóduloPro();
-    }
-
-    function renderizarMóduloPro() {
-      const totalTurnoUSD = carrerasTurnoActual.reduce((acc, c) => acc + c.monto, 0);
-      const totalTurnoBS = totalTurnoUSD * tasaBCV;
-      document.getElementById('pro-total-turno').innerHTML = `$${totalTurnoUSD.toFixed(2)} <span class="text-xs text-slate-500 dark:text-slate-400 font-normal">(Bs. ${totalTurnoBS.toFixed(2)})</span>`;
-
-      const contTurno = document.getElementById('contenedor-carreras-turno');
-      contTurno.innerHTML = '';
-      if(carrerasTurnoActual.length === 0) {
-        contTurno.innerHTML = `<p class="text-center text-slate-400 dark:text-slate-500 py-2 text-[11px]">${rolSeleccionado === 'comercio' ? 'Sin despachos registrados en este turno.' : 'Sin carreras en este turno.'}</p>`;
-      } else {
-        carrerasTurnoActual.forEach(c => {
-          const item = document.createElement('div');
-          item.className = 'p-2.5 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs';
-          
-          let infoTexto = `<span>${c.nota}</span>`;
-          let botonNotificarMotorizadoHTML = '';
-
-          if (rolSeleccionado === 'comercio') {
-            infoTexto = `<span class="font-bold text-blue-600 dark:text-blue-400">🛵 ${c.repartidor}</span> <span class="text-slate-500">(${c.nota})</span>`;
-            botonNotificarMotorizadoHTML = `
-              <button onclick="notificarMotorizadoWhatsApp('${c.repartidor}', '${c.nota}', ${c.monto})" 
-                class="px-2 py-1 bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-600 dark:text-emerald-400 rounded-lg font-bold text-[10px] transition flex items-center gap-1 cursor-pointer border border-emerald-500/30" title="Avisar a motorizado por WhatsApp con ruta">
-                💬 Avisar
-              </button>
-            `;
-          }
-
-          item.innerHTML = `
-            <div>
-              ${infoTexto}
-              <span class="text-[10px] text-slate-400 ml-1">🕒 ${c.hora}</span>
-            </div>
-            <div class="flex items-center gap-2">
-              ${botonNotificarMotorizadoHTML}
-              <span class="font-black text-emerald-600 dark:text-emerald-400">$${c.monto.toFixed(2)}</span>
-              <button onclick="eliminarCarreraTurno(${c.id})" class="text-rose-500 dark:text-rose-400 hover:text-rose-400 text-xs cursor-pointer font-bold focus:outline-none">✕</button>
-            </div>
-          `;
-          contTurno.appendChild(item);
-        });
-      }
-
-      const contCortes = document.getElementById('lista-cortes-acordeon');
-      contCortes.innerHTML = '';
-
-      if(cortesArchivados.length === 0) {
-        contCortes.innerHTML = '<p class="text-center text-slate-400 dark:text-slate-500 py-4 text-[11px]">No hay registros archivados aún.</p>';
-      } else {
-        cortesArchivados.forEach(corte => {
-          const item = document.createElement('div');
-          item.className = 'bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden';
-          
-          let htmlSubContenido = '';
-          
-          if (rolSeleccionado === 'comercio') {
-            let acumuladoMotorizados = {};
-            corte.carreras.forEach(car => {
-              let rep = car.repartidor || 'Sin asignar';
-              if (!acumuladoMotorizados[rep]) {
-                acumuladoMotorizados[rep] = { cantidadServicios: 0, montoTotal: 0 };
-              }
-              acumuladoMotorizados[rep].cantidadServicios += 1;
-              acumuladoMotorizados[rep].montoTotal += car.monto;
-            });
-
-            for (let [rep, datos] of Object.entries(acumuladoMotorizados)) {
-              htmlSubContenido += `
-                <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-900/65 text-[10px] text-slate-600 dark:text-slate-300">
-                  <span>👤 <b>${rep}</b> — 📦 ${datos.cantidadServicios} servicio(s)</span>
-                  <span class="font-bold text-emerald-600 dark:text-emerald-400">$${datos.montoTotal.toFixed(2)}</span>
-                </div>
-              `;
-            }
-          } else {
-            corte.carreras.forEach(car => {
-              htmlSubContenido += `
-                <div class="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-900/65 text-[10px] text-slate-500 dark:text-slate-400">
-                  <span>• 📦 ${car.nota} (${car.hora})</span>
-                  <span class="font-bold text-slate-700 dark:text-slate-200">$${car.monto.toFixed(2)}</span>
-                </div>
-              `;
-            });
-          }
-
-          const totalCorteBS = corte.totalNeto * tasaBCV;
-          let infoGasolinaHTML = rolSeleccionado === 'repartidor' ? `<p class="text-[10px] text-slate-500 dark:text-slate-400">Bruto: $${corte.totalBruto.toFixed(2)} | Gasolina: -$${corte.gastoGas.toFixed(2)}</p>` : `<p class="text-[10px] text-slate-500 dark:text-slate-400">Total Turno: $${corte.totalBruto.toFixed(2)}</p>`;
-
-          item.innerHTML = `
-            <div onclick="toggleAcordeonCorte(${corte.id})" class="p-3.5 flex items-center justify-between cursor-pointer hover:bg-slate-200/50 dark:hover:bg-slate-900/60 transition">
-              <div class="space-y-0.5">
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-slate-900 dark:text-white text-xs">📅 ${corte.fecha}</span>
-                  <span class="text-[9px] text-slate-500">🕒 ${corte.horaCorte}</span>
-                </div>
-                ${infoGasolinaHTML}
-              </div>
-              <div class="flex items-center gap-3">
-                <div class="text-right">
-                  <p class="font-black text-emerald-600 dark:text-emerald-400 text-xs">+$${corte.totalNeto.toFixed(2)}</p>
-                  <p class="text-[9px] text-slate-500 dark:text-slate-400">Bs. ${totalCorteBS.toFixed(2)}</p>
-                </div>
-                <span id="flecha-corte-${corte.id}" class="text-slate-500 text-xs transition-transform duration-200">▼</span>
-              </div>
-            </div>
-
-            <div id="detalle-corte-${corte.id}" class="hidden p-3.5 bg-slate-50 dark:bg-slate-900/90 border-t border-slate-200 dark:border-slate-800/80 space-y-2">
-              <p class="text-[10px] font-bold ${rolSeleccionado === 'comercio' ? 'text-blue-600 dark:text-blue-400' : 'text-emerald-600 dark:text-emerald-400'} uppercase tracking-wider">${rolSeleccionado === 'comercio' ? '📊 Resumen Acumulado por Motorizado' : '📋 Detalle de Servicios'} (${corte.carreras.length} servicios totales):</p>
-              <div class="pl-2 space-y-1">
-                ${htmlSubContenido}
-              </div>
-              <div class="pt-2 text-right">
-                <button onclick="eliminarCorteArchivado(${corte.id})" class="text-[10px] text-rose-500 dark:text-rose-400 underline cursor-pointer font-bold focus:outline-none">🗑️ Eliminar este registro</button>
-              </div>
-            </div>
-          `;
-          contCortes.appendChild(item);
-        });
-      }
-    }
-
-    function descargarReportePDF() {
-      if (cortesArchivados.length === 0) {
-        mostrarAlertaPro("No tienes registros archivados para exportar.");
-        return;
-      }
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      const user = auth.currentUser;
-      const usuarioNombre = user ? (user.displayName || user.email) : 'Usuario';
-      const esComercio = user && rolSeleccionado === 'comercio';
-
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(16);
-      doc.text(esComercio ? "REPORTE DE CIERRE GENERAL - FLOTA B2B" : "COTIZADOR DELIVERY - REPORTE DE CORTES DIARIOS", 20, 20);
-
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
-      doc.text(`Cuenta / Negocio: ${usuarioNombre}`, 20, 28);
-      doc.text(`Fecha de emisión: ${new Date().toLocaleDateString('es-VE')}`, 20, 34);
-      doc.text(`Tasa Oficial BCV: Bs. ${tasaBCV.toFixed(2)} / USD`, 20, 40);
-
-      doc.setLineWidth(0.5);
-      doc.line(20, 44, 190, 44);
-
-      let y = 52;
-      doc.setFont("helvetica", "bold");
-      doc.text("Fecha", 20, y);
-      doc.text("Servicios", 80, y);
-      doc.text("Total Bruto ($)", 140, y);
-      
-      y += 4;
-      doc.line(20, y, 190, y);
-      y += 6;
-
-      doc.setFont("helvetica", "normal");
-      cortesArchivados.forEach((c) => {
-        if (y > 270) {
-          doc.addPage();
-          y = 20;
-        }
-        doc.text(c.fecha, 20, y);
-        doc.text(`${c.carreras.length} entregas`, 80, y);
-        doc.text(`$${c.totalBruto.toFixed(2)}`, 140, y);
-        y += 7;
-      });
-
-      y += 4;
-      doc.line(20, y, 190, y);
-      y += 8;
-
-      const totalBrutoAcum = cortesArchivados.reduce((acc, c) => acc + c.totalBruto, 0);
-      const totalBS = totalBrutoAcum * tasaBCV;
-
-      doc.setFont("helvetica", "bold");
-      doc.text(`TOTAL GENERAL ACUMULADO: $${totalBrutoAcum.toFixed(2)}`, 20, y);
-      y += 6;
-      doc.text(`TOTAL EN BOLÍVARES: Bs. ${totalBS.toFixed(2)}`, 20, y);
-
-      doc.save(`Reporte_Cierre_Fleet_${Date.now()}.pdf`);
-      mostrarAlertaPro("📄 ¡Reporte PDF generado y descargado con éxito!");
-    }
-
-    async function iniciarConGoogle() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      const esIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      try {
-        if (esIOS) {
-          await auth.signInWithPopup(provider);
-          cerrarAuth();
-        } else {
-          await auth.signInWithRedirect(provider);
-        }
-      } catch (error) {
-        if (error.code === 'auth/popup-blocked' || error.code === 'auth/cancelled-popup-request') {
-          try {
-            await auth.signInWithRedirect(provider);
-          } catch (redirectError) {
-            mostrarAlertaPro('Error de autenticación con Google: ' + redirectError.message);
-          }
-        } else {
-          mostrarAlertaPro('Error con Google: ' + error.message);
-        }
-      }
-    }
+    });
 
     const formAuth = document.getElementById('form-auth');
     if (formAuth) {
       formAuth.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('email-input').value;
-        const password = document.getElementById('password-input').value;
+        const pass = document.getElementById('password-input').value;
         try {
-          if (esRegistro) {
-            await auth.createUserWithEmailAndPassword(email, password);
-            localStorage.setItem(`user_rol_${email}`, rolSeleccionado);
-            mostrarAlertaPro(rolSeleccionado === 'comercio' ? "¡Bienvenido! Cuenta B2B Comercio creada con éxito." : "¡Bienvenido! Cuenta creada con 14 días Pro activos.");
-          } else {
-            await auth.signInWithEmailAndPassword(email, password);
-            mostrarAlertaPro('¡Inicio de sesión exitoso!');
-          }
+          await auth.signInWithEmailAndPassword(email, pass);
           cerrarAuth();
-        } catch (error) {
-          mostrarAlertaPro('Error: ' + error.message);
+          mostrarAlertaPro("¡Sesión iniciada!");
+        } catch (err) {
+          try {
+            await auth.createUserWithEmailAndPassword(email, pass);
+            cerrarAuth();
+            mostrarAlertaPro("¡Cuenta creada con éxito!");
+          } catch (err2) {
+            mostrarAlertaPro("Error: " + err2.message);
+          }
         }
       });
     }
 
-    function aplicarConfiguracionSegunRol() {
-      const user = auth.currentUser;
-      const bannerB2B = document.getElementById('banner-modo-b2b');
-      const panelTurnoRepartidor = document.getElementById('panel-turno-repartidor');
-      const headerTitulo = document.getElementById('header-titulo-app');
-      const headerSub = document.getElementById('header-subtitulo-app');
-      const btnProLabel = document.getElementById('btn-pro-label');
-      const badgeProTipo = document.getElementById('badge-pro-tipo');
-      const iconoModo = document.getElementById('icono-modulo-titulo');
-      const textoModo = document.getElementById('texto-modulo-titulo');
-      const labelSubcarrera = document.getElementById('label-subtitulo-carrera');
-      const campoRepartidorB2B = document.getElementById('campo-repartidor-b2b-container');
-      const seccionMotorizadosAcordeon = document.getElementById('seccion-motorizados-acordeon');
-      const inputNota = document.getElementById('pro-cliente-nota');
-      const btnTextoRegistrar = document.getElementById('btn-texto-registrar');
-      const tituloSeccionCortes = document.getElementById('titulo-seccion-cortes');
-      const modalCorteTit = document.getElementById('modal-corte-titulo');
-      const modalCorteSub = document.getElementById('modal-corte-sub');
-
-      // VISIBILIDAD ESTRICTA DEL APARTADO DE TURNO PÚBLICO
-      if (user && rolSeleccionado === 'repartidor') {
-        panelTurnoRepartidor.classList.remove('hidden');
-      } else {
-        panelTurnoRepartidor.classList.add('hidden');
-      }
-
-      if (user && rolSeleccionado === 'comercio') {
-        const b2bNombre = localStorage.getItem(`b2b_nombre_${user.uid}`) || 'Comercio B2B';
-        const rateKm = parseFloat(localStorage.getItem(`b2b_rate_km_${user.uid}`));
-        if (rateKm) PRECIO_KM_EXTRA = rateKm;
-
-        bannerB2B.classList.remove('hidden');
-        document.getElementById('b2b-banner-nombre').innerText = `Flota: ${b2bNombre}`;
-        headerTitulo.innerText = "Cotizador Fleet B2B";
-        headerSub.innerText = "Control Corporativo de Flotas";
-        if(btnProLabel) btnProLabel.innerText = "Panel de Control y Motorizados";
-        if(badgeProTipo) {
-          badgeProTipo.innerText = "B2B";
-          badgeProTipo.className = "bg-blue-500/15 text-blue-600 dark:text-blue-400 text-[10px] px-2 py-0.5 rounded-md border border-blue-500/30 font-black tracking-wider";
-        }
-        if(iconoModo) iconoModo.innerText = "🏢";
-        if(textoModo) textoModo.innerText = "Control de Despachos de Flota";
-        if(labelSubcarrera) labelSubcarrera.innerText = "Selecciona el motorizado y registra el destino:";
-        if(campoRepartidorB2B) campoRepartidorB2B.classList.remove('hidden');
-        if(seccionMotorizadosAcordeon) seccionMotorizadosAcordeon.classList.remove('hidden');
-        if(inputNota) inputNota.placeholder = "Cliente / Destino (Ej. Av. Bolívar)";
-        if(btnTextoRegistrar) btnTextoRegistrar.innerText = "+ Registrar Servicio de Flota";
-        if(tituloSeccionCortes) tituloSeccionCortes.innerText = "📁 Cierres Generales Archivados";
-        if(modalCorteTit) modalCorteTit.innerText = "Cierre General de Turno";
-        if(modalCorteSub) modalCorteSub.innerText = "Se consolidarán todos los servicios registrados en la jornada.";
-      } else if (!user || rolSeleccionado === 'repartidor') {
-        bannerB2B.classList.add('hidden');
-        PRECIO_KM_EXTRA = 0.40;
-        headerTitulo.innerText = "Cotizador Delivery";
-        headerSub.innerText = "Venezuela • Tasa BCV Oficial";
-        if(btnProLabel) btnProLabel.innerText = "Registro de Ganancias Pro";
-        if(badgeProTipo) {
-          badgeProTipo.innerText = "PRO";
-          badgeProTipo.className = "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] px-2 py-0.5 rounded-md border border-emerald-500/30 font-black tracking-wider";
-        }
-        if(iconoModo) iconoModo.innerText = "📊";
-        if(textoModo) textoModo.innerText = "Turno Activo del Día";
-        if(labelSubcarrera) labelSubcarrera.innerText = "Registra tus servicios del turno actual:";
-        if(campoRepartidorB2B) campoRepartidorB2B.classList.add('hidden');
-        if(seccionMotorizadosAcordeon) seccionMotorizadosAcordeon.classList.add('hidden');
-        if(inputNota) inputNota.placeholder = "Descripción / Cliente";
-        if(btnTextoRegistrar) btnTextoRegistrar.innerText = "+ Añadir Carrera";
-        if(tituloSeccionCortes) tituloSeccionCortes.innerText = "📁 Cortes Diarios Archivados";
-        if(modalCorteTit) modalCorteTit.innerText = "Cierre y Corte Diario";
-        if(modalCorteSub) modalCorteSub.innerText = "Ingresa el gasto total de gasolina o mantenimiento de la jornada.";
-      }
-    }
-
-    auth.getRedirectResult().then((result) => {
-      if (result && result.user) {
-        cerrarAuth();
-        mostrarAlertaPro(`¡Bienvenido de nuevo, ${result.user.displayName || result.user.email}!`);
-      }
-    }).catch((error) => {
-      console.error("Error en redirect de Google:", error);
-    });
-
-    auth.onAuthStateChanged((user) => {
-      const btnTexto = document.getElementById('btn-mi-cuenta-texto');
-      if (user) {
-        const nombre = user.displayName || user.email.split('@')[0];
-        const rolGuardado = localStorage.getItem(`user_rol_${user.email}`);
-        if (rolGuardado) rolSeleccionado = rolGuardado;
-
-        btnTexto.innerText = `👤 ${nombre} (${rolSeleccionado.toUpperCase()})`;
-        
-        const avatarGuardado = localStorage.getItem(`avatar_${user.uid}`);
-        if(avatarGuardado) {
-          actualizarAvatarUI(avatarGuardado);
-        } else {
-          revertirAvatarUI();
-        }
-        aplicarConfiguracionSegunRol();
-        cargarDatosProGuardados();
-      } else {
-        btnTexto.innerText = `👤 Mi Cuenta / Acceso Pro & B2B`;
-        document.getElementById('modulo-ganancias-pro').classList.add('hidden');
-        document.getElementById('banner-modo-b2b').classList.add('hidden');
-        document.getElementById('panel-turno-repartidor').classList.add('hidden');
-        document.getElementById('flecha-pro').style.transform = 'rotate(0deg)';
-        rolSeleccionado = 'repartidor';
-        aplicarConfiguracionSegunRol();
-        revertirAvatarUI();
-      }
-    });
-
-    verificarHorarioNocturno();
     obtenerTasaBCV();
   </script>
 </body>
